@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "instituicao": "IBGE",
+    "titulo": "Censo Demográfico 2022 — Agregados por Setores Censitários e Bairros (Universo: Básico, Domicílios, Demografia, Alfabetização e Cor/Raça)",
+    "url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Bairro_csv/",
+    "data_acesso": "2026-11-11",
+    "escala_nativa": "Bairro / Setor Censitário / Município",
+    "ano_referencia": "2022"
+  },
+  {
+    "id": 2,
+    "instituicao": "IBGE",
+    "titulo": "Censo Demográfico 2022 — Agregados por Bairros e Setores Censitários: Rendimento do Responsável pelo Domicílio",
+    "url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/",
+    "data_acesso": "2026-11-11",
+    "escala_nativa": "Bairro / Setor Censitário / Município",
+    "ano_referencia": "2022"
+  },
+  {
+    "id": 3,
+    "instituicao": "IBGE",
+    "titulo": "Censo Demográfico 2022 — Características Urbanísticas do Entorno dos Domicílios (Agregados por Bairro e Município)",
+    "url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Caracteristicas_urbanisticas_do_entorno_dos_domicilios/",
+    "data_acesso": "2026-11-11",
+    "escala_nativa": "Bairro / Setor Censitário / Município",
+    "ano_referencia": "2022"
+  },
+  {
+    "id": 4,
+    "instituicao": "IBGE",
+    "titulo": "Censo Demográfico 2022 — Favelas e Comunidades Urbanas & Malha Territorial com Atributos (Shapefiles CD2022)",
+    "url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/",
+    "data_acesso": "2026-11-11",
+    "escala_nativa": "Bairro / Favela e Comunidade Urbana (FCU) / Setor Censitário",
+    "ano_referencia": "2022"
+  },
+  {
+    "id": 5,
+    "instituicao": "IPEA",
+    "titulo": "Atlas da Vulnerabilidade Social nos Municípios e Regiões Metropolitanas Brasileiras (IVS - IPEA / FJP / PNUD)",
+    "url": "http://ivs.ipea.gov.br/",
+    "data_acesso": "2026-11-11",
+    "escala_nativa": "Estadual (UF) / Municipal (RM) / UDH (Intramunicipal)",
+    "ano_referencia": "2010 / 2022"
+  },
+  {
+    "id": 6,
+    "instituicao": "EPE",
+    "titulo": "Anuário Estatístico de Energia Elétrica — Dados Abertos de Consumo e Consumidores por UF e Subclasse Residencial (2018-2025)",
+    "url": "https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos/dados-do-anuario-estatistico-de-energia-eletrica",
+    "data_acesso": "2026-11-11",
+    "escala_nativa": "Estadual (UF - Bahia)",
+    "ano_referencia": "2018-2025"
+  },
+  {
+    "id": 7,
+    "instituicao": "Observatório Socioenergético (SENAI CIMATEC)",
+    "titulo": "Indicadores Derivados, Proxies Socioenergéticas e Índice Exploratório de Vulnerabilidade Socioenergética (IEVS)",
+    "url": "https://github.com/ironJohnsson/FullstackAV3",
+    "data_acesso": "2026-11-11",
+    "escala_nativa": "Bairro / Setor Censitário (Exploratório)",
+    "ano_referencia": "2022"
+  }
+]

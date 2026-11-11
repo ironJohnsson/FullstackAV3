@@ -1,0 +1,9 @@
+﻿ano,uf,territorio_id,escala,consumo_total_gwh,consumo_convencional_gwh,consumo_baixa_renda_gwh,consumidores_total,consumidores_convencional,consumidores_baixa_renda,perc_consumidores_baixa_renda,perc_consumo_baixa_renda,consumo_medio_mensal_kwh_uc,consumo_medio_baixa_renda_kwh_uc,consumo_medio_convencional_kwh_uc
+2018,BA,2,Estadual (UF - Bahia),7039.93,5820.36,1219.57,5254544,4185337,1069207,20.35,17.32,111.65,95.05,115.89
+2019,BA,2,Estadual (UF - Bahia),7341.87,5910.4,1431.47,5340263,4298068,1042195,19.52,19.5,114.57,114.46,114.59
+2020,BA,2,Estadual (UF - Bahia),7463.54,5798.07,1665.47,5450133,4018678,1431456,26.26,22.31,114.12,96.96,120.23
+2021,BA,2,Estadual (UF - Bahia),7632.08,5795.93,1836.15,5580048,4006520,1573528,28.2,24.06,113.98,97.24,120.55
+2022,BA,2,Estadual (UF - Bahia),7555.35,5452.63,2102.72,5719188,4105337,1613851,28.22,27.83,110.09,108.58,110.68
+2023,BA,2,Estadual (UF - Bahia),7939.19,5649.27,2289.92,5863141,4008820,1854321,31.63,28.84,112.84,102.91,117.43
+2024,BA,2,Estadual (UF - Bahia),8162.02,5821.06,2340.95,6008901,4239597,1769304,29.44,28.68,113.19,110.26,114.42
+2025,BA,2,Estadual (UF - Bahia),8048.81,5621.24,2427.58,6162914,4142652,2020262,32.78,30.16,108.83,100.13,113.08

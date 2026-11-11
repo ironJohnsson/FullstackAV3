@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "nome": "Brasil",
+    "codigo_ibge": "1",
+    "tipo": "PAIS",
+    "territorio_pai_id": null,
+    "area_km2": 8510417.77,
+    "escala_descricao": "Nacional (Referência Macro)"
+  },
+  {
+    "id": 2,
+    "nome": "Bahia",
+    "codigo_ibge": "29",
+    "tipo": "ESTADO",
+    "territorio_pai_id": 1,
+    "area_km2": 564760.43,
+    "escala_descricao": "Estadual (UF - Escala nativa EPE e IPEA PNAD)"
+  },
+  {
+    "id": 3,
+    "nome": "Salvador",
+    "codigo_ibge": "2927408",
+    "tipo": "MUNICIPIO",
+    "territorio_pai_id": 2,
+    "area_km2": 693.4421,
+    "escala_descricao": "Municipal (Capital - Referência de comparação Censo 2022 e IPEA)"
+  },
+  {
+    "id": 4,
+    "nome": "Beiru / Tancredo Neves",
+    "codigo_ibge": "2927408018",
+    "tipo": "BAIRRO",
+    "territorio_pai_id": 3,
+    "area_km2": 1.6362,
+    "escala_descricao": "Bairro Oficial (Lei Municipal nº 9.278/2017 / Subdistrito São Caetano - Censo 2022)"
+  },
+  {
+    "id": 5,
+    "nome": "Pernambués",
+    "codigo_ibge": "2927408117",
+    "tipo": "BAIRRO",
+    "territorio_pai_id": 3,
+    "area_km2": 3.2074,
+    "escala_descricao": "Bairro Oficial (Lei Municipal nº 9.278/2017 / Subdistrito São Caetano - Censo 2022)"
+  },
+  {
+    "id": 6,
+    "nome": "UDH Tancredo Neves / Beiru",
+    "codigo_ibge": "UDH_2927408_BEIRU",
+    "tipo": "UDH",
+    "territorio_pai_id": 3,
+    "area_km2": 1.64,
+    "escala_descricao": "Unidade de Desenvolvimento Humano (Recorte intramunicipal Atlas IVS / IPEA)"
+  },
+  {
+    "id": 7,
+    "nome": "UDH Pernambués / Saramandaia",
+    "codigo_ibge": "UDH_2927408_PERNAMBUES",
+    "tipo": "UDH",
+    "territorio_pai_id": 3,
+    "area_km2": 3.21,
+    "escala_descricao": "Unidade de Desenvolvimento Humano (Recorte intramunicipal Atlas IVS / IPEA)"
+  }
+]

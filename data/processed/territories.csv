@@ -1,0 +1,8 @@
+﻿id,nome,codigo_ibge,tipo,territorio_pai_id,area_km2,escala_descricao
+1,Brasil,1,PAIS,,8510417.77,Nacional (Referência Macro)
+2,Bahia,29,ESTADO,1,564760.43,Estadual (UF - Escala nativa EPE e IPEA PNAD)
+3,Salvador,2927408,MUNICIPIO,2,693.4421,Municipal (Capital - Referência de comparação Censo 2022 e IPEA)
+4,Beiru / Tancredo Neves,2927408018,BAIRRO,3,1.6362,Bairro Oficial (Lei Municipal nº 9.278/2017 / Subdistrito São Caetano - Censo 2022)
+5,Pernambués,2927408117,BAIRRO,3,3.2074,Bairro Oficial (Lei Municipal nº 9.278/2017 / Subdistrito São Caetano - Censo 2022)
+6,UDH Tancredo Neves / Beiru,UDH_2927408_BEIRU,UDH,3,1.64,Unidade de Desenvolvimento Humano (Recorte intramunicipal Atlas IVS / IPEA)
+7,UDH Pernambués / Saramandaia,UDH_2927408_PERNAMBUES,UDH,3,3.21,Unidade de Desenvolvimento Humano (Recorte intramunicipal Atlas IVS / IPEA)

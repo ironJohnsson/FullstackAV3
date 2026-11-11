@@ -1,0 +1,86 @@
+﻿id,territorio_id,indicador_id,fonte_id,ano,valor,escala_registro
+1,4,1,1,2022,38329.0,Bairro
+2,4,2,1,2022,15454.0,Bairro
+3,4,3,1,2022,23425.51,Bairro
+4,4,4,1,2022,2.5,Bairro
+5,4,5,1,2022,49.24,Bairro
+6,4,6,1,2022,91.42,Bairro
+7,4,7,2,2022,2035.87,Bairro
+8,4,8,2,2022,1212.0,Bairro
+9,4,9,2,2022,85.92,Bairro
+10,4,10,1,2022,95.04,Bairro
+11,4,12,1,2022,99.82,Bairro
+12,4,13,1,2022,98.16,Bairro
+13,4,14,1,2022,29.19,Bairro
+14,4,15,1,2022,1.33,Bairro
+15,4,16,3,2022,96.51,Bairro
+16,4,17,3,2022,98.21,Bairro
+17,4,18,3,2022,39.46,Bairro
+18,4,19,3,2022,24.48,Bairro
+19,4,22,7,2022,82.1,Bairro
+20,4,23,7,2022,7.76,Bairro
+21,4,24,7,2022,66.17,Bairro
+22,5,1,1,2022,52564.0,Bairro
+23,5,2,1,2022,21561.0,Bairro
+24,5,3,1,2022,16388.42,Bairro
+25,5,4,1,2022,2.4,Bairro
+26,5,5,1,2022,44.61,Bairro
+27,5,6,1,2022,86.54,Bairro
+28,5,7,2,2022,2316.25,Bairro
+29,5,8,2,2022,1212.0,Bairro
+30,5,9,2,2022,72.0,Bairro
+31,5,10,1,2022,96.76,Bairro
+32,5,12,1,2022,99.74,Bairro
+33,5,13,1,2022,98.76,Bairro
+34,5,14,1,2022,40.83,Bairro
+35,5,15,1,2022,0.94,Bairro
+36,5,16,3,2022,98.51,Bairro
+37,5,17,3,2022,98.65,Bairro
+38,5,18,3,2022,38.57,Bairro
+39,5,19,3,2022,34.02,Bairro
+40,5,22,7,2022,65.26,Bairro
+41,5,23,7,2022,6.75,Bairro
+42,5,24,7,2022,52.98,Bairro
+43,3,1,1,2022,2417678.0,Município
+44,3,2,1,2022,958539.0,Município
+45,3,3,1,2022,3486.49,Município
+46,3,4,1,2022,2.5,Município
+47,3,5,1,2022,49.99,Município
+48,3,6,1,2022,83.03,Município
+49,3,7,2,2022,3160.73,Município
+50,3,8,2,2022,1230.0,Município
+51,3,9,2,2022,48.6,Município
+52,3,10,1,2022,96.63,Município
+53,3,12,1,2022,99.13,Município
+54,3,13,1,2022,94.86,Município
+55,3,14,1,2022,57.26,Município
+56,3,15,1,2022,1.51,Município
+57,3,16,3,2022,98.22,Município
+58,3,17,3,2022,97.87,Município
+59,3,18,3,2022,56.87,Município
+60,3,19,3,2022,34.51,Município
+61,3,22,7,2022,44.69,Município
+62,3,23,7,2022,5.9,Município
+63,3,24,7,2022,38.62,Município
+64,2,11,5,2021,0.289,Estadual (UF - PNAD Contínua / IPEA)
+65,2,11,5,2022,0.255,Estadual (UF - PNAD Contínua / IPEA)
+66,3,11,5,2010,0.369,Municipal / RM Salvador (Atlas IVS Censo)
+67,3,11,5,2022,0.278,Municipal / RM Salvador (Série Metropolitana IPEA)
+68,6,11,5,2010,0.442,UDH Intramunicipal (Atlas IVS - Faixa Alta Vulnerabilidade)
+69,7,11,5,2010,0.398,UDH Intramunicipal (Atlas IVS - Faixa Média/Alta Vulnerabilidade)
+70,2,20,6,2018,7039.93,Estadual (UF - Bahia)
+71,2,21,6,2018,20.35,Estadual (UF - Bahia)
+72,2,20,6,2019,7341.87,Estadual (UF - Bahia)
+73,2,21,6,2019,19.52,Estadual (UF - Bahia)
+74,2,20,6,2020,7463.54,Estadual (UF - Bahia)
+75,2,21,6,2020,26.26,Estadual (UF - Bahia)
+76,2,20,6,2021,7632.08,Estadual (UF - Bahia)
+77,2,21,6,2021,28.2,Estadual (UF - Bahia)
+78,2,20,6,2022,7555.35,Estadual (UF - Bahia)
+79,2,21,6,2022,28.22,Estadual (UF - Bahia)
+80,2,20,6,2023,7939.19,Estadual (UF - Bahia)
+81,2,21,6,2023,31.63,Estadual (UF - Bahia)
+82,2,20,6,2024,8162.02,Estadual (UF - Bahia)
+83,2,21,6,2024,29.44,Estadual (UF - Bahia)
+84,2,20,6,2025,8048.81,Estadual (UF - Bahia)
+85,2,21,6,2025,32.78,Estadual (UF - Bahia)
