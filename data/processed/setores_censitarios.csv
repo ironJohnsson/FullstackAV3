@@ -1,0 +1,173 @@
+﻿cd_setor,cd_bairro,nm_bairro,cd_tipo,tipologia_label,area_km2,populacao,domicilios_totais,domicilios_ocupados,media_moradores,densidade_hab_km2,renda_media_resp,renda_mediana_resp,baixa_renda_1_5sm,ievs_setor
+292740805220178,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02236,607,270,226,2.7,27143.0,1247.47,1200.0,True,82.49
+292740805220188,2927408117,Pernambués,0,Setor Urbano Regular,0.01042,366,191,154,2.4,35128.5,2914.24,2000.0,False,47.85
+292740805220189,2927408117,Pernambués,0,Setor Urbano Regular,0.02139,677,340,271,2.5,31652.7,3062.51,2300.0,False,45.11
+292740805220190,2927408117,Pernambués,0,Setor Urbano Regular,0.00885,332,175,151,2.2,37519.2,2290.58,1700.0,False,54.68
+292740805220193,2927408117,Pernambués,0,Setor Urbano Regular,0.04404,453,228,186,2.4,10285.0,3013.67,2100.0,False,31.7
+292740805220195,2927408117,Pernambués,0,Setor Urbano Regular,0.21335,1468,746,572,2.6,6880.8,4704.15,4000.0,False,19.73
+292740805220201,2927408117,Pernambués,0,Setor Urbano Regular,0.05657,639,273,233,2.7,11296.3,3218.11,2424.0,False,33.35
+292740805220202,2927408117,Pernambués,0,Setor Urbano Regular,0.05602,614,277,225,2.7,10960.1,3035.5,2221.0,False,35.43
+292740805220204,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.03028,797,401,320,2.5,26317.7,1569.74,1212.0,True,75.57
+292740805220206,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01544,590,331,255,2.3,38217.9,1275.45,1212.0,True,82.06
+292740805220208,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.04966,377,237,170,2.2,7591.6,1310.26,1212.0,True,63.98
+292740805220209,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01411,589,312,231,2.5,41739.0,1240.94,1212.0,True,84.89
+292740805220210,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.07587,469,239,182,2.6,6181.8,2056.26,1500.0,False,58.61
+292740805220211,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.04646,724,359,273,2.7,15582.8,1703.31,1300.0,True,69.86
+292740805220212,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01483,666,365,266,2.5,44912.9,1379.69,1212.0,True,83.15
+292740805220213,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01232,448,220,172,2.6,36352.7,1689.36,1212.0,True,80.48
+292740805220215,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01526,597,339,258,2.3,39126.0,1316.1,1212.0,True,81.55
+292740805220217,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.0075,396,210,150,2.6,52777.5,1451.52,1206.0,True,83.46
+292740805220218,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01874,751,383,282,2.7,40065.7,1403.0,1212.0,True,85.26
+292740805220220,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01252,578,294,231,2.5,46174.6,1263.62,1212.0,True,84.6
+292740805220221,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01501,732,348,259,2.8,48774.6,1527.29,1216.0,True,84.91
+292740805220222,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01769,318,163,162,2.0,17977.1,1249.87,1212.0,True,68.56
+292740805220223,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.04001,738,375,314,2.4,18446.2,1289.43,1212.0,True,73.15
+292740805220224,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01028,327,190,140,2.3,31818.6,1569.62,1200.0,True,76.47
+292740805220227,2927408117,Pernambués,0,Setor Urbano Regular,0.02072,451,211,181,2.5,21761.6,4815.18,3800.0,False,27.46
+292740805220232,2927408117,Pernambués,0,Setor Urbano Regular,0.02589,522,240,201,2.6,20162.6,3475.63,2900.0,False,34.25
+292740805220242,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02268,591,305,234,2.5,26053.3,1369.63,1212.0,True,77.91
+292740805220243,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01623,486,247,181,2.7,29948.4,1315.75,1212.0,True,83.32
+292740805220244,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02127,656,314,271,2.4,30844.2,1276.29,1212.0,True,80.75
+292740805220251,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02488,885,402,367,2.4,35576.6,1363.98,1212.0,True,82.15
+292740805220252,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01416,644,273,242,2.7,45469.6,1133.41,1212.0,True,88.63
+292740805220253,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02277,656,379,286,2.3,28808.2,1767.19,1200.0,True,72.2
+292740805220254,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02245,486,314,270,1.8,21650.6,1336.6,1200.0,True,67.28
+292740805220255,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02235,484,252,182,2.7,21652.2,1447.91,1200.0,True,76.69
+292740805220256,2927408018,Beiru / Tancredo Neves,7,Setor Urbano Regular,0.09356,6,10,3,2.0,64.1,0.0,0.0,False,38.44
+292740805220258,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.0177,476,252,188,2.5,26893.3,1656.09,1212.0,True,74.83
+292740805220259,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02454,677,367,277,2.4,27589.6,1273.28,1212.0,True,78.84
+292740805220260,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.03362,657,330,262,2.5,19544.4,1398.55,1212.0,True,73.64
+292740805220279,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01725,320,295,125,2.6,18547.5,1067.54,1200.0,True,78.38
+292740805220280,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00659,255,151,96,2.7,38670.3,1613.08,1212.0,True,82.64
+292740805220281,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02486,711,379,319,2.2,28601.3,1127.91,1200.0,True,78.86
+292740805220282,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02416,650,313,253,2.6,26900.1,1504.1,1212.0,True,77.94
+292740805220283,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.00728,151,112,58,2.6,20728.9,1144.44,1200.0,True,78.73
+292740805220290,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01131,666,374,286,2.3,58888.5,1415.86,1212.0,True,80.3
+292740805220291,2927408117,Pernambués,0,Setor Urbano Regular,0.01671,328,192,150,2.2,19625.0,3708.54,3000.0,False,26.22
+292740805220306,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.03333,733,375,282,2.6,21989.0,1494.2,1200.0,True,75.12
+292740805220307,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.03748,723,374,305,2.4,19288.3,1441.32,1212.0,True,71.76
+292740805220308,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01935,751,347,310,2.4,38818.8,1336.02,1212.0,True,82.5
+292740805220309,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02314,705,397,328,2.1,30463.0,1462.88,1200.0,True,74.59
+292740805220315,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.04999,1030,559,420,2.5,20602.6,1219.79,1212.0,True,76.51
+292740805220320,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00815,251,191,132,1.9,30786.6,1194.94,1212.0,True,75.74
+292740805220321,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.03009,731,427,350,2.1,24297.2,1387.84,1212.0,True,71.83
+292740805220322,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.03321,652,365,263,2.5,19632.5,1537.38,1300.0,True,71.96
+292740805220323,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01684,540,279,205,2.6,32075.1,1310.89,1212.0,True,83.46
+292740805220324,2927408018,Beiru / Tancredo Neves,0,Setor Urbano Regular,0.02196,536,287,226,2.4,24410.3,2648.64,2001.0,False,44.74
+292740805220325,2927408018,Beiru / Tancredo Neves,0,Setor Urbano Regular,0.01635,661,305,261,2.5,40418.2,3021.23,2500.0,False,50.89
+292740805220326,2927408018,Beiru / Tancredo Neves,0,Setor Urbano Regular,0.01534,532,240,211,2.5,34682.2,3091.5,2600.0,False,46.57
+292740805220327,2927408018,Beiru / Tancredo Neves,0,Setor Urbano Regular,0.01257,322,144,126,2.6,25616.1,3737.15,3000.0,False,34.26
+292740805220328,2927408018,Beiru / Tancredo Neves,0,Setor Urbano Regular,0.01828,544,274,209,2.6,29757.8,2737.63,2000.0,False,49.23
+292740805220383,2927408117,Pernambués,0,Setor Urbano Regular,0.01682,422,216,179,2.4,25086.5,4779.02,3750.0,False,28.25
+292740805220384,2927408117,Pernambués,0,Setor Urbano Regular,0.00976,525,264,219,2.4,53801.5,4470.13,3500.0,False,40.2
+292740805220389,2927408117,Pernambués,0,Setor Urbano Regular,0.08062,748,381,313,2.4,9278.5,3038.72,2000.0,False,30.78
+292740805220392,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01789,518,321,254,2.0,28958.1,1294.65,1200.0,True,74.59
+292740805220393,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01741,709,392,298,2.4,40726.3,1276.4,1212.0,True,83.25
+292740805220394,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.0147,622,383,250,2.5,42321.6,1447.7,1212.0,True,82.3
+292740805220395,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.03451,799,467,324,2.5,23152.0,1337.34,1212.0,True,76.57
+292740805220397,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00807,358,216,159,2.3,44372.3,1385.74,1212.0,True,80.68
+292740805220398,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01226,505,288,209,2.4,41195.9,1587.04,1212.0,True,79.36
+292740805220400,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01615,841,464,350,2.4,52079.8,1337.58,1212.0,True,82.48
+292740805220401,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.0411,339,192,150,2.3,8247.2,1735.96,1300.0,True,60.25
+292740805220402,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01057,442,254,184,2.4,41832.7,1207.99,1212.0,True,84.1
+292740805220404,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01214,460,242,205,2.2,37906.6,1373.82,1212.0,True,79.63
+292740805220405,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.02207,718,332,313,2.3,32539.3,1278.12,1212.0,True,80.55
+292740805220406,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00934,372,183,168,2.2,39820.6,1541.27,1212.0,True,77.53
+292740805220407,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01897,717,322,286,2.5,37798.9,1841.2,1300.0,False,77.39
+292740805220408,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01892,434,290,173,2.5,22937.8,1531.29,1212.0,True,74.02
+292740805220409,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01785,511,302,222,2.3,28627.9,1457.02,1212.0,True,75.96
+292740805220410,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.0486,514,285,205,2.5,10576.3,1669.39,1212.0,True,64.88
+292740805220411,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01649,354,168,165,2.1,21466.9,1158.07,1212.0,True,73.0
+292740805220412,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.02328,448,231,173,2.6,19243.8,1052.24,1212.0,True,78.99
+292740805220413,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01269,485,276,211,2.3,38207.0,1270.13,1212.0,True,82.12
+292740805220414,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.013,597,314,225,2.7,45912.5,1500.68,1212.0,True,84.04
+292740805220416,2927408117,Pernambués,0,Setor Urbano Regular,0.0528,876,453,380,2.3,16590.3,2182.2,1700.0,False,44.68
+292740805220418,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.00993,274,189,109,2.5,27600.7,1311.09,1212.0,True,79.57
+292740805220419,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01567,458,281,178,2.6,29236.8,1240.86,1200.0,True,82.63
+292740805220423,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01948,516,256,223,2.3,26482.6,1196.68,1212.0,True,77.93
+292740805220424,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02213,708,367,281,2.5,31995.5,1344.45,1212.0,True,81.79
+292740805220425,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.03015,433,281,165,2.6,14361.3,1217.7,1212.0,True,74.0
+292740805220426,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.027,862,406,338,2.6,31931.6,1491.33,1200.0,True,81.12
+292740805220427,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.03082,832,401,335,2.5,26995.9,1563.7,1200.0,True,76.05
+292740805220428,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01252,470,265,189,2.5,37535.4,1472.62,1212.0,True,81.99
+292740805220429,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01753,575,316,229,2.5,32794.6,1284.46,1212.0,True,83.02
+292740805220430,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02438,765,385,302,2.5,31382.8,1550.33,1200.0,True,78.85
+292740805220431,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01924,588,318,227,2.6,30557.5,1453.33,1212.0,True,80.77
+292740805220436,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01317,432,193,183,2.3,32792.4,1587.15,1212.0,True,76.84
+292740805220437,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01496,600,290,253,2.4,40107.5,1139.63,1212.0,True,84.95
+292740805220438,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01422,727,415,318,2.3,51131.3,1384.26,1212.0,True,80.7
+292740805220441,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.03034,612,333,245,2.5,20169.9,1306.76,1212.0,True,75.17
+292740805220455,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01322,341,149,145,2.4,25787.4,1116.97,1212.0,True,79.71
+292740805220457,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01842,547,254,214,2.6,29693.9,1257.47,1212.0,True,82.7
+292740805220459,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01619,383,258,174,2.2,23658.9,1355.25,1212.0,True,73.05
+292740805220460,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02144,744,343,278,2.7,34699.6,1319.74,1212.0,True,86.12
+292740805220518,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00638,293,169,132,2.2,45957.9,1496.21,1212.0,True,78.1
+292740805220519,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.0081,409,199,168,2.4,50523.8,1328.2,1212.0,True,82.6
+292740805220520,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01014,590,284,254,2.3,58183.1,1360.06,1212.0,True,81.0
+292740805220521,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01458,479,280,187,2.6,32847.1,1630.38,1212.0,True,79.93
+292740805220522,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01324,401,208,168,2.4,30286.6,1987.84,1212.0,False,71.52
+292740805220523,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01195,366,197,151,2.4,30624.3,1185.07,1001.0,True,81.76
+292740805220524,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.05976,388,182,159,2.4,6493.0,1504.92,1212.0,True,63.28
+292740805220525,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01669,329,163,163,2.0,19713.7,1203.68,1212.0,True,70.18
+292740805220533,2927408018,Beiru / Tancredo Neves,0,Setor Urbano Regular,0.01166,442,241,186,2.4,37909.3,3823.23,3000.0,False,38.16
+292740805220534,2927408018,Beiru / Tancredo Neves,0,Setor Urbano Regular,0.01672,344,176,149,2.3,20568.4,3172.68,2500.0,False,34.68
+292740805220538,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.0141,235,202,97,2.4,16669.7,1173.75,1200.0,True,73.53
+292740805220539,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02971,521,292,197,2.6,17535.2,1288.71,1200.0,True,75.01
+292740805220544,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01712,435,237,175,2.5,25415.1,1328.48,1212.0,True,78.04
+292740805220545,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02546,483,298,187,2.6,18972.2,1784.54,1212.0,True,69.68
+292740805220560,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01678,610,302,289,2.1,36349.6,1427.79,1212.0,True,77.75
+292740805220561,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01332,427,235,179,2.4,32056.6,1497.38,1250.0,True,78.72
+292740805220564,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.00925,360,186,144,2.5,38914.7,1409.65,1212.0,True,82.78
+292740805220578,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01367,547,251,217,2.5,40009.1,1260.26,1212.0,True,84.65
+292740805220579,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01433,341,199,129,2.6,23793.7,1024.51,1200.0,True,82.07
+292740805220582,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01242,566,295,224,2.5,45566.9,1549.37,1212.0,True,81.03
+292740805220593,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01357,353,166,127,2.8,26008.1,1173.23,1212.0,True,83.94
+292740805220595,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01066,368,203,154,2.4,34536.8,1336.05,1200.0,True,82.22
+292740805220682,2927408117,Pernambués,0,Setor Urbano Regular,0.06448,723,363,297,2.4,11213.5,5604.64,5000.0,False,19.93
+292740805220687,2927408117,Pernambués,0,Setor Urbano Regular,0.01261,780,272,245,3.2,61859.6,14614.0,12000.0,False,49.8
+292740805220688,2927408117,Pernambués,0,Setor Urbano Regular,0.38236,709,354,272,2.6,1854.3,3868.67,3000.0,False,18.35
+292740805220689,2927408117,Pernambués,0,Setor Urbano Regular,0.02925,1119,394,350,3.2,38255.8,11961.5,10000.0,False,45.75
+292740805220691,2927408117,Pernambués,0,Setor Urbano Regular,0.26061,121,68,59,2.1,464.3,1038.79,1212.0,True,46.89
+292740805220700,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01043,490,268,209,2.3,46983.0,1262.38,1212.0,True,82.22
+292740805220701,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00597,283,130,114,2.5,47411.6,1444.52,1213.5,True,82.34
+292740805220702,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.03987,358,221,168,2.1,8979.9,1536.43,1212.0,True,60.78
+292740805220704,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01064,318,204,141,2.3,29896.5,1277.49,1200.0,True,78.97
+292740805220705,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01097,333,219,171,1.9,30359.7,1553.44,1212.0,True,71.0
+292740805220706,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00996,329,170,129,2.6,33016.9,1279.55,1212.0,True,84.42
+292740805220707,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.0101,359,207,147,2.4,35558.3,1405.03,1212.0,True,81.64
+292740805220708,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00916,443,206,166,2.7,48373.0,1462.71,1250.0,True,84.52
+292740805220709,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00879,360,173,151,2.4,40958.0,1426.34,1212.0,True,81.37
+292740805220710,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.02273,582,267,240,2.4,25608.5,1464.12,1300.0,True,75.26
+292740805220711,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.0136,405,209,180,2.3,29778.1,1289.22,1212.0,True,78.75
+292740805220719,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.04337,886,382,335,2.6,20426.6,1262.93,1200.0,True,77.07
+292740805220723,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01332,345,157,129,2.7,25899.0,1313.12,1212.0,True,80.93
+292740805220724,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01474,533,271,205,2.6,36149.8,1290.9,1212.0,True,85.46
+292740805220725,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01712,428,211,158,2.6,25005.1,1290.56,1212.0,True,79.47
+292740805220726,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01602,411,197,152,2.7,25653.0,1224.69,1212.0,True,81.88
+292740805220728,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.04219,1086,551,417,2.6,25739.6,1341.92,1212.0,True,79.27
+292740805220731,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.00939,260,118,102,2.5,27676.1,1341.39,1200.0,True,79.24
+292740805220739,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02269,477,226,187,2.6,21018.4,1465.31,1200.0,True,74.89
+292740805220740,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02323,546,283,218,2.5,23505.9,36672.29,1212.0,False,43.5
+292740805220755,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.02691,199,132,74,2.7,7394.6,1409.86,1300.0,True,68.61
+292740805220757,2927408117,Pernambués,0,Setor Urbano Regular,0.03345,519,268,206,2.5,15517.7,3101.11,2500.0,False,34.95
+292740805220758,2927408117,Pernambués,0,Setor Urbano Regular,0.05308,732,360,300,2.4,13790.7,3914.38,2600.0,False,22.54
+292740805220761,2927408117,Pernambués,0,Setor Urbano Regular,0.10427,868,389,326,2.7,8324.5,3554.08,2000.0,False,27.37
+292740805220762,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.09596,1269,620,524,2.4,13224.4,1674.5,1212.0,True,65.2
+292740805220763,2927408117,Pernambués,0,Setor Urbano Regular,0.05745,620,334,251,2.5,10791.2,2076.21,1300.0,False,44.92
+292740805220764,2927408117,Pernambués,0,Setor Urbano Regular,0.03616,418,189,160,2.6,11560.8,2699.55,2000.0,False,38.79
+292740805220765,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.02774,749,358,297,2.5,26996.0,1239.05,1212.0,True,80.11
+292740805220766,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.02329,504,314,195,2.6,21642.7,1210.48,1212.0,True,78.45
+292740805220772,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.00978,227,99,92,2.5,23210.4,1242.72,1212.0,True,77.79
+292740805220774,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.00758,382,217,145,2.6,50390.5,1538.51,1212.0,True,82.37
+292740805220775,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01049,475,279,194,2.4,45296.3,1279.01,1212.0,True,83.21
+292740805220776,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.00782,298,134,108,2.8,38105.5,1248.44,1200.0,True,88.39
+292740805220780,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.02561,547,279,224,2.4,21359.3,1121.07,1212.0,True,77.0
+292740805220786,2927408117,Pernambués,0,Setor Urbano Regular,0.02209,187,89,65,2.9,8466.3,3412.0,2600.0,False,31.63
+292740805220796,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01045,340,171,149,2.3,32533.7,1605.24,1212.0,True,76.45
+292740805220797,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.01699,553,290,250,2.2,32557.6,1533.74,1212.0,True,76.16
+292740805220805,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.01331,519,276,241,2.2,39007.3,1500.92,1212.0,True,78.04
+292740805220806,2927408117,Pernambués,0,Setor Urbano Regular,0.02799,43,27,23,1.9,1536.5,1796.2,1200.0,True,35.67
+292740805220811,2927408018,Beiru / Tancredo Neves,1,Favela e Comunidade Urbana (Setor Especial),0.08726,601,269,239,2.5,6887.8,1848.82,1214.0,False,60.42
+292740805220812,2927408018,Beiru / Tancredo Neves,0,Setor Urbano Regular,0.02499,44,29,19,2.3,1760.4,2017.05,2000.0,False,37.84
+292740805220813,2927408117,Pernambués,0,Setor Urbano Regular,0.05413,407,181,159,2.6,7519.3,2852.82,2000.0,False,34.45
+292740805220814,2927408117,Pernambués,1,Favela e Comunidade Urbana (Setor Especial),0.03074,518,280,263,2.0,16853.0,1577.27,1212.0,True,63.8
