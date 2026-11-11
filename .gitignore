@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+dist-ssr/
+*.local
+
+# Environment variables (NEVER commit privileged keys!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Python / ETL cache & large raw zips
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+etl/raw_cache/
+
+# IDE & OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
