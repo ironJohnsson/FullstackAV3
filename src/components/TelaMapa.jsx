@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
-import { Layers, MapPin, Compass, Eye, Sparkles, Info } from 'lucide-react';
+import { Layers, MapPin, Compass, Eye } from 'lucide-react';
 import { formatNumber, formatCurrency } from '../utils/formatters';
 
 function MapViewportController({ center, zoom }) {
@@ -55,10 +55,10 @@ const THEMATIC_LAYERS = [
   },
   {
     id: 'tipologia',
-    label: 'Tipologia Censitária (Favela e Comunidade Urbana vs Regular)',
+    label: 'Tipologia Censitária (Favela e Comunidade Urbana vs. Regular)',
     unit: '',
     description:
-      'Classificação operacional do setor censitário no Censo 2022 (CD_TIPO = 1: Favela e Comunidade Urbana / Aglomerado Subnormal vs CD_TIPO = 0: Regular).',
+      'Classificação operacional do setor censitário no Censo 2022 (CD_TIPO = 1: Favela e Comunidade Urbana / Aglomerado Subnormal vs. CD_TIPO = 0: Regular).',
     legend: [
       { color: '#e11d48', label: 'CD_TIPO = 1: Favela e Comunidade Urbana (FCU)' },
       { color: '#0284c7', label: 'CD_TIPO = 0: Setor Urbano Regular' },
@@ -96,9 +96,9 @@ function getSectorColor(props, theme) {
 }
 
 export default function TelaMapa({ data }) {
-  const [granularity, setGranularity] = useState('setores_com_bairros'); // 'setores_com_bairros' | 'bairros'
+  const [granularity, setGranularity] = useState('setores_com_bairros');
   const [theme, setTheme] = useState('ievs');
-  const [focusArea, setFocusArea] = useState('BOTH'); // 'BOTH' | '2927408018' | '2927408117'
+  const [focusArea, setFocusArea] = useState('BOTH');
   const [selectedFeature, setSelectedFeature] = useState(null);
 
   const activeLayerMeta = THEMATIC_LAYERS.find((l) => l.id === theme) || THEMATIC_LAYERS[0];
@@ -118,7 +118,6 @@ export default function TelaMapa({ data }) {
     return { type: 'FeatureCollection', features: feats };
   }, [data.geojsonSetores, focusArea]);
 
-  // Estatísticas agregadas dos 172 setores censitários para exibição no topo
   const sectorStats = useMemo(() => {
     const feats = filteredSetoresGeo.features.map((f) => f.properties);
     const total = feats.length;
@@ -143,16 +142,16 @@ export default function TelaMapa({ data }) {
     if (granularity === 'setores_com_bairros') {
       return {
         fillColor: isFoco ? 'transparent' : '#1e293b',
-        weight: isFoco ? 3 : 1,
+        weight: isFoco ? 2.5 : 1,
         opacity: 1,
         color: p.cd_bairro === '2927408018' ? '#fb7185' : p.cd_bairro === '2927408117' ? '#38bdf8' : '#475569',
         dashArray: isFoco ? '' : '4 4',
-        fillOpacity: isFoco ? 0.02 : 0.22,
+        fillOpacity: isFoco ? 0.02 : 0.2,
       };
     }
     return {
       fillColor: isFoco ? getSectorColor(p, theme) : '#334155',
-      weight: isFoco ? 3 : 1.2,
+      weight: isFoco ? 2.5 : 1.2,
       opacity: 1,
       color: isFoco ? '#f8fafc' : '#64748b',
       fillOpacity: isFoco ? 0.72 : 0.35,
@@ -164,9 +163,9 @@ export default function TelaMapa({ data }) {
     const isSelected = selectedFeature?.cd_setor && selectedFeature.cd_setor === p.cd_setor;
     return {
       fillColor: getSectorColor(p, theme),
-      weight: isSelected ? 2.8 : 1.1,
+      weight: isSelected ? 2.6 : 0.9,
       opacity: 1,
-      color: isSelected ? '#ffffff' : 'rgba(15, 23, 42, 0.75)',
+      color: isSelected ? '#ffffff' : 'rgba(15, 23, 42, 0.72)',
       fillOpacity: isSelected ? 0.9 : 0.74,
     };
   }
@@ -236,12 +235,11 @@ export default function TelaMapa({ data }) {
 
   return (
     <div className="screen-container">
-      {/* Painel de Controles Cartográficos */}
       <div className="control-panel-card">
         <div className="control-panel-header">
           <div>
             <span className="section-eyebrow">
-              TELA 3 — MAPA TEMÁTICO DE VULNERABILIDADE (MALHA OFICIAL IBGE CENSO 2022)
+              Tela 03 · Mapa Temático de Vulnerabilidade (Malha Oficial IBGE Censo 2022)
             </span>
             <h2 className="section-title">
               Cartografia de Limites de Bairros e 172 Setores Censitários (Beiru/Tancredo Neves e Pernambués)
@@ -252,7 +250,7 @@ export default function TelaMapa({ data }) {
         <div className="map-controls-grid">
           <div className="map-control-box">
             <label className="control-label">
-              <Layers size={15} /> Camada Temática (Coroplético):
+              <Layers size={14} /> Camada Temática (Coroplético)
             </label>
             <select className="select-input" value={theme} onChange={(e) => setTheme(e.target.value)}>
               {THEMATIC_LAYERS.map((l) => (
@@ -265,7 +263,7 @@ export default function TelaMapa({ data }) {
 
           <div className="map-control-box">
             <label className="control-label">
-              <Eye size={15} /> Nível de Granularidade Geográfica:
+              <Eye size={14} /> Granularidade Geográfica
             </label>
             <select
               className="select-input"
@@ -283,7 +281,7 @@ export default function TelaMapa({ data }) {
 
           <div className="map-control-box">
             <label className="control-label">
-              <Compass size={15} /> Enquadramento / Zoom Territorial:
+              <Compass size={14} /> Enquadramento / Zoom Territorial
             </label>
             <div className="btn-group-inline">
               <button
@@ -291,14 +289,14 @@ export default function TelaMapa({ data }) {
                 className={`territory-pill ${focusArea === 'BOTH' ? 'active' : ''}`}
                 onClick={() => setFocusArea('BOTH')}
               >
-                Visão Geral (Ambos)
+                Ambos (172 set.)
               </button>
               <button
                 type="button"
                 className={`territory-pill ${focusArea === '2927408018' ? 'active' : ''}`}
                 onClick={() => setFocusArea('2927408018')}
               >
-                Beiru / Tancredo Neves (72 set.)
+                Beiru (72 set.)
               </button>
               <button
                 type="button"
@@ -312,21 +310,19 @@ export default function TelaMapa({ data }) {
         </div>
       </div>
 
-      {/* Layout Principal do Mapa + Painel Lateral de Inspeção e Legenda */}
       <div className="map-workspace-grid">
         <div className="map-canvas-card">
           <MapContainer
             center={viewport.center}
             zoom={viewport.zoom}
-            style={{ height: '580px', width: '100%', borderRadius: '12px' }}
+            style={{ height: '560px', width: '100%', borderRadius: '10px' }}
           >
             <MapViewportController center={viewport.center} zoom={viewport.zoom} />
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Malha Oficial: IBGE Censo Demográfico 2022'
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Malha Oficial: IBGE Censo Demográfico 2022'
               url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             />
 
-            {/* Camada de Bairros Oficiais */}
             {data.geojsonBairros && (
               <GeoJSON
                 key={`bairros-${granularity}-${theme}`}
@@ -336,7 +332,6 @@ export default function TelaMapa({ data }) {
               />
             )}
 
-            {/* Camada de 172 Setores Censitários (quando ativa) */}
             {granularity === 'setores_com_bairros' && filteredSetoresGeo && (
               <GeoJSON
                 key={`setores-${focusArea}-${theme}-${selectedFeature?.cd_setor || 'none'}`}
@@ -347,7 +342,6 @@ export default function TelaMapa({ data }) {
             )}
           </MapContainer>
 
-          {/* Barra de Legenda Dinâmica */}
           <div className="map-legend-bar">
             <div className="legend-title">
               <strong>Legenda ({activeLayerMeta.label}):</strong>
@@ -376,22 +370,21 @@ export default function TelaMapa({ data }) {
           </div>
         </div>
 
-        {/* Painel Lateral de Inspeção Espacial */}
         <div className="map-sidebar-card">
           <div className="sidebar-section">
-            <span className="section-eyebrow">SÍNTESE DOS SETORES CENSITÁRIOS EXIBIDOS</span>
-            <h3 style={{ margin: '4px 0 10px', fontSize: '1.05rem' }}>
+            <span className="section-eyebrow">Síntese dos Setores Exibidos</span>
+            <h3 style={{ margin: '4px 0 10px', fontSize: '1rem', fontWeight: 700 }}>
               {sectorStats.total} Setores Censitários (IBGE 2022)
             </h3>
             <div className="mini-stat-grid">
               <div className="mini-stat-box">
-                <span className="mini-stat-val" style={{ color: '#fb7185' }}>
+                <span className="mini-stat-val" style={{ color: 'var(--accent-rose)' }}>
                   {sectorStats.fcuCount} ({formatNumber(sectorStats.fcuPct, 1)}%)
                 </span>
                 <span className="mini-stat-lbl">Setores em Favelas e Comunidades Urbanas (CD_TIPO = 1)</span>
               </div>
               <div className="mini-stat-box">
-                <span className="mini-stat-val" style={{ color: '#fbbf24' }}>
+                <span className="mini-stat-val" style={{ color: 'var(--accent-amber)' }}>
                   {sectorStats.lowIncomeCount} ({formatNumber(sectorStats.lowIncomePct, 1)}%)
                 </span>
                 <span className="mini-stat-lbl">Setores com Renda Média ≤ 1,5 SM (R$ 1.818)</span>
@@ -400,7 +393,7 @@ export default function TelaMapa({ data }) {
 
             <div className="fcu-tags-box">
               <span className="fcu-tags-title">
-                Comunidades Urbanas (FCUs) mapeadas pelo IBGE dentro destes setores:
+                Comunidades Urbanas (FCUs) mapeadas pelo IBGE nestes setores:
               </span>
               <div className="fcu-tags-list">
                 {sectorStats.fcuNames.map((name) => (
@@ -414,9 +407,8 @@ export default function TelaMapa({ data }) {
 
           <hr className="sidebar-divider" />
 
-          {/* Ficha da Feição Selecionada */}
           <div className="sidebar-section">
-            <span className="section-eyebrow">INSPEÇÃO DE FEIÇÃO (CLIQUE NO MAPA)</span>
+            <span className="section-eyebrow">Inspeção de Feição (Clique no Mapa)</span>
             {selectedFeature ? (
               <div className="feature-inspector">
                 <h4>
@@ -427,7 +419,7 @@ export default function TelaMapa({ data }) {
                 <p className="inspector-sub">
                   {selectedFeature.type === 'SETOR'
                     ? `${selectedFeature.nm_bairro} — ${selectedFeature.tipologia_label}`
-                    : `Código IBGE: ${selectedFeature.cd_bairro} | Subdistrito: ${selectedFeature.nm_subdist}`}
+                    : `Código IBGE: ${selectedFeature.cd_bairro} · Subdistrito: ${selectedFeature.nm_subdist}`}
                 </p>
 
                 <div className="inspector-rows">
@@ -456,7 +448,7 @@ export default function TelaMapa({ data }) {
                     <>
                       <div className="insp-row">
                         <span>Renda Média Resp. (V06004):</span>
-                        <strong style={{ color: '#fbbf24' }}>
+                        <strong style={{ color: 'var(--accent-amber)' }}>
                           {formatCurrency(
                             selectedFeature.renda_media_resp ?? selectedFeature.RENDA_MEDIA_RESP
                           )}
@@ -476,7 +468,7 @@ export default function TelaMapa({ data }) {
                     selectedFeature.IEVS_EXPLORATORIO !== undefined) && (
                     <div className="insp-row highlight-row">
                       <span>IEVS Exploratório:</span>
-                      <strong style={{ color: '#fb7185' }}>
+                      <strong style={{ color: 'var(--accent-rose)' }}>
                         {formatNumber(
                           selectedFeature.ievs_setor ?? selectedFeature.IEVS_EXPLORATORIO,
                           2
@@ -495,7 +487,7 @@ export default function TelaMapa({ data }) {
               </div>
             ) : (
               <div className="empty-inspector">
-                <MapPin size={28} style={{ color: '#38bdf8', marginBottom: 8 }} />
+                <MapPin size={24} style={{ color: 'var(--accent-blue)', marginBottom: 8 }} />
                 <p>
                   Clique em qualquer um dos <strong>172 Setores Censitários</strong> ou nos polígonos de{' '}
                   <strong>Bairro</strong> no mapa ao lado para inspecionar seus dados oficiais do Censo 2022.
