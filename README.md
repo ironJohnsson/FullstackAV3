@@ -18,16 +18,16 @@ Aplicação web analítica fullstack para investigação multiescalar da vulnera
 | **Domicílios Particulares Ocupados (`DOM_OCUP`)** | `Dado observado` | **15.454 DPPO** | **21.561 DPPO** | 958.539 DPPO |
 | **Renda Média do Responsável (`RENDA_MEDIA_RESP`)** | `Dado observado` | **R$ 2.035,87** | **R$ 2.316,25** | R$ 3.160,73 |
 | **Renda Mediana do Responsável (`RENDA_MEDIANA_RESP`)** | `Dado observado` | **R$ 1.212,00** | **R$ 1.212,00** | R$ 1.230,00 |
-| **Setores Censitários Baixa Renda (≤ 1,5 SM)** | `Indicador derivado` | **68,06%** (49/72) | **56,00%** (56/100) | 41,20% |
+| **Setores Censitários Baixa Renda (≤ 1,5 SM)** | `Indicador derivado` | **85,92%** (61/71 válidos) | **72,00%** (72/100) | 48,60% |
 | **Taxa de Alfabetização 15+ anos (`TAXA_ALFABETIZACAO`)** | `Indicador derivado` | **95,04%** | **96,76%** | 96,63% |
 | **População Negra (`PROP_NEGROS`)** | `Indicador derivado` | **91,42%** | **86,54%** | 83,03% |
 | **Coleta Direta de Lixo Porta a Porta (`LIXO_COLETA_DIRETA`)** | `Indicador derivado` | **29,19%** | **40,83%** | 57,26% |
-| **Iluminação Pública no Entorno (`ENTORNO_ILUMINACAO`)** | `Indicador derivado` | **96,51%** (539 sem) | **98,51%** (321 sem) | 97,91% |
+| **Iluminação Pública no Entorno (`ENTORNO_ILUMINACAO`)** | `Indicador derivado` | **96,51%** (528 sem) | **98,51%** (320 sem) | 98,22% |
 | **Vias com Calçada (`ENTORNO_CALCADA`)** | `Indicador derivado` | **39,46%** | **38,57%** | 56,87% |
 | **Vias Arborizadas (`ENTORNO_ARBORIZACAO`)** | `Indicador derivado` | **24,48%** (74,4% sem) | **34,02%** (65,1% sem) | 34,51% |
-| **IEVS — Índice Exploratório Socioenergético** | `Proxy/estimativa` | **58,15 / 100** | **48,26 / 100** | 41,70 / 100 |
+| **IEVS — Índice Exploratório Socioenergético** | `Proxy/estimativa` | **66,17 / 100** | **52,98 / 100** | 38,62 / 100 |
 
-> **Nota Metodológica sobre Escalas:** Dados estaduais da **EPE** (Consumo Residencial na Bahia = `7.555,35 GWh` em 2022 e `8.310,45 GWh` em 2025; Consumidores na Tarifa Social Baixa Renda = `28,22%` em 2022 e `32,78%` em 2025) e do **IPEA/IVS** (Bahia, Salvador e UDHs) são armazenados e visualizados estritamente em suas escalas geográficas reais (`uf`, `municipio`, `udh`), **nunca sendo replicados artificialmente como dados nativos de bairro**.
+> **Nota Metodológica sobre Escalas:** Dados estaduais da **EPE** (Consumo Residencial na Bahia = `7.555,35 GWh` em 2022 e `8.048,81 GWh` em 2025; Consumidores na Tarifa Social Baixa Renda = `28,22%` em 2022 e `32,78%` em 2025) e do **IPEA/IVS** (Bahia, Salvador e UDHs) são armazenados e visualizados estritamente em suas escalas geográficas reais (`uf`, `municipio`, `udh`), **nunca sendo replicados artificialmente como dados nativos de bairro**.
 
 ---
 
@@ -94,14 +94,14 @@ FullstackAV3/
    - Filtro por dimensão (`Demografia`, `Renda & Trabalho`, `Capital Humano`, `Infraestrutura & Entorno`, `Energia & Síntese`) e busca textual.
    - Gráficos comparativos lado a lado (Infraestrutura de Rede vs. Gargalos de Entorno, Destino do Lixo, Distribuição de Setores Censitários de Baixa Renda) e tabela auditável com diferença percentual automática.
 3. **Tela 3 — Mapa e Contexto Territorial (`TelaMapa.jsx`):**
-   - Mapa interativo **Leaflet** com alternância entre a **Malha Oficial de Bairros (`CD2022`)** e a **Malha de 172 Setores Censitários (`72` em Beiru + `100` em Pernambués)**.
-   - Colorização coroplética dinâmica por **Renda Média do Responsável (`V06004`)**, **Densidade Demográfica (`hab/km²`)**, **Média de Moradores (`V01009`)** ou **População do Setor (`v0001`)**, com popups e painel lateral de inspeção.
+   - Mapa interativo **Leaflet** com alternância entre a **Malha de 172 Setores Censitários (`72` em Beiru + `100` em Pernambués)** e a **Malha Oficial de Bairros (`CD2022`)**, com sincronização automática ao tema claro/escuro.
+   - Colorização coroplética dinâmica por **Índice Exploratório Socioenergético (IEVS 0–100)**, **Renda Média do Responsável (`V06004`)** ou **Densidade Demográfica (`hab/km²`)**, com popups e painel lateral de inspeção.
 4. **Tela 4 — Energia (EPE Bahia) & Simulador IEVS (`TelaEnergiaIEVS.jsx`):**
    - Gráfico combinado (Barras + Linha) da evolução do consumo residencial na Bahia (2018–2025) e gráfico de área da expansão da **Tarifa Social Baixa Renda (TSEE)** de `20,35%` (2018) para `32,78%` (2025).
-   - **Simulador Interativo do IEVS (Desafio Adicional):** Controles deslizantes (*sliders*) para ajustar em tempo real os pesos de *Renda*, *Infraestrutura*, *Capital Humano* e *Densidade*, recalculando instantaneamente o score e a decomposição para Beiru, Pernambués e Salvador.
+   - **Simulador Interativo do IEVS (Desafio Adicional):** Controles deslizantes (*sliders*) para ajustar em tempo real os pesos de *Renda (40%)*, *Habitação & Saneamento (30%)* e *Urbana & Térmica (30%)*, recalculando instantaneamente o score e a matriz de sensibilidade para Beiru, Pernambués e Salvador.
 5. **Tela 5 — Metodologia, Catálogo & Desafio Analítico (`TelaMetodologiaAnalise.jsx`):**
    - Respostas completas e fundamentadas às **8 questões do Desafio Analítico Obrigatório** + Matriz de Priorização (3 ações por bairro + 4 soluções de inovação).
-   - Catálogo interativo dos **24 indicadores** com fórmulas e limitações + Explorador do modelo relacional PostgreSQL/Supabase (`schema.sql`, `seed.sql` e `queries.sql`) com botão de cópia rápida.
+   - Catálogo interativo dos **24 indicadores** com fórmulas, arquivos-fonte e limitações + Explorador do modelo relacional PostgreSQL/Supabase (`schema.sql`, `seed.sql` e `queries.sql`) com botão de cópia rápida.
 
 ---
 
