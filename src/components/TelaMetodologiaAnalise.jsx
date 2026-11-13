@@ -330,6 +330,14 @@ export default function TelaMetodologiaAnalise({ data }) {
                 <BookOpen size={14} />
                 <span>Contextualização IPEA · Escalas do IVS ({ipeaObs.length})</span>
               </button>
+              <button
+                type="button"
+                className={`module-tab-btn ${activeFonteModule === 'arquivos' ? 'active' : ''}`}
+                onClick={() => setActiveFonteModule('arquivos')}
+              >
+                <Database size={14} />
+                <span>Arquivos-Fonte & Artefatos do Pipeline (9)</span>
+              </button>
             </div>
           </div>
 
@@ -451,6 +459,55 @@ export default function TelaMetodologiaAnalise({ data }) {
                         </tr>
                       );
                     })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {activeFonteModule === 'arquivos' && (
+            <div className="table-section-card">
+              <div className="table-header-bar">
+                <div>
+                  <span className="section-eyebrow">Rastreabilidade Completa · Bases Brutas, ETL & Persistência</span>
+                  <h3>Arquivos Oficiais Ingeridos e Artefatos Técnicos do Projeto</h3>
+                </div>
+              </div>
+              <p className="chart-description" style={{ marginBottom: 14 }}>
+                Relação auditável dos arquivos originais baixados das fontes oficiais (IBGE, EPE e IPEA) e dos
+                artefatos de processamento Python, banco PostgreSQL/Supabase e relatório analítico do repositório.
+              </p>
+              <div className="responsive-table-wrap">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Categoria</th>
+                      <th>Arquivo / Conjunto Oficial</th>
+                      <th>Instituição / Origem</th>
+                      <th>Escala / Conteúdo</th>
+                      <th>Data Ref. / Acesso</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ['IBGE Tabular', 'Agregados_por_bairros_basico_BR.zip & Agregados_por_bairros_domicilios_*.zip', 'IBGE Censo 2022', 'Bairro e Município (DPPO, água, esgoto, lixo)', '2022 / 2026-11-11'],
+                      ['IBGE Demografia/Raça', 'Agregados_por_bairros_demografia_BR.zip, alfabetizacao_BR.zip, cor_raca_BR.zip', 'IBGE Censo 2022', 'Bairro e Município (faixa etária, alfabetização, raça/cor)', '2022 / 2026-11-11'],
+                      ['IBGE Rendimento', 'Agregados_por_bairros_renda_responsavel_BR.zip & setores_renda_responsavel_BR.zip', 'IBGE Censo 2022', 'Bairro e 172 Setores Censitários (V06004, V06006)', '2022 / 2026-11-11'],
+                      ['IBGE Entorno Urbano', 'Agregados_por_bairros_caracteristicas_urbanisticas_entorno_BR.zip', 'IBGE Censo 2022', 'Bairro e Município (iluminação, arborização, calçada, rampa)', '2022 / 2026-11-11'],
+                      ['Malhas Cartográficas', 'BA_bairros_CD2022.zip & BA_setores_CD2022.zip (Shapefiles CD2022)', 'IBGE Malha Digital', 'Poligonais oficiais de bairros e 172 setores em GeoJSON', '2022 / 2026-11-11'],
+                      ['Energia Elétrica', 'Dados brutos.xlsx (epe_dados_brutos.xlsx — Consumo e Consumidores)', 'EPE Anuário Estatístico', 'Série 2018–2025 estritamente na escala UF (Bahia)', '2018–2025 / 2026-11-11'],
+                      ['Vulnerabilidade Social', 'Atlas da Vulnerabilidade Social (tabelas UF, RM Salvador e UDHs)', 'IPEA / FJP / PNUD', 'Escalado por UF (PNAD 2022) e UDH (malha Censo 2010)', '2010–2022 / 2026-11-11'],
+                      ['Pipeline & Banco', 'etl/run_etl.py · supabase/schema.sql · supabase/seed.sql · observatorio_bundle.json', 'Observatório SENAI CIMATEC', 'ETL auditável, DDL relacional, 85 observações e GeoJSON', '2026-11-11'],
+                      ['Relatório Analítico', 'docs/RELATORIO_COMPARATIVO_ANALITICO.md & docs/CATALOGO_INDICADORES.md', 'Observatório SENAI CIMATEC', 'Síntese das 8 questões, limitações e metodologia IEVS', '2026-11-11'],
+                    ].map(([cat, arq, inst, esc, dt], i) => (
+                      <tr key={i}>
+                        <td><span className="meta-tag">{cat}</span></td>
+                        <td><code>{arq}</code></td>
+                        <td><strong style={{ color: 'var(--accent-blue)' }}>{inst}</strong></td>
+                        <td>{esc}</td>
+                        <td>{dt}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>

@@ -31,16 +31,20 @@ import {
   getClassificacaoBadgeStyle,
   getDimensaoColor,
 } from '../utils/formatters';
+import { getChartTheme } from '../utils/chartTheme';
 
-export default function TelaComparativo({ data }) {
+export default function TelaComparativo({ data, theme = 'dark' }) {
   const [activeModule, setActiveModule] = useState('disparidades_radar'); // 'disparidades_radar' | 'renda_residuos' | 'tabela_delta'
   const [showStripNotes, setShowStripNotes] = useState(false);
   const [dimFilter, setDimFilter] = useState('ALL');
   const [classFilter, setClassFilter] = useState('ALL');
+  const ct = getChartTheme(theme);
 
   const beiru = data.perfisTerritoriais['2927408018'];
   const pern = data.perfisTerritoriais['2927408117'];
   const ssa = data.perfisTerritoriais['2927408'];
+  const ievsDiff = (beiru.IEVS_EXPLORATORIO || 0) - (pern.IEVS_EXPLORATORIO || 0);
+  const ievsDiffPct = pern.IEVS_EXPLORATORIO ? (ievsDiff / pern.IEVS_EXPLORATORIO) * 100 : 0;
 
   const comparativeRows = useMemo(() => {
     const obsByKey = {};
@@ -321,14 +325,18 @@ export default function TelaComparativo({ data }) {
           >
             <span className="comp-strip-label">Vulnerabilidade Socioenergética (IEVS Base)</span>
             <div className="comp-strip-values">
-              <span className="val-beiru">Beiru: 58,15 / 100</span>
+              <span className="val-beiru">Beiru: {formatNumber(beiru.IEVS_EXPLORATORIO, 2)} / 100</span>
               <span className="vs-badge">VS</span>
-              <span className="val-pern">Pernambués: 48,26 / 100</span>
+              <span className="val-pern">Pernambués: {formatNumber(pern.IEVS_EXPLORATORIO, 2)} / 100</span>
             </div>
             {showStripNotes && (
               <p className="comp-strip-note">
-                Beiru apresenta <strong>+9,89 pontos (+20,5%)</strong> de vulnerabilidade sintética, puxado pelo déficit de
-                arborização (74,4% sem árvores) e menor coleta direta (29,2%).
+                Beiru apresenta{' '}
+                <strong>
+                  +{formatNumber(ievsDiff, 2)} pontos (+{formatNumber(ievsDiffPct, 1)}%)
+                </strong>{' '}
+                de vulnerabilidade sintética, puxado pelo déficit de arborização (74,4% sem árvores), menor coleta direta
+                (29,2%) e concentração de setores de baixa renda (85,9%).
               </p>
             )}
           </div>
@@ -388,18 +396,12 @@ export default function TelaComparativo({ data }) {
                   layout="vertical"
                   margin={{ top: 6, right: 20, left: 42, bottom: 6 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" horizontal={false} />
-                  <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" tick={{ fontSize: 11.5 }} />
-                  <YAxis type="category" dataKey="metrica" stroke="#94a3b8" width={158} tick={{ fontSize: 11.5 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} horizontal={false} />
+                  <XAxis type="number" domain={[0, 100]} stroke={ct.axisStroke} unit="%" tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
+                  <YAxis type="category" dataKey="metrica" stroke={ct.axisStroke} width={158} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <Tooltip
                     formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
-                    contentStyle={{
-                      backgroundColor: '#0f172a',
-                      borderColor: '#334155',
-                      borderRadius: '8px',
-                      color: '#f8fafc',
-                      fontSize: '12px',
-                    }}
+                    contentStyle={ct.tooltipStyle}
                   />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[0, 4, 4, 0]} />
@@ -420,9 +422,9 @@ export default function TelaComparativo({ data }) {
             <div className="chart-wrapper" style={{ height: 330, marginTop: 10 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="72%" data={radarData}>
-                  <PolarGrid stroke="rgba(148,163,184,0.22)" />
-                  <PolarAngleAxis dataKey="dimensao" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                  <PolarGrid stroke={ct.polarStroke} />
+                  <PolarAngleAxis dataKey="dimensao" tick={{ fill: ct.tickFill, fontSize: 11 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: ct.tickFill, fontSize: 10 }} />
                   <Radar
                     name="Beiru / Tancredo Neves"
                     dataKey="Beiru / Tancredo Neves"
@@ -447,13 +449,7 @@ export default function TelaComparativo({ data }) {
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Tooltip
                     formatter={(val) => [`${formatNumber(val, 2)} pts`, '']}
-                    contentStyle={{
-                      backgroundColor: '#0f172a',
-                      borderColor: '#334155',
-                      borderRadius: '8px',
-                      color: '#f8fafc',
-                      fontSize: '12px',
-                    }}
+                    contentStyle={ct.tooltipStyle}
                   />
                 </RadarChart>
               </ResponsiveContainer>
@@ -479,18 +475,12 @@ export default function TelaComparativo({ data }) {
             <div className="chart-wrapper" style={{ height: 285 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={incomeChartData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                  <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
-                  <YAxis stroke="#94a3b8" tickFormatter={(v) => `R$${v}`} tick={{ fontSize: 11.5 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} vertical={false} />
+                  <XAxis dataKey="territorio" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
+                  <YAxis stroke={ct.axisStroke} tickFormatter={(v) => `R$${v}`} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <Tooltip
                     formatter={(val) => [formatCurrency(val), '']}
-                    contentStyle={{
-                      backgroundColor: '#0f172a',
-                      borderColor: '#334155',
-                      borderRadius: '8px',
-                      color: '#f8fafc',
-                      fontSize: '12px',
-                    }}
+                    contentStyle={ct.tooltipStyle}
                   />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="Rendimento Médio (V06004)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
@@ -514,18 +504,12 @@ export default function TelaComparativo({ data }) {
             <div className="chart-wrapper" style={{ height: 285 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={garbageChartData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                  <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
-                  <YAxis stroke="#94a3b8" unit="%" domain={[0, 100]} tick={{ fontSize: 11.5 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} vertical={false} />
+                  <XAxis dataKey="territorio" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
+                  <YAxis stroke={ct.axisStroke} unit="%" domain={[0, 100]} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <Tooltip
                     formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
-                    contentStyle={{
-                      backgroundColor: '#0f172a',
-                      borderColor: '#334155',
-                      borderRadius: '8px',
-                      color: '#f8fafc',
-                      fontSize: '12px',
-                    }}
+                    contentStyle={ct.tooltipStyle}
                   />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="Coleta Direta Porta a Porta" stackId="a" fill="#10b981" />
