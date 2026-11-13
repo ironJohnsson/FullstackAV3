@@ -22,6 +22,12 @@ import {
   MapPin,
   Info,
   Filter,
+  LayoutGrid,
+  BarChart3,
+  Table2,
+  ChevronDown,
+  ChevronUp,
+  Eye,
 } from 'lucide-react';
 import {
   formatNumber,
@@ -35,17 +41,20 @@ import { queryObservacoesDetalhadas } from '../services/observatorioService';
 const TERRITORY_OPTIONS = [
   {
     code: '2927408018',
-    shortLabel: 'Beiru / Tancredo Neves (38.329 hab.)',
+    shortLabel: 'Beiru / Tancredo Neves',
+    popLabel: '38.329 hab.',
     label: 'Beiru / Tancredo Neves (Bairro Oficial - IBGE 2927408018)',
   },
   {
     code: '2927408117',
-    shortLabel: 'Pernambués (52.564 hab.)',
+    shortLabel: 'Pernambués',
+    popLabel: '52.564 hab.',
     label: 'Pernambués (Bairro Oficial - IBGE 2927408117)',
   },
   {
     code: '2927408',
-    shortLabel: 'Salvador — Referência (2,42 mi hab.)',
+    shortLabel: 'Salvador (Ref.)',
+    popLabel: '2,42 mi hab.',
     label: 'Salvador (Referência Municipal - IBGE 2927408)',
   },
 ];
@@ -53,6 +62,12 @@ const TERRITORY_OPTIONS = [
 const RACE_COLORS = ['#0ea5e9', '#6366f1', '#94a3b8'];
 
 export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro }) {
+  const [activeModule, setActiveModule] = useState('kpis'); // 'kpis' | 'graficos' | 'tabela'
+  const [activeChartTab, setActiveChartTab] = useState('infra'); // 'infra' | 'demografia' | 'ambos'
+  const [showGeoNote, setShowGeoNote] = useState(false);
+  const [expandedCards, setExpandedCards] = useState({});
+  const [expandAllCards, setExpandAllCards] = useState(false);
+
   const [dimFilter, setDimFilter] = useState('ALL');
   const [classFilter, setClassFilter] = useState('ALL');
   const [fonteFilter, setFonteFilter] = useState('ALL');
@@ -218,19 +233,29 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
     },
   ];
 
+  function toggleCardDetail(idx) {
+    setExpandedCards((prev) => ({
+      ...prev,
+      [idx]: !(expandAllCards ? true : !!prev[idx]),
+    }));
+    if (expandAllCards) {
+      setExpandAllCards(false);
+    }
+  }
+
   return (
     <div className="screen-container">
-      {/* Barra de Seleção Territorial e Nota de Equivalência Geográfica */}
+      {/* Painel Superior Enxuto: Seletor de Território + Botão de Nota Geográfica */}
       <div className="control-panel-card">
         <div className="control-panel-header">
           <div>
-            <span className="section-eyebrow">Tela 01 · Visão Geral do Território</span>
+            <span className="section-eyebrow">Visão Geral · {perfil.nome}</span>
             <h2 className="section-title">
-              Caracterização Socioeconômica, Habitacional, Urbana e Socioenergética
+              Síntese Territorial ({activeCode === '2927408' ? 'Município de Salvador' : `Código IBGE ${activeCode}`})
             </h2>
           </div>
 
-          <div className="territory-selector-group">
+          <div className="territory-selector-group" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             <div className="QuickSwitchPills" role="group" aria-label="Seleção rápida de território">
               {TERRITORY_OPTIONS.map((opt) => (
                 <button
@@ -240,302 +265,464 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                   onClick={() => setSelectedBairro(opt.code)}
                 >
                   <MapPin size={13} style={{ marginRight: 5, verticalAlign: '-2px' }} />
-                  {opt.shortLabel}
+                  {opt.shortLabel} <span style={{ opacity: 0.72, fontWeight: 400 }}>({opt.popLabel})</span>
                 </button>
               ))}
             </div>
+
+            <button
+              type="button"
+              className={`action-toggle-btn ${showGeoNote ? 'active' : ''}`}
+              onClick={() => setShowGeoNote((v) => !v)}
+              title="Abrir ou fechar nota de equivalência geográfica entre Bairro Oficial e FCU"
+            >
+              <Info size={14} />
+              <span>Nota Geográfica (Beiru / FCU)</span>
+              {showGeoNote ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+            </button>
           </div>
         </div>
 
-        <div className="methodology-banner">
-          <Info size={17} className="banner-icon" />
-          <div>
-            <strong>Equivalência Geográfica e Escala Oficial (IBGE Censo 2022):</strong> Na malha oficial de Bairros de Salvador (Lei Municipal nº 9.278/2017), o território é denominado oficialmente{' '}
-            <code>Beiru / Tancredo Neves</code> (código IBGE <code>2927408018</code>, com <strong>38.329 moradores</strong> e <strong>1,64 km²</strong>) e{' '}
-            <code>Pernambués</code> (código IBGE <code>2927408117</code>, com <strong>52.564 moradores</strong> e <strong>3,21 km²</strong>). Já no recorte específico de{' '}
-            <em>Favelas e Comunidades Urbanas (FCU)</em> do Censo 2022, a FCU Beiru/Tancredo Neves possui <strong>38.871 moradores</strong> (1ª maior da Bahia e 10ª do Brasil) e a FCU Pernambués possui{' '}
-            <strong>35.110 moradores</strong> (2ª da Bahia e 11ª do Brasil, correspondendo a 66,8% da população do bairro oficial).
-          </div>
-        </div>
-      </div>
-
-      {/* Grid de 6 KPI Cards Principais */}
-      <div className="kpi-grid">
-        {kpiCards.map((card, idx) => {
-          const IconComp = card.icon;
-          const badge = getClassificacaoBadgeStyle(card.classification);
-          return (
-            <div key={idx} className="kpi-card">
-              <div className="kpi-card-top">
-                <div className="kpi-title-wrap">
-                  <span className="kpi-accent-dot" style={{ background: card.accent }} />
-                  <span className="kpi-title">{card.title}</span>
-                </div>
-                <span
-                  className="classification-pill"
-                  style={{
-                    background: badge.bg,
-                    borderColor: badge.border,
-                    color: badge.text,
-                  }}
-                >
-                  {badge.short}
-                </span>
-              </div>
-
-              <div className="kpi-main-value">
-                <span className="kpi-number">{card.value}</span>
-                <span className="kpi-unit">{card.unit}</span>
-              </div>
-
-              <p className="kpi-subtitle">{card.subtitle}</p>
-
-              <div className="kpi-meta-footer">
-                <div className="kpi-meta-inline">
-                  <span>{card.source}</span>
-                  <span>·</span>
-                  <span>{card.scale}</span>
-                  <span>·</span>
-                  <span>Ref: {card.year}</span>
-                </div>
-                <span
-                  className="kpi-icon-badge"
-                  style={{ background: `${card.accent}18`, color: card.accent }}
-                >
-                  <IconComp size={15} />
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Gráficos de Caracterização do Território */}
-      <div className="charts-two-col">
-        <div className="chart-card">
-          <div className="chart-card-header">
+        {showGeoNote && (
+          <div className="methodology-banner">
+            <Info size={17} className="banner-icon" />
             <div>
-              <span className="chart-tag">IBGE · Censo 2022 (Domicílios e Entorno) · Ref: 2022</span>
-              <h3>Infraestrutura Habitacional e Condições Urbanas: {perfil.nome} vs. Salvador (%)</h3>
+              <strong>Equivalência Geográfica e Escala Oficial (IBGE Censo 2022):</strong> Na malha oficial de Bairros de Salvador (Lei Municipal nº 9.278/2017), o território é denominado oficialmente{' '}
+              <code>Beiru / Tancredo Neves</code> (código IBGE <code>2927408018</code>, com <strong>38.329 moradores</strong> e <strong>1,64 km²</strong>) e{' '}
+              <code>Pernambués</code> (código IBGE <code>2927408117</code>, com <strong>52.564 moradores</strong> e <strong>3,21 km²</strong>). Já no recorte específico de{' '}
+              <em>Favelas e Comunidades Urbanas (FCU)</em> do Censo 2022, a FCU Beiru/Tancredo Neves possui <strong>38.871 moradores</strong> (1ª maior da Bahia e 10ª do Brasil) e a FCU Pernambués possui{' '}
+              <strong>35.110 moradores</strong> (2ª da Bahia e 11ª do Brasil, correspondendo a 66,8% da população do bairro oficial).
             </div>
           </div>
-          <p className="chart-description">
-            Embora o acesso físico à água e iluminação pública supere 96%, observa-se forte déficit em{' '}
-            <strong>coleta de lixo direta porta a porta</strong> ({formatNumber(perfil.COLETA_LIXO_DIRETA, 1)}%),{' '}
-            <strong>presença de calçadas</strong> ({formatNumber(perfil.ENTORNO_CALCADA, 1)}%),{' '}
-            <strong>arborização viária</strong> ({formatNumber(perfil.ENTORNO_ARBORIZACAO, 1)}%) e{' '}
-            <strong>acessibilidade por rampa</strong> ({formatNumber(perfil.ENTORNO_RAMPA_CADEIRANTE, 2)}%).
-          </p>
-          <div className="chart-wrapper" style={{ height: 310 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={infraChartData}
-                layout="vertical"
-                margin={{ top: 6, right: 20, left: 32, bottom: 6 }}
+        )}
+      </div>
+
+      {/* Barra Modular: Escolha qual bloco deseja visualizar por vez */}
+      <div className="module-switcher-bar">
+        <div className="module-tabs-group" role="tablist" aria-label="Módulos da Visão Geral">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeModule === 'kpis'}
+            className={`module-tab-btn ${activeModule === 'kpis' ? 'active' : ''}`}
+            onClick={() => setActiveModule('kpis')}
+          >
+            <LayoutGrid size={14} />
+            <span>1. Indicadores-Chave (6 KPIs)</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeModule === 'graficos'}
+            className={`module-tab-btn ${activeModule === 'graficos' ? 'active' : ''}`}
+            onClick={() => setActiveModule('graficos')}
+          >
+            <BarChart3 size={14} />
+            <span>2. Gráficos do Território</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeModule === 'tabela'}
+            className={`module-tab-btn ${activeModule === 'tabela' ? 'active' : ''}`}
+            onClick={() => setActiveModule('tabela')}
+          >
+            <Table2 size={14} />
+            <span>3. Tabela Completa ({filteredObs.length} Indicadores)</span>
+          </button>
+        </div>
+
+        {activeModule === 'kpis' && (
+          <button
+            type="button"
+            className={`action-toggle-btn ${expandAllCards ? 'active' : ''}`}
+            onClick={() => {
+              const next = !expandAllCards;
+              setExpandAllCards(next);
+              const map = {};
+              kpiCards.forEach((_, i) => {
+                map[i] = next;
+              });
+              setExpandedCards(map);
+            }}
+          >
+            <Eye size={13} />
+            <span>{expandAllCards ? 'Recolher Metadados dos Cards' : 'Expandir Fontes e Detalhes'}</span>
+          </button>
+        )}
+
+        {activeModule === 'graficos' && (
+          <div className="module-tabs-group">
+            <button
+              type="button"
+              className={`module-tab-btn ${activeChartTab === 'infra' ? 'active' : ''}`}
+              onClick={() => setActiveChartTab('infra')}
+            >
+              Infraestrutura & Entorno
+            </button>
+            <button
+              type="button"
+              className={`module-tab-btn ${activeChartTab === 'demografia' ? 'active' : ''}`}
+              onClick={() => setActiveChartTab('demografia')}
+            >
+              Demografia & Perfil Racial
+            </button>
+            <button
+              type="button"
+              className={`module-tab-btn ${activeChartTab === 'ambos' ? 'active' : ''}`}
+              onClick={() => setActiveChartTab('ambos')}
+            >
+              Lado a Lado
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* MÓDULO 1: 6 KPI CARDS LIMPÍSSIMOS COM DETALHES EXPANSÍVEIS AO CLICAR */}
+      {activeModule === 'kpis' && (
+        <>
+          <div className="kpi-grid">
+            {kpiCards.map((card, idx) => {
+              const IconComp = card.icon;
+              const badge = getClassificacaoBadgeStyle(card.classification);
+              const isOpen = expandAllCards || !!expandedCards[idx];
+              return (
+                <div
+                  key={idx}
+                  className="kpi-card"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => toggleCardDetail(idx)}
+                  title="Clique para abrir ou recolher detalhes metodológicos e fonte"
+                >
+                  <div className="kpi-card-top">
+                    <div className="kpi-title-wrap">
+                      <span className="kpi-accent-dot" style={{ background: card.accent }} />
+                      <span className="kpi-title">{card.title}</span>
+                    </div>
+                    <span
+                      className="classification-pill"
+                      style={{
+                        background: badge.bg,
+                        borderColor: badge.border,
+                        color: badge.text,
+                      }}
+                    >
+                      {badge.short}
+                    </span>
+                  </div>
+
+                  <div className="kpi-main-value">
+                    <span className="kpi-number">{card.value}</span>
+                    <span className="kpi-unit">{card.unit}</span>
+                  </div>
+
+                  {isOpen ? (
+                    <>
+                      <p className="kpi-subtitle">{card.subtitle}</p>
+                      <div className="kpi-meta-footer">
+                        <div className="kpi-meta-inline">
+                          <span>{card.source}</span>
+                          <span>·</span>
+                          <span>{card.scale}</span>
+                          <span>·</span>
+                          <span>Ref: {card.year}</span>
+                        </div>
+                        <span
+                          className="kpi-icon-badge"
+                          style={{ background: `${card.accent}18`, color: card.accent }}
+                        >
+                          <IconComp size={15} />
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="kpi-meta-footer" style={{ paddingTop: 6, marginTop: 4 }}>
+                      <span style={{ fontSize: '0.73rem', color: 'var(--accent-blue)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <ChevronDown size={13} /> Ver detalhes e fonte oficial
+                      </span>
+                      <span
+                        className="kpi-icon-badge"
+                        style={{ background: `${card.accent}18`, color: card.accent }}
+                      >
+                        <IconComp size={15} />
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 10,
+              padding: '10px 14px',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-md)',
+            }}
+          >
+            <span style={{ fontSize: '0.79rem', color: 'var(--text-secondary)' }}>
+              Dica: clique em qualquer card acima para detalhar sua fórmula/fonte ou navegue para os módulos analíticos:
+            </span>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                type="button"
+                className="action-toggle-btn"
+                onClick={() => setActiveModule('graficos')}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" horizontal={false} />
-                <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" tick={{ fontSize: 11.5 }} />
-                <YAxis type="category" dataKey="indicador" stroke="#94a3b8" width={132} tick={{ fontSize: 11.5 }} />
-                <Tooltip
-                  formatter={(value) => [`${formatNumber(value, 2)}%`, '']}
-                  contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
-                    borderRadius: '8px',
-                    color: '#f8fafc',
-                    fontSize: '12px',
-                  }}
-                />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey={perfil.nome} fill="#38bdf8" radius={[0, 4, 4, 0]} barSize={13} />
-                <Bar dataKey="Salvador" fill="#64748b" radius={[0, 4, 4, 0]} barSize={13} />
-              </BarChart>
-            </ResponsiveContainer>
+                <BarChart3 size={14} /> Abrir Gráficos do Território
+              </button>
+              <button
+                type="button"
+                className="action-toggle-btn"
+                onClick={() => setActiveModule('tabela')}
+              >
+                <Table2 size={14} /> Abrir Tabela Completa ({filteredObs.length})
+              </button>
+            </div>
           </div>
-        </div>
+        </>
+      )}
 
-        <div className="chart-card">
-          <div className="chart-card-header">
-            <div>
-              <span className="chart-tag">IBGE · Censo 2022 (Demografia e Cor/Raça) · Ref: 2022</span>
-              <h3>Composição Etária Comparada e Perfil Racial de {perfil.nome}</h3>
-            </div>
-          </div>
-          <p className="chart-description">
-            Em <strong>{perfil.nome}</strong>, a população negra (preta + parda) representa{' '}
-            <strong>{formatNumber(perfil.PERC_POP_NEGRA, 2)}%</strong> dos residentes (sendo{' '}
-            {formatNumber(perfil.PERC_POP_PRETA, 2)}% pretos e {formatNumber(perfil.PERC_POP_PARDA, 2)}% pardos), e a
-            razão de dependência etária é de <strong>{formatNumber(perfil.RAZAO_DEPENDENCIA_ETARIA, 2)}%</strong>.
-          </p>
-          <div className="dual-mini-charts">
-            <div style={{ flex: 1.25, height: 255 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={ageChartData} margin={{ top: 10, right: 10, left: -8, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                  <XAxis dataKey="faixa" stroke="#94a3b8" tick={{ fontSize: 11 }} />
-                  <YAxis stroke="#94a3b8" unit="%" tick={{ fontSize: 11 }} />
-                  <Tooltip
-                    formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
-                    contentStyle={{
-                      backgroundColor: '#0f172a',
-                      borderColor: '#334155',
-                      borderRadius: '8px',
-                      color: '#f8fafc',
-                      fontSize: '12px',
-                    }}
-                  />
-                  <Legend wrapperStyle={{ fontSize: 11 }} />
-                  <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Pernambués" fill="#38bdf8" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Salvador" fill="#64748b" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div style={{ flex: 0.9, height: 255, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                Autodeclaração Racial ({perfil.nome})
-              </span>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={racePieData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={44}
-                    outerRadius={72}
-                    paddingAngle={3}
-                    label={({ name, value }) => `${name}: ${value}%`}
+      {/* MÓDULO 2: GRÁFICOS DO TERRITÓRIO (EXIBIDOS INDIVIDUALMENTE OU LADO A LADO) */}
+      {activeModule === 'graficos' && (
+        <div className={activeChartTab === 'ambos' ? 'charts-two-col' : 'screen-container'}>
+          {(activeChartTab === 'infra' || activeChartTab === 'ambos') && (
+            <div className="chart-card">
+              <div className="chart-card-header">
+                <div>
+                  <span className="chart-tag">IBGE · Censo 2022 (Domicílios e Entorno) · Ref: 2022</span>
+                  <h3>Infraestrutura Habitacional e Condições Urbanas: {perfil.nome} vs. Salvador (%)</h3>
+                </div>
+              </div>
+              <p className="chart-description">
+                Embora o acesso físico à água e iluminação pública supere 96%, observa-se forte déficit em{' '}
+                <strong>coleta de lixo direta porta a porta</strong> ({formatNumber(perfil.COLETA_LIXO_DIRETA, 1)}%),{' '}
+                <strong>presença de calçadas</strong> ({formatNumber(perfil.ENTORNO_CALCADA, 1)}%),{' '}
+                <strong>arborização viária</strong> ({formatNumber(perfil.ENTORNO_ARBORIZACAO, 1)}%) e{' '}
+                <strong>acessibilidade por rampa</strong> ({formatNumber(perfil.ENTORNO_RAMPA_CADEIRANTE, 2)}%).
+              </p>
+              <div className="chart-wrapper" style={{ height: 320 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={infraChartData}
+                    layout="vertical"
+                    margin={{ top: 6, right: 20, left: 32, bottom: 6 }}
                   >
-                    {racePieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={RACE_COLORS[index % RACE_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(val) => [`${formatNumber(val, 2)}%`, 'Participação']}
-                    contentStyle={{
-                      backgroundColor: '#0f172a',
-                      borderColor: '#334155',
-                      borderRadius: '8px',
-                      color: '#f8fafc',
-                      fontSize: '12px',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" horizontal={false} />
+                    <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" tick={{ fontSize: 11.5 }} />
+                    <YAxis type="category" dataKey="indicador" stroke="#94a3b8" width={132} tick={{ fontSize: 11.5 }} />
+                    <Tooltip
+                      formatter={(value) => [`${formatNumber(value, 2)}%`, '']}
+                      contentStyle={{
+                        backgroundColor: '#0f172a',
+                        borderColor: '#334155',
+                        borderRadius: '8px',
+                        color: '#f8fafc',
+                        fontSize: '12px',
+                      }}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Bar dataKey={perfil.nome} fill="#38bdf8" radius={[0, 4, 4, 0]} barSize={14} />
+                    <Bar dataKey="Salvador" fill="#64748b" radius={[0, 4, 4, 0]} barSize={14} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          )}
 
-      {/* Catálogo Relacional de Observações do Território Selecionado */}
-      <div className="table-section-card">
-        <div className="table-header-bar">
-          <div>
-            <span className="section-eyebrow">Consulta Relacional · Tabela observacoes JOIN indicadores JOIN fontes</span>
-            <h3>Todos os Indicadores de {perfil.nome} (Ano de Referência: 2022)</h3>
-          </div>
-          <div className="filter-controls-row">
-            <div className="filter-item">
-              <Filter size={14} />
-              <select value={dimFilter} onChange={(e) => setDimFilter(e.target.value)} className="select-input">
-                <option value="ALL">Todas as Dimensões (7)</option>
-                <option value="Demográfica">Demográfica</option>
-                <option value="Econômica">Econômica</option>
-                <option value="Social">Social</option>
-                <option value="Habitacional">Habitacional</option>
-                <option value="Urbana">Urbana</option>
-                <option value="Socioenergética">Socioenergética</option>
-              </select>
+          {(activeChartTab === 'demografia' || activeChartTab === 'ambos') && (
+            <div className="chart-card">
+              <div className="chart-card-header">
+                <div>
+                  <span className="chart-tag">IBGE · Censo 2022 (Demografia e Cor/Raça) · Ref: 2022</span>
+                  <h3>Composição Etária Comparada e Perfil Racial de {perfil.nome}</h3>
+                </div>
+              </div>
+              <p className="chart-description">
+                Em <strong>{perfil.nome}</strong>, a população negra (preta + parda) representa{' '}
+                <strong>{formatNumber(perfil.PERC_POP_NEGRA, 2)}%</strong> dos residentes (sendo{' '}
+                {formatNumber(perfil.PERC_POP_PRETA, 2)}% pretos e {formatNumber(perfil.PERC_POP_PARDA, 2)}% pardos), e a
+                razão de dependência etária é de <strong>{formatNumber(perfil.RAZAO_DEPENDENCIA_ETARIA, 2)}%</strong>.
+              </p>
+              <div className="dual-mini-charts">
+                <div style={{ flex: 1.25, height: 270 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={ageChartData} margin={{ top: 10, right: 10, left: -8, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
+                      <XAxis dataKey="faixa" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+                      <YAxis stroke="#94a3b8" unit="%" tick={{ fontSize: 11 }} />
+                      <Tooltip
+                        formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
+                        contentStyle={{
+                          backgroundColor: '#0f172a',
+                          borderColor: '#334155',
+                          borderRadius: '8px',
+                          color: '#f8fafc',
+                          fontSize: '12px',
+                        }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: 11 }} />
+                      <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="Pernambués" fill="#38bdf8" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="Salvador" fill="#64748b" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <div style={{ flex: 0.9, height: 270, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                    Autodeclaração Racial ({perfil.nome})
+                  </span>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={racePieData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={44}
+                        outerRadius={72}
+                        paddingAngle={3}
+                        label={({ name, value }) => `${name}: ${value}%`}
+                      >
+                        {racePieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={RACE_COLORS[index % RACE_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(val) => [`${formatNumber(val, 2)}%`, 'Participação']}
+                        contentStyle={{
+                          backgroundColor: '#0f172a',
+                          borderColor: '#334155',
+                          borderRadius: '8px',
+                          color: '#f8fafc',
+                          fontSize: '12px',
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             </div>
-            <div className="filter-item">
-              <select value={classFilter} onChange={(e) => setClassFilter(e.target.value)} className="select-input">
-                <option value="ALL">Todas as Classificações</option>
-                <option value="Dado observado">Dado observado</option>
-                <option value="Indicador derivado">Indicador derivado</option>
-                <option value="Proxy/estimativa">Proxy/estimativa</option>
-              </select>
-            </div>
-            <div className="filter-item">
-              <select value={fonteFilter} onChange={(e) => setFonteFilter(e.target.value)} className="select-input">
-                <option value="ALL">Todas as Fontes</option>
-                <option value="IBGE">IBGE (Censo 2022)</option>
-                <option value="IPEA">IPEA (Atlas IVS)</option>
-                <option value="Observatório Socioenergético (SENAI CIMATEC)">Observatório (Derivados/IEVS)</option>
-              </select>
-            </div>
-          </div>
+          )}
         </div>
+      )}
 
-        <div className="responsive-table-wrap">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Dimensão</th>
-                <th>Indicador</th>
-                <th>Valor ({perfil.nome})</th>
-                <th>Ref. Salvador</th>
-                <th>Classificação Metodológica</th>
-                <th>Fonte Oficial / Variável</th>
-                <th>Escala & Ano</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredObs.map((row) => {
-                const badge = getClassificacaoBadgeStyle(row.indicador.classificacao);
-                const dimColor = getDimensaoColor(row.indicador.dimensao);
-                const ssaVal = ssa[row.indicador.codigo];
-                return (
-                  <tr key={row.id}>
-                    <td>
-                      <span
-                        className="dim-badge"
-                        style={{
-                          background: `${dimColor}16`,
-                          color: dimColor,
-                          border: `1px solid ${dimColor}38`,
-                        }}
-                      >
-                        {row.indicador.dimensao}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="td-main-title">{row.indicador.nome}</div>
-                      <div className="td-sub-code">Código: {row.indicador.codigo}</div>
-                    </td>
-                    <td className="td-numeric-highlight">
-                      {formatValueByUnit(row.valor, row.indicador.unidade)}
-                    </td>
-                    <td className="td-numeric-muted">
-                      {ssaVal !== undefined ? formatValueByUnit(ssaVal, row.indicador.unidade) : '—'}
-                    </td>
-                    <td>
-                      <span
-                        className="classification-pill"
-                        style={{
-                          background: badge.bg,
-                          borderColor: badge.border,
-                          color: badge.text,
-                        }}
-                      >
-                        {row.indicador.classificacao}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="td-main-title" style={{ fontSize: '0.78rem' }}>{row.fonte.instituicao}</div>
-                      <div className="td-sub-code">{row.indicador.variaveis_origem}</div>
-                    </td>
-                    <td>
-                      <span className="meta-tag">{row.escala_registro} · {row.ano}</span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      {/* MÓDULO 3: CATÁLOGO RELACIONAL DE OBSERVAÇÕES DO TERRITÓRIO SELECIONADO */}
+      {activeModule === 'tabela' && (
+        <div className="table-section-card">
+          <div className="table-header-bar">
+            <div>
+              <span className="section-eyebrow">Consulta Relacional · Tabela observacoes JOIN indicadores JOIN fontes</span>
+              <h3>Todos os Indicadores de {perfil.nome} (Ano de Referência: 2022)</h3>
+            </div>
+            <div className="filter-controls-row">
+              <div className="filter-item">
+                <Filter size={14} />
+                <select value={dimFilter} onChange={(e) => setDimFilter(e.target.value)} className="select-input">
+                  <option value="ALL">Todas as Dimensões (7)</option>
+                  <option value="Demográfica">Demográfica</option>
+                  <option value="Econômica">Econômica</option>
+                  <option value="Social">Social</option>
+                  <option value="Habitacional">Habitacional</option>
+                  <option value="Urbana">Urbana</option>
+                  <option value="Socioenergética">Socioenergética</option>
+                </select>
+              </div>
+              <div className="filter-item">
+                <select value={classFilter} onChange={(e) => setClassFilter(e.target.value)} className="select-input">
+                  <option value="ALL">Todas as Classificações</option>
+                  <option value="Dado observado">Dado observado</option>
+                  <option value="Indicador derivado">Indicador derivado</option>
+                  <option value="Proxy/estimativa">Proxy/estimativa</option>
+                </select>
+              </div>
+              <div className="filter-item">
+                <select value={fonteFilter} onChange={(e) => setFonteFilter(e.target.value)} className="select-input">
+                  <option value="ALL">Todas as Fontes</option>
+                  <option value="IBGE">IBGE (Censo 2022)</option>
+                  <option value="IPEA">IPEA (Atlas IVS)</option>
+                  <option value="Observatório Socioenergético (SENAI CIMATEC)">Observatório (Derivados/IEVS)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="responsive-table-wrap">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Dimensão</th>
+                  <th>Indicador</th>
+                  <th>Valor ({perfil.nome})</th>
+                  <th>Ref. Salvador</th>
+                  <th>Classificação Metodológica</th>
+                  <th>Fonte Oficial / Variável</th>
+                  <th>Escala & Ano</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredObs.map((row) => {
+                  const badge = getClassificacaoBadgeStyle(row.indicador.classificacao);
+                  const dimColor = getDimensaoColor(row.indicador.dimensao);
+                  const ssaVal = ssa[row.indicador.codigo];
+                  return (
+                    <tr key={row.id}>
+                      <td>
+                        <span
+                          className="dim-badge"
+                          style={{
+                            background: `${dimColor}16`,
+                            color: dimColor,
+                            border: `1px solid ${dimColor}38`,
+                          }}
+                        >
+                          {row.indicador.dimensao}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="td-main-title">{row.indicador.nome}</div>
+                        <div className="td-sub-code">Código: {row.indicador.codigo}</div>
+                      </td>
+                      <td className="td-numeric-highlight">
+                        {formatValueByUnit(row.valor, row.indicador.unidade)}
+                      </td>
+                      <td className="td-numeric-muted">
+                        {ssaVal !== undefined ? formatValueByUnit(ssaVal, row.indicador.unidade) : '—'}
+                      </td>
+                      <td>
+                        <span
+                          className="classification-pill"
+                          style={{
+                            background: badge.bg,
+                            borderColor: badge.border,
+                            color: badge.text,
+                          }}
+                        >
+                          {row.indicador.classificacao}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="td-main-title" style={{ fontSize: '0.78rem' }}>{row.fonte.instituicao}</div>
+                        <div className="td-sub-code">{row.indicador.variaveis_origem}</div>
+                      </td>
+                      <td>
+                        <span className="meta-tag">{row.escala_registro} · {row.ano}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
