@@ -9,6 +9,9 @@ import {
   Github,
   Sun,
   Moon,
+  Info,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { fetchObservatorioData } from './services/observatorioService';
 import TelaVisaoGeral from './components/TelaVisaoGeral';
@@ -23,35 +26,30 @@ const NAV_TABS = [
     id: 'visao_geral',
     step: '01',
     label: 'Visão Geral',
-    subtitle: 'População, Renda e Entorno',
     icon: LayoutDashboard,
   },
   {
     id: 'comparativo',
     step: '02',
-    label: 'Comparativo Territorial',
-    subtitle: 'Beiru vs. Pernambués',
+    label: 'Comparativo',
     icon: Scale,
   },
   {
     id: 'mapa',
     step: '03',
-    label: 'Mapa de Vulnerabilidade',
-    subtitle: 'Bairros e 172 Setores',
+    label: 'Mapa Territorial',
     icon: MapIcon,
   },
   {
     id: 'energia_ievs',
     step: '04',
-    label: 'Energia & Simulador IEVS',
-    subtitle: 'EPE Bahia (2018–25) e Pesos',
+    label: 'Energia & IEVS',
     icon: Zap,
   },
   {
     id: 'metodologia',
     step: '05',
     label: 'Metodologia & 8 Questões',
-    subtitle: 'Catálogo, Fontes e Análise',
     icon: BookOpen,
   },
 ];
@@ -62,6 +60,7 @@ export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showProjectInfo, setShowProjectInfo] = useState(false);
   const [theme, setTheme] = useState(() => {
     try {
       return localStorage.getItem('obs_ui_theme') || 'dark';
@@ -94,7 +93,7 @@ export default function App() {
     return (
       <div className="loading-screen">
         <div className="spinner" />
-        <h2>Carregando Observatório de Vulnerabilidade Socioenergética de Salvador</h2>
+        <h2>Carregando Observatório Socioenergético de Salvador</h2>
         <p>Integrando bases oficiais do IBGE (Censo 2022), IPEA (Atlas IVS) e EPE (Anuário Estatístico)</p>
       </div>
     );
@@ -106,33 +105,37 @@ export default function App() {
         <div className="header-inner">
           <div className="brand-block">
             <div className="brand-logo-icon">
-              <Zap size={20} />
+              <Zap size={18} />
             </div>
             <div className="brand-copy">
-              <div className="brand-eyebrow-row">
-                <span className="brand-eyebrow">SENAI CIMATEC · Desenvolvimento Fullstack · Prof. Celso Barreto · AV3</span>
-                <span className="brand-divider">·</span>
-                <span className="brand-sources-badge">Fontes Oficiais: IBGE, IPEA e EPE</span>
-              </div>
               <h1 className="brand-title">
-                Observatório de Vulnerabilidade Socioenergética de Salvador
+                Observatório Socioenergético de Salvador
               </h1>
-              <p className="brand-subtitle">
-                Recorte de Análise: <strong>Beiru / Tancredo Neves</strong> (<code>2927408018</code>) e{' '}
-                <strong>Pernambués</strong> (<code>2927408117</code>) · Contextualizados em Salvador e na Bahia
-              </p>
+              <span className="brand-subtitle-compact">
+                Beiru / Tancredo Neves e Pernambués · IBGE, IPEA e EPE
+              </span>
             </div>
           </div>
 
           <div className="header-status-actions">
             <button
               type="button"
+              className={`info-drawer-toggle ${showProjectInfo ? 'active' : ''}`}
+              onClick={() => setShowProjectInfo((v) => !v)}
+            >
+              <Info size={14} />
+              <span>Ficha do Projeto</span>
+              {showProjectInfo ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+
+            <button
+              type="button"
               className="theme-toggle-btn"
               onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
               title={theme === 'dark' ? 'Alternar para modo claro' : 'Alternar para modo escuro'}
             >
-              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-              <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+              <span>{theme === 'dark' ? 'Claro' : 'Escuro'}</span>
             </button>
 
             <button
@@ -144,11 +147,28 @@ export default function App() {
               title="Configurar ou testar conexão PostgreSQL / Supabase"
             >
               <span className="status-dot" />
-              <Database size={14} />
-              <span>{data.connectionStatus.label}</span>
+              <Database size={13} />
+              <span>Supabase Live</span>
             </button>
           </div>
         </div>
+
+        {/* Gaveta Expansível com Ficha Institucional do Projeto */}
+        {showProjectInfo && (
+          <div className="project-info-drawer">
+            <div className="project-info-drawer-inner">
+              <div>
+                <strong>Instituição:</strong> Centro Universitário SENAI CIMATEC · <strong>UC:</strong> Desenvolvimento Fullstack · <strong>Prof.:</strong> Celso Barreto (AV3)
+              </div>
+              <div>
+                <strong>Recortes Oficiais Investigados:</strong> Bairro <code>Beiru / Tancredo Neves</code> (IBGE <code>2927408018</code> · 38.329 hab.) e Bairro <code>Pernambués</code> (IBGE <code>2927408117</code> · 52.564 hab.), comparados a <code>Salvador</code> (<code>2927408</code>) e ao contexto energético estadual da <code>Bahia</code> (<code>UF 29</code>).
+              </div>
+              <div>
+                <strong>Conexão de Dados:</strong> {data.connectionStatus.label} ({data.connectionStatus.totalObservacoes} observações oficiais auditadas).
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="nav-bar-wrapper">
           <nav className="main-nav-tabs" aria-label="Navegação Principal das Telas do Observatório">
@@ -162,16 +182,9 @@ export default function App() {
                   className={`nav-tab-btn ${isActive ? 'active' : ''}`}
                   onClick={() => setActiveTab(tab.id)}
                 >
-                  <div className="nav-tab-icon-wrap">
-                    <IconComp size={16} className="nav-tab-icon" />
-                  </div>
-                  <div className="nav-tab-texts">
-                    <div className="nav-tab-title-row">
-                      <span className="nav-tab-step">{tab.step}</span>
-                      <span className="nav-tab-title">{tab.label}</span>
-                    </div>
-                    <span className="nav-tab-sub">{tab.subtitle}</span>
-                  </div>
+                  <IconComp size={15} className="nav-tab-icon" />
+                  <span className="nav-tab-step">{tab.step}.</span>
+                  <span className="nav-tab-title">{tab.label}</span>
                 </button>
               );
             })}
@@ -197,16 +210,16 @@ export default function App() {
       <footer className="app-footer">
         <div className="footer-inner">
           <div className="footer-brand">
-            <strong>Observatório de Vulnerabilidade Socioenergética de Salvador</strong>
+            <strong>Observatório Socioenergético de Salvador</strong>
             <span className="footer-sep">·</span>
-            <span>Projeto Integrador Fullstack (SENAI CIMATEC)</span>
+            <span>SENAI CIMATEC</span>
           </div>
           <div className="footer-links">
-            <span>24 Indicadores Verificados</span>
+            <span>24 Indicadores</span>
             <span className="footer-sep">·</span>
-            <span>172 Setores Censitários (Censo 2022)</span>
+            <span>172 Setores (Censo 2022)</span>
             <span className="footer-sep">·</span>
-            <span>Série EPE Bahia (2018–2025)</span>
+            <span>EPE Bahia (2018–2025)</span>
             <span className="footer-sep">·</span>
             <a
               href="https://github.com/ironJohnsson/FullstackAV3"
@@ -214,7 +227,7 @@ export default function App() {
               rel="noopener noreferrer"
               className="footer-gh-link"
             >
-              <Github size={14} /> Repositório GitHub
+              <Github size={13} /> GitHub
             </a>
           </div>
         </div>
