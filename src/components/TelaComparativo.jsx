@@ -400,8 +400,11 @@ export default function TelaComparativo({ data, theme = 'dark' }) {
                   <XAxis type="number" domain={[0, 100]} stroke={ct.axisStroke} unit="%" tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <YAxis type="category" dataKey="metrica" stroke={ct.axisStroke} width={158} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <Tooltip
+                    cursor={ct.barCursor}
                     formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
                     contentStyle={ct.tooltipStyle}
+                    itemStyle={ct.tooltipItemStyle}
+                    labelStyle={ct.tooltipLabelStyle}
                   />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[0, 4, 4, 0]} />
@@ -450,6 +453,8 @@ export default function TelaComparativo({ data, theme = 'dark' }) {
                   <Tooltip
                     formatter={(val) => [`${formatNumber(val, 2)} pts`, '']}
                     contentStyle={ct.tooltipStyle}
+                    itemStyle={ct.tooltipItemStyle}
+                    labelStyle={ct.tooltipLabelStyle}
                   />
                 </RadarChart>
               </ResponsiveContainer>
@@ -479,8 +484,11 @@ export default function TelaComparativo({ data, theme = 'dark' }) {
                   <XAxis dataKey="territorio" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <YAxis stroke={ct.axisStroke} tickFormatter={(v) => `R$${v}`} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <Tooltip
+                    cursor={ct.barCursor}
                     formatter={(val) => [formatCurrency(val), '']}
                     contentStyle={ct.tooltipStyle}
+                    itemStyle={ct.tooltipItemStyle}
+                    labelStyle={ct.tooltipLabelStyle}
                   />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="Rendimento Médio (V06004)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
@@ -508,8 +516,11 @@ export default function TelaComparativo({ data, theme = 'dark' }) {
                   <XAxis dataKey="territorio" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <YAxis stroke={ct.axisStroke} unit="%" domain={[0, 100]} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                   <Tooltip
+                    cursor={ct.barCursor}
                     formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
                     contentStyle={ct.tooltipStyle}
+                    itemStyle={ct.tooltipItemStyle}
+                    labelStyle={ct.tooltipLabelStyle}
                   />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="Coleta Direta Porta a Porta" stackId="a" fill="#10b981" />

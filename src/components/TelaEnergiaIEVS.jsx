@@ -374,6 +374,8 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                     <Tooltip
                       formatter={(val) => [`${formatNumber(val, 2)} GWh`, '']}
                       contentStyle={ct.tooltipStyle}
+                      itemStyle={ct.tooltipItemStyle}
+                      labelStyle={ct.tooltipLabelStyle}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Area
@@ -424,10 +426,13 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                     />
                     <YAxis yAxisId="right" orientation="right" stroke="#eab308" unit="%" domain={[0, 45]} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                     <Tooltip
+                      cursor={ct.barCursor}
                       formatter={(val, name) =>
                         String(name).includes('%') ? [`${formatNumber(val, 2)}%`, name] : [formatNumber(val), name]
                       }
                       contentStyle={ct.tooltipStyle}
+                      itemStyle={ct.tooltipItemStyle}
+                      labelStyle={ct.tooltipLabelStyle}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Bar
@@ -609,7 +614,12 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                     <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} vertical={false} />
                     <XAxis dataKey="territorio" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                     <YAxis stroke={ct.axisStroke} domain={[0, 80]} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
-                    <Tooltip contentStyle={ct.tooltipStyle} />
+                    <Tooltip
+                      cursor={ct.barCursor}
+                      contentStyle={ct.tooltipStyle}
+                      itemStyle={ct.tooltipItemStyle}
+                      labelStyle={ct.tooltipLabelStyle}
+                    />
                     <Legend wrapperStyle={{ fontSize: 11.5 }} />
                     <Bar dataKey="Subíndice Renda (Ponderado)" stackId="ievs" fill="#f59e0b" />
                     <Bar dataKey="Subíndice Habitação (Ponderado)" stackId="ievs" fill="#10b981" />

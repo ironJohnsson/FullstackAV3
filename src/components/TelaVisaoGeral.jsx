@@ -569,8 +569,11 @@ export default function TelaVisaoGeral({
                     <XAxis type="number" domain={[0, 100]} stroke={ct.axisStroke} unit="%" tick={{ fontSize: 11.5, fill: ct.tickFill }} />
                     <YAxis type="category" dataKey="indicador" stroke={ct.axisStroke} width={132} tick={{ fontSize: 11.5, fill: ct.tickFill }} />
                     <Tooltip
+                      cursor={ct.barCursor}
                       formatter={(value) => [`${formatNumber(value, 2)}%`, '']}
                       contentStyle={ct.tooltipStyle}
+                      itemStyle={ct.tooltipItemStyle}
+                      labelStyle={ct.tooltipLabelStyle}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Bar dataKey={perfil.nome} fill="#38bdf8" radius={[0, 4, 4, 0]} barSize={14} />
@@ -603,8 +606,11 @@ export default function TelaVisaoGeral({
                       <XAxis dataKey="faixa" stroke={ct.axisStroke} tick={{ fontSize: 11, fill: ct.tickFill }} />
                       <YAxis stroke={ct.axisStroke} unit="%" tick={{ fontSize: 11, fill: ct.tickFill }} />
                       <Tooltip
+                        cursor={ct.barCursor}
                         formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
                         contentStyle={ct.tooltipStyle}
+                        itemStyle={ct.tooltipItemStyle}
+                        labelStyle={ct.tooltipLabelStyle}
                       />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
                       <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[4, 4, 0, 0]} />
@@ -618,26 +624,30 @@ export default function TelaVisaoGeral({
                     Autodeclaração Racial ({perfil.nome})
                   </span>
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
+                    <PieChart margin={{ top: 8, right: 8, bottom: 4, left: 8 }}>
                       <Pie
                         data={racePieData}
                         dataKey="value"
                         nameKey="name"
                         cx="50%"
-                        cy="50%"
-                        innerRadius={44}
-                        outerRadius={72}
+                        cy="46%"
+                        innerRadius={36}
+                        outerRadius={54}
                         paddingAngle={3}
-                        label={({ name, value }) => `${name}: ${value}%`}
+                        labelLine={{ stroke: ct.tickFill, strokeWidth: 1 }}
+                        label={({ value }) => `${formatNumber(value, 1)}%`}
                       >
                         {racePieData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={RACE_COLORS[index % RACE_COLORS.length]} />
                         ))}
                       </Pie>
                       <Tooltip
-                        formatter={(val) => [`${formatNumber(val, 2)}%`, 'Participação']}
+                        formatter={(val, name) => [`${formatNumber(val, 2)}%`, name]}
                         contentStyle={ct.tooltipStyle}
+                        itemStyle={ct.tooltipItemStyle}
+                        labelStyle={ct.tooltipLabelStyle}
                       />
+                      <Legend wrapperStyle={{ fontSize: 11 }} iconSize={9} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
