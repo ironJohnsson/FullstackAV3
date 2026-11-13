@@ -6,8 +6,9 @@ import {
   Zap,
   BookOpen,
   Database,
-  Activity,
   Github,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { fetchObservatorioData } from './services/observatorioService';
 import TelaVisaoGeral from './components/TelaVisaoGeral';
@@ -20,32 +21,37 @@ import SupabaseModal from './components/SupabaseModal';
 const NAV_TABS = [
   {
     id: 'visao_geral',
-    label: 'Tela 1 • Visão Geral',
+    step: '01',
+    label: 'Visão Geral',
     subtitle: 'População, Renda e Entorno',
     icon: LayoutDashboard,
   },
   {
     id: 'comparativo',
-    label: 'Tela 2 • Comparativo Territorial',
-    subtitle: 'Beiru vs Pernambués (Δ e Δ%)',
+    step: '02',
+    label: 'Comparativo Territorial',
+    subtitle: 'Beiru vs. Pernambués',
     icon: Scale,
   },
   {
     id: 'mapa',
-    label: 'Tela 3 • Mapa de Vulnerabilidade',
-    subtitle: 'Bairros & 172 Setores (Censo 2022)',
+    step: '03',
+    label: 'Mapa de Vulnerabilidade',
+    subtitle: 'Bairros e 172 Setores',
     icon: MapIcon,
   },
   {
     id: 'energia_ievs',
-    label: 'Tela 4 • Análise Energética & IEVS',
-    subtitle: 'EPE Bahia (2018-25) + Simulador',
+    step: '04',
+    label: 'Energia & Simulador IEVS',
+    subtitle: 'EPE Bahia (2018–25) e Pesos',
     icon: Zap,
   },
   {
     id: 'metodologia',
-    label: 'Tela 5 • Metodologia & 8 Questões',
-    subtitle: 'Dicionário, Fórmulas e Análise',
+    step: '05',
+    label: 'Metodologia & 8 Questões',
+    subtitle: 'Catálogo, Fontes e Análise',
     icon: BookOpen,
   },
 ];
@@ -56,6 +62,22 @@ export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('obs_ui_theme') || 'dark';
+    } catch {
+      return 'dark';
+    }
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      localStorage.setItem('obs_ui_theme', theme);
+    } catch {
+      // ignore storage errors
+    }
+  }, [theme]);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -72,31 +94,32 @@ export default function App() {
     return (
       <div className="loading-screen">
         <div className="spinner" />
-        <h2>Carregando Observatório de Vulnerabilidade Socioenergética de Salvador...</h2>
-        <p>Integrando dados oficiais do IBGE (Censo 2022), IPEA (Atlas IVS) e EPE (Anuário Estatístico)</p>
+        <h2>Carregando Observatório de Vulnerabilidade Socioenergética de Salvador</h2>
+        <p>Integrando bases oficiais do IBGE (Censo 2022), IPEA (Atlas IVS) e EPE (Anuário Estatístico)</p>
       </div>
     );
   }
 
   return (
     <div className="app-shell">
-      {/* Topo Institucional */}
       <header className="top-header">
         <div className="header-inner">
           <div className="brand-block">
             <div className="brand-logo-icon">
-              <Zap size={24} />
+              <Zap size={20} />
             </div>
-            <div>
-              <div className="brand-eyebrow">
-                SENAI CIMATEC • UC: DESENVOLVIMENTO FULLSTACK • PROF. CELSO BARRETO • AV3
+            <div className="brand-copy">
+              <div className="brand-eyebrow-row">
+                <span className="brand-eyebrow">SENAI CIMATEC · Desenvolvimento Fullstack · Prof. Celso Barreto · AV3</span>
+                <span className="brand-divider">·</span>
+                <span className="brand-sources-badge">Fontes Oficiais: IBGE, IPEA e EPE</span>
               </div>
               <h1 className="brand-title">
                 Observatório de Vulnerabilidade Socioenergética de Salvador
               </h1>
               <p className="brand-subtitle">
-                Territórios Investigados: <strong>Beiru / Tancredo Neves</strong> (IBGE 2927408018) e{' '}
-                <strong>Pernambués</strong> (IBGE 2927408117) • Fontes Oficiais: <strong>IBGE, IPEA e EPE</strong>
+                Recorte de Análise: <strong>Beiru / Tancredo Neves</strong> (<code>2927408018</code>) e{' '}
+                <strong>Pernambués</strong> (<code>2927408117</code>) · Contextualizados em Salvador e na Bahia
               </p>
             </div>
           </div>
@@ -104,42 +127,58 @@ export default function App() {
           <div className="header-status-actions">
             <button
               type="button"
+              className="theme-toggle-btn"
+              onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+              title={theme === 'dark' ? 'Alternar para modo claro' : 'Alternar para modo escuro'}
+            >
+              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+              <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+            </button>
+
+            <button
+              type="button"
               className={`db-status-pill ${
                 data.connectionStatus.mode === 'supabase_live' ? 'live' : 'snapshot'
               }`}
               onClick={() => setIsModalOpen(true)}
-              title="Clique para configurar ou testar conexão PostgreSQL / Supabase"
+              title="Configurar ou testar conexão PostgreSQL / Supabase"
             >
-              <Database size={15} />
+              <span className="status-dot" />
+              <Database size={14} />
               <span>{data.connectionStatus.label}</span>
             </button>
           </div>
         </div>
 
-        {/* Barra de Navegação das 5 Telas Obrigatórias */}
-        <nav className="main-nav-tabs" aria-label="Navegação Principal das Telas do Observatório">
-          {NAV_TABS.map((tab) => {
-            const IconComp = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                className={`nav-tab-btn ${isActive ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                <IconComp size={18} className="nav-tab-icon" />
-                <div className="nav-tab-texts">
-                  <span className="nav-tab-title">{tab.label}</span>
-                  <span className="nav-tab-sub">{tab.subtitle}</span>
-                </div>
-              </button>
-            );
-          })}
-        </nav>
+        <div className="nav-bar-wrapper">
+          <nav className="main-nav-tabs" aria-label="Navegação Principal das Telas do Observatório">
+            {NAV_TABS.map((tab) => {
+              const IconComp = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  className={`nav-tab-btn ${isActive ? 'active' : ''}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  <div className="nav-tab-icon-wrap">
+                    <IconComp size={16} className="nav-tab-icon" />
+                  </div>
+                  <div className="nav-tab-texts">
+                    <div className="nav-tab-title-row">
+                      <span className="nav-tab-step">{tab.step}</span>
+                      <span className="nav-tab-title">{tab.label}</span>
+                    </div>
+                    <span className="nav-tab-sub">{tab.subtitle}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
       </header>
 
-      {/* Conteúdo Principal da Tela Selecionada */}
       <main className="main-content">
         {activeTab === 'visao_geral' && (
           <TelaVisaoGeral
@@ -155,25 +194,25 @@ export default function App() {
         {activeTab === 'metodologia' && <TelaMetodologiaAnalise data={data} />}
       </main>
 
-      {/* Rodapé Institucional e Metodológico */}
       <footer className="app-footer">
         <div className="footer-inner">
-          <div>
-            <strong>Observatório de Vulnerabilidade Socioenergética de Salvador</strong> — Situação de Aprendizagem
-            (Projeto Integrador Fullstack • SENAI CIMATEC)
+          <div className="footer-brand">
+            <strong>Observatório de Vulnerabilidade Socioenergética de Salvador</strong>
+            <span className="footer-sep">·</span>
+            <span>Projeto Integrador Fullstack (SENAI CIMATEC)</span>
           </div>
           <div className="footer-links">
             <span>24 Indicadores Verificados</span>
-            <span>•</span>
+            <span className="footer-sep">·</span>
             <span>172 Setores Censitários (Censo 2022)</span>
-            <span>•</span>
+            <span className="footer-sep">·</span>
             <span>Série EPE Bahia (2018–2025)</span>
-            <span>•</span>
+            <span className="footer-sep">·</span>
             <a
               href="https://github.com/ironJohnsson/FullstackAV3"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: '#38bdf8', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              className="footer-gh-link"
             >
               <Github size={14} /> Repositório GitHub
             </a>

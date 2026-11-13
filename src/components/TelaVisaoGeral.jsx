@@ -22,8 +22,6 @@ import {
   MapPin,
   Info,
   Filter,
-  CheckCircle2,
-  AlertTriangle,
 } from 'lucide-react';
 import {
   formatNumber,
@@ -35,14 +33,26 @@ import {
 import { queryObservacoesDetalhadas } from '../services/observatorioService';
 
 const TERRITORY_OPTIONS = [
-  { code: '2927408018', label: 'Beiru / Tancredo Neves (Bairro Oficial - IBGE 2927408018)' },
-  { code: '2927408117', label: 'Pernambués (Bairro Oficial - IBGE 2927408117)' },
-  { code: '2927408', label: 'Salvador (Referência Municipal - IBGE 2927408)' },
+  {
+    code: '2927408018',
+    shortLabel: 'Beiru / Tancredo Neves (38.329 hab.)',
+    label: 'Beiru / Tancredo Neves (Bairro Oficial - IBGE 2927408018)',
+  },
+  {
+    code: '2927408117',
+    shortLabel: 'Pernambués (52.564 hab.)',
+    label: 'Pernambués (Bairro Oficial - IBGE 2927408117)',
+  },
+  {
+    code: '2927408',
+    shortLabel: 'Salvador — Referência (2,42 mi hab.)',
+    label: 'Salvador (Referência Municipal - IBGE 2927408)',
+  },
 ];
 
 const RACE_COLORS = ['#0ea5e9', '#6366f1', '#94a3b8'];
 
-export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro, onNavigateTab }) {
+export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro }) {
   const [dimFilter, setDimFilter] = useState('ALL');
   const [classFilter, setClassFilter] = useState('ALL');
   const [fonteFilter, setFonteFilter] = useState('ALL');
@@ -139,7 +149,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
       value: formatNumber(perfil.POP_RESIDENTE),
       unit: 'habitantes',
       subtitle: `Densidade: ${formatNumber(perfil.DENSIDADE_DEMOGRAFICA, 1)} hab/km² (${formatNumber(perfil.AREA_KM2, 2)} km²)`,
-      source: 'IBGE - Censo 2022 (V0001)',
+      source: 'IBGE · Censo 2022 (V0001)',
       year: '2022',
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Dado observado',
@@ -150,8 +160,8 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
       title: 'Domicílios Ocupados (DPPO)',
       value: formatNumber(perfil.DOM_OCUPADOS),
       unit: `de ${formatNumber(perfil.DOM_TOTAIS)} totais`,
-      subtitle: `Média: ${formatNumber(perfil.MEDIA_MORADORES_DOM, 2)} mor/dom | 6+ mor.: ${formatNumber(perfil.ADENSAMENTO_DOMICILIAR_6MAIS, 2)}%`,
-      source: 'IBGE - Censo 2022 (V00001 / V0005)',
+      subtitle: `Média: ${formatNumber(perfil.MEDIA_MORADORES_DOM, 2)} mor/dom · 6+ mor.: ${formatNumber(perfil.ADENSAMENTO_DOMICILIAR_6MAIS, 2)}%`,
+      source: 'IBGE · Censo 2022 (V00001 / V0005)',
       year: '2022',
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Dado observado',
@@ -163,7 +173,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
       value: formatCurrency(perfil.RENDA_MEDIA_RESP),
       unit: `Mediana: ${formatCurrency(perfil.RENDA_MEDIANA_RESP)}`,
       subtitle: `${formatNumber(perfil.PERC_SETORES_BAIXA_RENDA, 1)}% dos setores com renda média ≤ 1,5 SM`,
-      source: 'IBGE - Censo 2022 (V06004 / V06006)',
+      source: 'IBGE · Censo 2022 (V06004 / V06006)',
       year: '2022',
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Dado observado',
@@ -175,7 +185,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
       value: `${formatNumber(perfil.TAXA_ALFABETIZACAO_15MAIS, 2)}%`,
       unit: `${formatNumber(perfil.PESSOAS_NAO_ALFABETIZADAS_15MAIS)} não alfabetizados`,
       subtitle: `População Negra (Preta + Parda): ${formatNumber(perfil.PERC_POP_NEGRA, 2)}%`,
-      source: 'IBGE - Censo 2022 (V00900 / V00901)',
+      source: 'IBGE · Censo 2022 (V00900 / V00901)',
       year: '2022',
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Indicador derivado',
@@ -186,8 +196,8 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
       title: 'Déficit de Arborização no Entorno',
       value: `${formatNumber(perfil.ENTORNO_SEM_ARVORES, 2)}%`,
       unit: 'faces sem árvores',
-      subtitle: `Apenas ${formatNumber(perfil.ENTORNO_ARBORIZACAO, 2)}% com ≥1 árvore | Calçada: ${formatNumber(perfil.ENTORNO_CALCADA, 1)}%`,
-      source: 'IBGE - Censo 2022 Entorno (V05030)',
+      subtitle: `Apenas ${formatNumber(perfil.ENTORNO_ARBORIZACAO, 2)}% com ≥1 árvore · Calçada: ${formatNumber(perfil.ENTORNO_CALCADA, 1)}%`,
+      source: 'IBGE · Censo 2022 Entorno (V05030)',
       year: '2022',
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Indicador derivado',
@@ -198,7 +208,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
       title: 'IEVS Exploratório (Cenário Base)',
       value: `${formatNumber(perfil.IEVS_EXPLORATORIO, 2)}`,
       unit: '/ 100 pontos',
-      subtitle: `Risco Térmico: ${formatNumber(perfil.PROXY_RISCO_TERMICO_URBANO, 1)} | Pressão Tarifária: ${formatNumber(perfil.PROXY_COMPROMETIMENTO_RENDA_ENERGIA, 1)}%`,
+      subtitle: `Risco Térmico: ${formatNumber(perfil.PROXY_RISCO_TERMICO_URBANO, 1)} · Pressão Tarifária: ${formatNumber(perfil.PROXY_COMPROMETIMENTO_RENDA_ENERGIA, 1)}%`,
       source: 'Observatório (IBGE + Contexto EPE)',
       year: '2022',
       scale: 'Bairro (Índice Exploratório)',
@@ -210,52 +220,35 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
 
   return (
     <div className="screen-container">
-      {/* Barra de Seleção Territorial e Metadados Visíveis */}
+      {/* Barra de Seleção Territorial e Nota de Equivalência Geográfica */}
       <div className="control-panel-card">
         <div className="control-panel-header">
           <div>
-            <span className="section-eyebrow">TELA 1 — VISÃO GERAL DO TERRITÓRIO</span>
+            <span className="section-eyebrow">Tela 01 · Visão Geral do Território</span>
             <h2 className="section-title">
               Caracterização Socioeconômica, Habitacional, Urbana e Socioenergética
             </h2>
           </div>
+
           <div className="territory-selector-group">
-            <label htmlFor="select-territorio-visao" className="control-label">
-              <MapPin size={15} /> Território em Foco:
-            </label>
-            <select
-              id="select-territorio-visao"
-              className="select-input highlight-select"
-              value={activeCode}
-              onChange={(e) => setSelectedBairro(e.target.value)}
-            >
+            <div className="QuickSwitchPills" role="group" aria-label="Seleção rápida de território">
               {TERRITORY_OPTIONS.map((opt) => (
-                <option key={opt.code} value={opt.code}>
-                  {opt.label}
-                </option>
+                <button
+                  key={opt.code}
+                  type="button"
+                  className={`territory-pill ${activeCode === opt.code ? 'active' : ''}`}
+                  onClick={() => setSelectedBairro(opt.code)}
+                >
+                  <MapPin size={13} style={{ marginRight: 5, verticalAlign: '-2px' }} />
+                  {opt.shortLabel}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
         </div>
 
-        <div className="QuickSwitchPills">
-          {TERRITORY_OPTIONS.map((opt) => (
-            <button
-              key={opt.code}
-              type="button"
-              className={`territory-pill ${activeCode === opt.code ? 'active' : ''}`}
-              onClick={() => setSelectedBairro(opt.code)}
-            >
-              {opt.code === '2927408018' && '📍 Beiru / Tancredo Neves (38.329 hab.)'}
-              {opt.code === '2927408117' && '📍 Pernambués (52.564 hab.)'}
-              {opt.code === '2927408' && '🏙️ Salvador — Referência Municipal (2,42 mi hab.)'}
-            </button>
-          ))}
-        </div>
-
-        {/* Nota Metodológica de Equivalência Geográfica visível na Tela 1 */}
         <div className="methodology-banner">
-          <Info size={18} className="banner-icon" />
+          <Info size={17} className="banner-icon" />
           <div>
             <strong>Equivalência Geográfica e Escala Oficial (IBGE Censo 2022):</strong> Na malha oficial de Bairros de Salvador (Lei Municipal nº 9.278/2017), o território é denominado oficialmente{' '}
             <code>Beiru / Tancredo Neves</code> (código IBGE <code>2927408018</code>, com <strong>38.329 moradores</strong> e <strong>1,64 km²</strong>) e{' '}
@@ -266,28 +259,18 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
         </div>
       </div>
 
-      {/* Grid de 6 KPI Cards Principais com Origem, Escala, Ano e Classificação */}
+      {/* Grid de 6 KPI Cards Principais */}
       <div className="kpi-grid">
         {kpiCards.map((card, idx) => {
           const IconComp = card.icon;
           const badge = getClassificacaoBadgeStyle(card.classification);
           return (
-            <div key={idx} className="kpi-card" style={{ borderTop: `3px solid ${card.accent}` }}>
+            <div key={idx} className="kpi-card">
               <div className="kpi-card-top">
-                <span className="kpi-title">{card.title}</span>
-                <span
-                  className="kpi-icon-badge"
-                  style={{ background: `${card.accent}20`, color: card.accent }}
-                >
-                  <IconComp size={18} />
-                </span>
-              </div>
-              <div className="kpi-main-value">
-                <span className="kpi-number">{card.value}</span>
-                <span className="kpi-unit">{card.unit}</span>
-              </div>
-              <p className="kpi-subtitle">{card.subtitle}</p>
-              <div className="kpi-meta-footer">
+                <div className="kpi-title-wrap">
+                  <span className="kpi-accent-dot" style={{ background: card.accent }} />
+                  <span className="kpi-title">{card.title}</span>
+                </div>
                 <span
                   className="classification-pill"
                   style={{
@@ -298,9 +281,29 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                 >
                   {badge.short}
                 </span>
-                <span className="meta-tag">📊 {card.source}</span>
-                <span className="meta-tag">🗓️ Ref: {card.year}</span>
-                <span className="meta-tag">🗺️ {card.scale}</span>
+              </div>
+
+              <div className="kpi-main-value">
+                <span className="kpi-number">{card.value}</span>
+                <span className="kpi-unit">{card.unit}</span>
+              </div>
+
+              <p className="kpi-subtitle">{card.subtitle}</p>
+
+              <div className="kpi-meta-footer">
+                <div className="kpi-meta-inline">
+                  <span>{card.source}</span>
+                  <span>·</span>
+                  <span>{card.scale}</span>
+                  <span>·</span>
+                  <span>Ref: {card.year}</span>
+                </div>
+                <span
+                  className="kpi-icon-badge"
+                  style={{ background: `${card.accent}18`, color: card.accent }}
+                >
+                  <IconComp size={15} />
+                </span>
               </div>
             </div>
           );
@@ -309,12 +312,11 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
 
       {/* Gráficos de Caracterização do Território */}
       <div className="charts-two-col">
-        {/* Gráfico 1: Infraestrutura Habitacional e Entorno Urbano */}
         <div className="chart-card">
           <div className="chart-card-header">
             <div>
-              <span className="chart-tag">IBGE — CENSO 2022 (DOMICÍLIOS E ENTORNO) | ANO: 2022</span>
-              <h3>Infraestrutura Habitacional e Condições Urbanas: {perfil.nome} vs Salvador (%)</h3>
+              <span className="chart-tag">IBGE · Censo 2022 (Domicílios e Entorno) · Ref: 2022</span>
+              <h3>Infraestrutura Habitacional e Condições Urbanas: {perfil.nome} vs. Salvador (%)</h3>
             </div>
           </div>
           <p className="chart-description">
@@ -324,16 +326,16 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
             <strong>arborização viária</strong> ({formatNumber(perfil.ENTORNO_ARBORIZACAO, 1)}%) e{' '}
             <strong>acessibilidade por rampa</strong> ({formatNumber(perfil.ENTORNO_RAMPA_CADEIRANTE, 2)}%).
           </p>
-          <div className="chart-wrapper" style={{ height: 320 }}>
+          <div className="chart-wrapper" style={{ height: 310 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={infraChartData}
                 layout="vertical"
-                margin={{ top: 8, right: 24, left: 36, bottom: 8 }}
+                margin={{ top: 6, right: 20, left: 32, bottom: 6 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
-                <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" />
-                <YAxis type="category" dataKey="indicador" stroke="#cbd5e1" width={135} tick={{ fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" horizontal={false} />
+                <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" tick={{ fontSize: 11.5 }} />
+                <YAxis type="category" dataKey="indicador" stroke="#94a3b8" width={132} tick={{ fontSize: 11.5 }} />
                 <Tooltip
                   formatter={(value) => [`${formatNumber(value, 2)}%`, '']}
                   contentStyle={{
@@ -341,21 +343,21 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                     borderColor: '#334155',
                     borderRadius: '8px',
                     color: '#f8fafc',
+                    fontSize: '12px',
                   }}
                 />
-                <Legend />
-                <Bar dataKey={perfil.nome} fill="#38bdf8" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Salvador" fill="#64748b" radius={[0, 4, 4, 0]} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey={perfil.nome} fill="#38bdf8" radius={[0, 4, 4, 0]} barSize={13} />
+                <Bar dataKey="Salvador" fill="#64748b" radius={[0, 4, 4, 0]} barSize={13} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Gráfico 2: Perfil Demográfico (Estrutura Etária e Composição Racial) */}
         <div className="chart-card">
           <div className="chart-card-header">
             <div>
-              <span className="chart-tag">IBGE — CENSO 2022 (DEMOGRAFIA E COR/RAÇA) | ANO: 2022</span>
+              <span className="chart-tag">IBGE · Censo 2022 (Demografia e Cor/Raça) · Ref: 2022</span>
               <h3>Composição Etária Comparada e Perfil Racial de {perfil.nome}</h3>
             </div>
           </div>
@@ -366,29 +368,31 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
             razão de dependência etária é de <strong>{formatNumber(perfil.RAZAO_DEPENDENCIA_ETARIA, 2)}%</strong>.
           </p>
           <div className="dual-mini-charts">
-            <div style={{ flex: 1.25, height: 260 }}>
+            <div style={{ flex: 1.25, height: 255 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={ageChartData} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
-                  <XAxis dataKey="faixa" stroke="#cbd5e1" tick={{ fontSize: 11 }} />
-                  <YAxis stroke="#94a3b8" unit="%" />
+                <BarChart data={ageChartData} margin={{ top: 10, right: 10, left: -8, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
+                  <XAxis dataKey="faixa" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+                  <YAxis stroke="#94a3b8" unit="%" tick={{ fontSize: 11 }} />
                   <Tooltip
                     formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
                     contentStyle={{
                       backgroundColor: '#0f172a',
                       borderColor: '#334155',
                       borderRadius: '8px',
+                      color: '#f8fafc',
+                      fontSize: '12px',
                     }}
                   />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
-                  <Bar dataKey="Beiru / Tancredo Neves" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="Pernambués" fill="#38bdf8" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="Salvador" fill="#64748b" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div style={{ flex: 0.9, height: 260, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600 }}>
+            <div style={{ flex: 0.9, height: 255, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
                 Autodeclaração Racial ({perfil.nome})
               </span>
               <ResponsiveContainer width="100%" height="100%">
@@ -399,8 +403,8 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={45}
-                    outerRadius={75}
+                    innerRadius={44}
+                    outerRadius={72}
                     paddingAngle={3}
                     label={({ name, value }) => `${name}: ${value}%`}
                   >
@@ -414,6 +418,8 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                       backgroundColor: '#0f172a',
                       borderColor: '#334155',
                       borderRadius: '8px',
+                      color: '#f8fafc',
+                      fontSize: '12px',
                     }}
                   />
                 </PieChart>
@@ -423,11 +429,11 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
         </div>
       </div>
 
-      {/* Catálogo Relacional de Observações do Território Selecionado (Filtro por Dimensão, Classificação e Fonte) */}
+      {/* Catálogo Relacional de Observações do Território Selecionado */}
       <div className="table-section-card">
         <div className="table-header-bar">
           <div>
-            <span className="section-eyebrow">CONSULTA RELACIONAL (TABELA `observacoes` JOIN `indicadores` JOIN `fontes`)</span>
+            <span className="section-eyebrow">Consulta Relacional · Tabela observacoes JOIN indicadores JOIN fontes</span>
             <h3>Todos os Indicadores de {perfil.nome} (Ano de Referência: 2022)</h3>
           </div>
           <div className="filter-controls-row">
@@ -486,9 +492,9 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                       <span
                         className="dim-badge"
                         style={{
-                          background: `${dimColor}18`,
+                          background: `${dimColor}16`,
                           color: dimColor,
-                          border: `1px solid ${dimColor}44`,
+                          border: `1px solid ${dimColor}38`,
                         }}
                       >
                         {row.indicador.dimensao}
@@ -517,12 +523,11 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                       </span>
                     </td>
                     <td>
-                      <div className="td-source-inst">{row.fonte.instituicao}</div>
+                      <div className="td-main-title" style={{ fontSize: '0.78rem' }}>{row.fonte.instituicao}</div>
                       <div className="td-sub-code">{row.indicador.variaveis_origem}</div>
                     </td>
                     <td>
-                      <span className="meta-tag">{row.escala_registro}</span>{' '}
-                      <span className="meta-tag">{row.ano}</span>
+                      <span className="meta-tag">{row.escala_registro} · {row.ano}</span>
                     </td>
                   </tr>
                 );
