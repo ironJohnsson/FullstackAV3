@@ -3,11 +3,8 @@ import {
   BookOpen,
   Search,
   ExternalLink,
-  CheckCircle2,
   Database,
-  FileSpreadsheet,
   HelpCircle,
-  AlertCircle,
 } from 'lucide-react';
 import { getClassificacaoBadgeStyle, getDimensaoColor, formatNumber } from '../utils/formatters';
 
@@ -15,7 +12,7 @@ export default function TelaMetodologiaAnalise({ data }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [dimFilter, setDimFilter] = useState('ALL');
   const [classFilter, setClassFilter] = useState('ALL');
-  const [activeSubTab, setActiveSubTab] = useState('dicionario'); // 'dicionario' | 'desafio_analitico' | 'fontes_ipea'
+  const [activeSubTab, setActiveSubTab] = useState('dicionario');
 
   const filteredIndicadores = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -42,12 +39,11 @@ export default function TelaMetodologiaAnalise({ data }) {
 
   return (
     <div className="screen-container">
-      {/* Cabeçalho com Alternador de Seções da Tela 5 */}
       <div className="control-panel-card">
         <div className="control-panel-header">
           <div>
             <span className="section-eyebrow">
-              TELA 5 — METODOLOGIA, FONTES OFICIAIS & DESAFIO ANALÍTICO OBRIGATÓRIO
+              Tela 05 · Metodologia, Fontes Oficiais & Desafio Analítico Obrigatório
             </span>
             <h2 className="section-title">
               Dicionário de Indicadores (24), Fórmulas, Limitações, Escalas IPEA/EPE e 8 Questões Analíticas
@@ -61,21 +57,21 @@ export default function TelaMetodologiaAnalise({ data }) {
             className={`subtab-btn ${activeSubTab === 'dicionario' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('dicionario')}
           >
-            <BookOpen size={16} /> 1. Dicionário de Indicadores, Fórmulas e Limitações (24)
+            <BookOpen size={15} /> 1. Dicionário de Indicadores, Fórmulas e Limitações (24)
           </button>
           <button
             type="button"
             className={`subtab-btn ${activeSubTab === 'desafio_analitico' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('desafio_analitico')}
           >
-            <HelpCircle size={16} /> 2. Desafio Analítico Obrigatório (8 Questões Fundamentadas)
+            <HelpCircle size={15} /> 2. Desafio Analítico Obrigatório (8 Questões Fundamentadas)
           </button>
           <button
             type="button"
             className={`subtab-btn ${activeSubTab === 'fontes_ipea' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('fontes_ipea')}
           >
-            <Database size={16} /> 3. Catálogo de Fontes, Escalas IPEA (IVS) e Modelo PostgreSQL
+            <Database size={15} /> 3. Catálogo de Fontes, Escalas IPEA (IVS) e Modelo PostgreSQL
           </button>
         </div>
       </div>
@@ -86,13 +82,13 @@ export default function TelaMetodologiaAnalise({ data }) {
           <div className="table-header-bar">
             <div>
               <span className="section-eyebrow">
-                CLASSIFICAÇÃO OBRIGATÓRIA: DADO OBSERVADO | INDICADOR DERIVADO | PROXY/ESTIMATIVA
+                Classificação Obrigatória · Dado Observado · Indicador Derivado · Proxy / Estimativa
               </span>
               <h3>Dicionário Metodológico Completo ({filteredIndicadores.length} de 24 indicadores)</h3>
             </div>
             <div className="filter-controls-row">
               <div className="search-input-wrap">
-                <Search size={15} />
+                <Search size={14} />
                 <input
                   type="text"
                   placeholder="Buscar por indicador, variável (ex: V06004), fórmula..."
@@ -131,9 +127,9 @@ export default function TelaMetodologiaAnalise({ data }) {
                       <span
                         className="dim-badge"
                         style={{
-                          background: `${dimColor}18`,
+                          background: `${dimColor}16`,
                           color: dimColor,
-                          border: `1px solid ${dimColor}44`,
+                          border: `1px solid ${dimColor}38`,
                         }}
                       >
                         {ind.dimensao}
@@ -151,7 +147,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                       <span className="meta-tag">Ref: {ind.ano_referencia}</span>
                       <span className="meta-tag">Unid: {ind.unidade}</span>
                     </div>
-                    <code className="dict-code">#{ind.id} • {ind.codigo}</code>
+                    <code className="dict-code">#{ind.id} · {ind.codigo}</code>
                   </div>
 
                   <h4 className="dict-title">{ind.nome}</h4>
@@ -159,13 +155,13 @@ export default function TelaMetodologiaAnalise({ data }) {
 
                   <div className="dict-formula-box">
                     <div>
-                      <strong>Variáveis / Arquivo de Origem:</strong> <span>{ind.variaveis_origem}</span>
+                      <strong>Origem:</strong> <span>{ind.variaveis_origem}</span>
                     </div>
                     <div>
-                      <strong>Fórmula Matemática:</strong> <code>{ind.formula}</code>
+                      <strong>Fórmula:</strong> <code>{ind.formula}</code>
                     </div>
                     <div>
-                      <strong>Escala Geográfica Nativa:</strong> <span>{ind.escala_geografica}</span>
+                      <strong>Escala Nativa:</strong> <span>{ind.escala_geografica}</span>
                     </div>
                   </div>
 
@@ -174,7 +170,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                       <strong>Metodologia:</strong> {ind.metodologia}
                     </p>
                     <p className="dict-limitation">
-                      <strong>⚠️ Limitações & Cuidados Interpretativos:</strong> {ind.limitacoes}
+                      <strong>Limitações e Cuidados Interpretativos:</strong> {ind.limitacoes}
                     </p>
                   </div>
                 </div>
@@ -190,7 +186,7 @@ export default function TelaMetodologiaAnalise({ data }) {
           <div className="table-header-bar">
             <div>
               <span className="section-eyebrow">
-                SEÇÃO 9 DO PROJETO INTEGRADOR — REGISTROS PERSISTIDOS NA TABELA `analyses`
+                Seção 9 do Projeto Integrador · Registros Persistidos na Tabela analyses
               </span>
               <h3>Respostas Fundamentadas ao Desafio Analítico Obrigatório (8 Questões)</h3>
             </div>
@@ -202,18 +198,20 @@ export default function TelaMetodologiaAnalise({ data }) {
               return (
                 <article key={item.id} className="analysis-card">
                   <div className="analysis-card-header">
-                    <span className="question-number-badge">Questão {item.questao_numero}</span>
-                    <span
-                      className="dim-badge"
-                      style={{
-                        background: `${dimColor}18`,
-                        color: dimColor,
-                        border: `1px solid ${dimColor}44`,
-                      }}
-                    >
-                      Eixo: {item.dimensao_foco}
-                    </span>
-                    <span className="meta-tag">Data de Registro: {item.data_criacao}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span className="question-number-badge">Questão {item.questao_numero}</span>
+                      <span
+                        className="dim-badge"
+                        style={{
+                          background: `${dimColor}16`,
+                          color: dimColor,
+                          border: `1px solid ${dimColor}38`,
+                        }}
+                      >
+                        Eixo: {item.dimensao_foco}
+                      </span>
+                    </div>
+                    <span className="meta-tag">{item.data_criacao}</span>
                   </div>
                   <h4 className="analysis-question-title">{item.titulo}</h4>
                   <p className="analysis-body-text">{item.descricao}</p>
@@ -227,12 +225,11 @@ export default function TelaMetodologiaAnalise({ data }) {
       {/* ABA 3: CATÁLOGO DE FONTES E CONTEXTUALIZAÇÃO IPEA (IVS) */}
       {activeSubTab === 'fontes_ipea' && (
         <div className="screen-container" style={{ gap: 20 }}>
-          {/* Contextualização IPEA IVS nas Escalas Publicadas */}
           <div className="table-section-card">
             <div className="table-header-bar">
               <div>
                 <span className="section-eyebrow">
-                  CONTEXTUALIZAÇÃO SOCIAL IPEA — ATLAS DA VULNERABILIDADE SOCIAL (IVS)
+                  Contextualização Social IPEA · Atlas da Vulnerabilidade Social (IVS)
                 </span>
                 <h3>Registros do IVS nas Escalas Efetivamente Publicadas pelo IPEA (UF, RM/Município e UDH)</h3>
               </div>
@@ -280,8 +277,9 @@ export default function TelaMetodologiaAnalise({ data }) {
                           <span
                             className="classification-pill"
                             style={{
-                              color: v >= 0.4 ? '#fb7185' : v >= 0.3 ? '#fbbf24' : '#34d399',
-                              borderColor: 'rgba(148,163,184,0.35)',
+                              color: v >= 0.4 ? 'var(--accent-rose)' : v >= 0.3 ? 'var(--accent-amber)' : 'var(--accent-emerald)',
+                              borderColor: 'var(--border-medium)',
+                              background: 'var(--bg-subtle)',
                             }}
                           >
                             {faixa}
@@ -296,11 +294,10 @@ export default function TelaMetodologiaAnalise({ data }) {
             </div>
           </div>
 
-          {/* Tabela de Fontes Oficiais (`fontes`) */}
           <div className="table-section-card">
             <div className="table-header-bar">
               <div>
-                <span className="section-eyebrow">TABELA `fontes` NO POSTGRESQL / SUPABASE</span>
+                <span className="section-eyebrow">Tabela fontes no PostgreSQL / Supabase</span>
                 <h3>Catálogo Rastreável de Bases de Dados Oficiais e URLs de Consulta</h3>
               </div>
             </div>
@@ -323,7 +320,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                     <tr key={f.id}>
                       <td>#{f.id}</td>
                       <td>
-                        <strong style={{ color: '#38bdf8' }}>{f.instituicao}</strong>
+                        <strong style={{ color: 'var(--accent-blue)' }}>{f.instituicao}</strong>
                       </td>
                       <td className="td-main-title">{f.titulo}</td>
                       <td>
