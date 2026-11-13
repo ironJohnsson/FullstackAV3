@@ -14,7 +14,7 @@ import {
   PolarRadiusAxis,
   Radar,
 } from 'recharts';
-import { ArrowLeftRight, Download, Filter, Scale } from 'lucide-react';
+import { Download, Filter } from 'lucide-react';
 import {
   formatNumber,
   formatCurrency,
@@ -31,7 +31,6 @@ export default function TelaComparativo({ data }) {
   const pern = data.perfisTerritoriais['2927408117'];
   const ssa = data.perfisTerritoriais['2927408'];
 
-  // Construir linhas comparativas para todos os indicadores locais/municipais (excluindo os exclusivos de UF EPE)
   const comparativeRows = useMemo(() => {
     const obsByKey = {};
     for (const o of data.observacoes) {
@@ -149,7 +148,7 @@ export default function TelaComparativo({ data }) {
         Salvador: Number((100 - ssa.ENTORNO_CALCADA).toFixed(1)),
       },
       {
-        dimensao: 'IEVS Sintético (0-100)',
+        dimensao: 'IEVS Sintético (0–100)',
         'Beiru / Tancredo Neves': beiru.IEVS_EXPLORATORIO,
         Pernambués: pern.IEVS_EXPLORATORIO,
         Salvador: ssa.IEVS_EXPLORATORIO,
@@ -241,17 +240,16 @@ export default function TelaComparativo({ data }) {
       <div className="control-panel-card">
         <div className="control-panel-header">
           <div>
-            <span className="section-eyebrow">TELA 2 — COMPARATIVO TERRITORIAL DIRETO (EIXO CENSO 2022)</span>
+            <span className="section-eyebrow">Tela 02 · Comparativo Territorial Direto (Censo 2022)</span>
             <h2 className="section-title">
               Beiru / Tancredo Neves (2927408018) vs. Pernambués (2927408117)
             </h2>
           </div>
           <button type="button" className="btn-secondary" onClick={handleExportCsv}>
-            <Download size={16} /> Exportar Tabela Comparativa (.CSV)
+            <Download size={15} /> Exportar Comparativo (.CSV)
           </button>
         </div>
 
-        {/* Destaques Comparativos Lado a Lado */}
         <div className="comparison-highlight-strip">
           <div className="comp-strip-box">
             <span className="comp-strip-label">População & Escala Física</span>
@@ -262,7 +260,7 @@ export default function TelaComparativo({ data }) {
             </div>
             <p className="comp-strip-note">
               Pernambués tem <strong>+14.235 habitantes (+37,1%)</strong>, mas Beiru/Tancredo Neves é{' '}
-              <strong>+42,9% mais denso</strong> (23.425,5 vs 16.388,4 hab/km²).
+              <strong>+42,9% mais denso</strong> (23.425,5 vs. 16.388,4 hab/km²).
             </p>
           </div>
 
@@ -274,7 +272,7 @@ export default function TelaComparativo({ data }) {
               <span className="val-pern">Pernambués: R$ 2.316,25 (Med: R$ 1.212)</span>
             </div>
             <p className="comp-strip-note">
-              Mediana idêntica de <strong>1 SM (R$ 1.212,00)</strong> nos dois bairros! A média de Pernambués é{' '}
+              Mediana idêntica de <strong>1 SM (R$ 1.212,00)</strong> nos dois bairros. A média de Pernambués é{' '}
               <strong>+13,8% maior</strong> devido aos condomínios nas bordas da Av. Paralela/Horto Bela Vista.
             </p>
           </div>
@@ -296,34 +294,35 @@ export default function TelaComparativo({ data }) {
 
       {/* Linha 1 de Gráficos Comparativos */}
       <div className="charts-two-col">
-        {/* Gráfico A: Barras Comparativas de Indicadores Percentuais */}
         <div className="chart-card">
           <div className="chart-card-header">
             <div>
-              <span className="chart-tag">VISUALIZAÇÃO 1 — GRÁFICO DE BARRAS AGRUPADAS (CENSO 2022)</span>
+              <span className="chart-tag">Visualização 01 · Barras Agrupadas (Censo 2022)</span>
               <h3>Disparidades Socioeconômicas e de Infraestrutura Urbana (%)</h3>
             </div>
           </div>
-          <div className="chart-wrapper" style={{ height: 340 }}>
+          <div className="chart-wrapper" style={{ height: 330, marginTop: 10 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={barPercentComparison}
                 layout="vertical"
-                margin={{ top: 8, right: 24, left: 45, bottom: 8 }}
+                margin={{ top: 6, right: 20, left: 42, bottom: 6 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
-                <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" />
-                <YAxis type="category" dataKey="metrica" stroke="#cbd5e1" width={160} tick={{ fontSize: 11.5 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" horizontal={false} />
+                <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" tick={{ fontSize: 11.5 }} />
+                <YAxis type="category" dataKey="metrica" stroke="#94a3b8" width={158} tick={{ fontSize: 11.5 }} />
                 <Tooltip
                   formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
                   contentStyle={{
                     backgroundColor: '#0f172a',
                     borderColor: '#334155',
                     borderRadius: '8px',
+                    color: '#f8fafc',
+                    fontSize: '12px',
                   }}
                 />
-                <Legend />
-                <Bar dataKey="Beiru / Tancredo Neves" fill="#f43f5e" radius={[0, 4, 4, 0]} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[0, 4, 4, 0]} />
                 <Bar dataKey="Pernambués" fill="#38bdf8" radius={[0, 4, 4, 0]} />
                 <Bar dataKey="Salvador" fill="#64748b" radius={[0, 4, 4, 0]} />
               </BarChart>
@@ -331,48 +330,49 @@ export default function TelaComparativo({ data }) {
           </div>
         </div>
 
-        {/* Gráfico B: Radar Multidimensional de Vulnerabilidade */}
         <div className="chart-card">
           <div className="chart-card-header">
             <div>
-              <span className="chart-tag">VISUALIZAÇÃO 2 — RADAR MULTIDIMENSIONAL DE VULNERABILIDADE (0–100)</span>
+              <span className="chart-tag">Visualização 02 · Radar Multidimensional (0–100)</span>
               <h3>Assinatura Territorial de Riscos Socioenergéticos</h3>
             </div>
           </div>
-          <div className="chart-wrapper" style={{ height: 340 }}>
+          <div className="chart-wrapper" style={{ height: 330, marginTop: 10 }}>
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="72%" data={radarData}>
-                <PolarGrid stroke="rgba(148,163,184,0.25)" />
-                <PolarAngleAxis dataKey="dimensao" tick={{ fill: '#cbd5e1', fontSize: 11 }} />
+                <PolarGrid stroke="rgba(148,163,184,0.22)" />
+                <PolarAngleAxis dataKey="dimensao" tick={{ fill: '#94a3b8', fontSize: 11 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
                 <Radar
                   name="Beiru / Tancredo Neves"
                   dataKey="Beiru / Tancredo Neves"
-                  stroke="#f43f5e"
-                  fill="#f43f5e"
-                  fillOpacity={0.35}
+                  stroke="#fb7185"
+                  fill="#fb7185"
+                  fillOpacity={0.32}
                 />
                 <Radar
                   name="Pernambués"
                   dataKey="Pernambués"
                   stroke="#38bdf8"
                   fill="#38bdf8"
-                  fillOpacity={0.3}
+                  fillOpacity={0.26}
                 />
                 <Radar
                   name="Salvador (Ref.)"
                   dataKey="Salvador"
                   stroke="#94a3b8"
                   fill="#94a3b8"
-                  fillOpacity={0.15}
+                  fillOpacity={0.14}
                 />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Tooltip
                   formatter={(val) => [`${formatNumber(val, 2)} pts`, '']}
                   contentStyle={{
                     backgroundColor: '#0f172a',
                     borderColor: '#334155',
                     borderRadius: '8px',
+                    color: '#f8fafc',
+                    fontSize: '12px',
                   }}
                 />
               </RadarChart>
@@ -381,13 +381,12 @@ export default function TelaComparativo({ data }) {
         </div>
       </div>
 
-      {/* Linha 2 de Gráficos Comparativos: Renda Média vs Mediana e Morfologia da Coleta de Lixo */}
+      {/* Linha 2 de Gráficos Comparativos */}
       <div className="charts-two-col">
-        {/* Gráfico C: Renda Média vs Renda Mediana */}
         <div className="chart-card">
           <div className="chart-card-header">
             <div>
-              <span className="chart-tag">VISUALIZAÇÃO 3 — ASSIMETRIA DE RENDIMENTO (IBGE CENSO 2022)</span>
+              <span className="chart-tag">Visualização 03 · Assimetria de Rendimento (IBGE Censo 2022)</span>
               <h3>Rendimento Médio vs. Mediano do Responsável (R$)</h3>
             </div>
           </div>
@@ -395,21 +394,23 @@ export default function TelaComparativo({ data }) {
             A mediana idêntica de <strong>R$ 1.212,00</strong> revela que metade das famílias em ambos os bairros vive
             com até 1 salário mínimo (2022), enquanto a média superior em Pernambués reflete maior desigualdade interna.
           </p>
-          <div className="chart-wrapper" style={{ height: 270 }}>
+          <div className="chart-wrapper" style={{ height: 265 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={incomeChartData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
-                <XAxis dataKey="territorio" stroke="#cbd5e1" tick={{ fontSize: 12 }} />
-                <YAxis stroke="#94a3b8" tickFormatter={(v) => `R$${v}`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
+                <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
+                <YAxis stroke="#94a3b8" tickFormatter={(v) => `R$${v}`} tick={{ fontSize: 11.5 }} />
                 <Tooltip
                   formatter={(val) => [formatCurrency(val), '']}
                   contentStyle={{
                     backgroundColor: '#0f172a',
                     borderColor: '#334155',
                     borderRadius: '8px',
+                    color: '#f8fafc',
+                    fontSize: '12px',
                   }}
                 />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Bar dataKey="Rendimento Médio (V06004)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="Rendimento Mediano (V06006)" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -417,11 +418,10 @@ export default function TelaComparativo({ data }) {
           </div>
         </div>
 
-        {/* Gráfico D: Coleta Direta vs Caçamba */}
         <div className="chart-card">
           <div className="chart-card-header">
             <div>
-              <span className="chart-tag">VISUALIZAÇÃO 4 — MORFOLOGIA VIÁRIA E SANEAMENTO (V00397 / V00398)</span>
+              <span className="chart-tag">Visualização 04 · Morfologia Viária e Saneamento (V00397 / V00398)</span>
               <h3>Modalidade de Coleta de Resíduos Sólidos (% dos DPPO)</h3>
             </div>
           </div>
@@ -429,21 +429,23 @@ export default function TelaComparativo({ data }) {
             A dependência de <strong>caçambas comunitárias</strong> (68,14% no Beiru e 54,61% em Pernambués) evidencia o
             traçado urbano de becos, travessas e escadarias sem acesso para caminhões compactadores ou manutenção pesada.
           </p>
-          <div className="chart-wrapper" style={{ height: 270 }}>
+          <div className="chart-wrapper" style={{ height: 265 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={garbageChartData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
-                <XAxis dataKey="territorio" stroke="#cbd5e1" tick={{ fontSize: 12 }} />
-                <YAxis stroke="#94a3b8" unit="%" domain={[0, 100]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
+                <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
+                <YAxis stroke="#94a3b8" unit="%" domain={[0, 100]} tick={{ fontSize: 11.5 }} />
                 <Tooltip
                   formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
                   contentStyle={{
                     backgroundColor: '#0f172a',
                     borderColor: '#334155',
                     borderRadius: '8px',
+                    color: '#f8fafc',
+                    fontSize: '12px',
                   }}
                 />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Bar dataKey="Coleta Direta Porta a Porta" stackId="a" fill="#10b981" />
                 <Bar dataKey="Coleta em Caçamba Comunitária" stackId="a" fill="#f59e0b" />
                 <Bar dataKey="Sem Coleta Regular" stackId="a" fill="#ef4444" />
@@ -457,7 +459,7 @@ export default function TelaComparativo({ data }) {
       <div className="table-section-card">
         <div className="table-header-bar">
           <div>
-            <span className="section-eyebrow">VIEW ANALÍTICA `vw_comparativo_bairros` (CENSO 2022 + DERIVADOS)</span>
+            <span className="section-eyebrow">View Analítica · vw_comparativo_bairros (Censo 2022 + Derivados)</span>
             <h3>Tabela Comparativa com Diferenças Absolutas (Δ) e Percentuais (Δ%)</h3>
           </div>
           <div className="filter-controls-row">
@@ -510,9 +512,9 @@ export default function TelaComparativo({ data }) {
                       <span
                         className="dim-badge"
                         style={{
-                          background: `${dimColor}18`,
+                          background: `${dimColor}16`,
                           color: dimColor,
-                          border: `1px solid ${dimColor}44`,
+                          border: `1px solid ${dimColor}38`,
                         }}
                       >
                         {row.dimensao}
@@ -536,10 +538,10 @@ export default function TelaComparativo({ data }) {
                         {badge.short}
                       </span>
                     </td>
-                    <td className="td-numeric-highlight" style={{ color: '#fda4af' }}>
+                    <td className="td-numeric-highlight" style={{ color: 'var(--accent-rose)' }}>
                       {formatValueByUnit(row.vBeiru, row.unidade)}
                     </td>
-                    <td className="td-numeric-highlight" style={{ color: '#7dd3fc' }}>
+                    <td className="td-numeric-highlight" style={{ color: 'var(--accent-blue)' }}>
                       {formatValueByUnit(row.vPern, row.unidade)}
                     </td>
                     <td className="td-delta">
