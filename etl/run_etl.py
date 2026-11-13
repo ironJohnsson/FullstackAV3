@@ -1182,8 +1182,8 @@ def build_analyses():
                 "O rendimento nominal mediano do responsável pelo domicílio (V06006) é idêntico nos dois territórios: R$ 1.212,00 (exatamente 1 salário mínimo vigente em 2022), "
                 "comprovando que em ambos os bairros pelo menos 50% dos chefes de família sobrevivem com até 1 salário mínimo. Contudo, o rendimento nominal médio (V06004) em Beiru/Tancredo Neves "
                 "é de R$ 2.035,87 (35,6% abaixo da média municipal), enquanto em Pernambués atinge R$ 2.316,25 (13,8% superior ao Beiru e 26,7% abaixo de Salvador). "
-                "A análise desagregada pelos 172 setores censitários explica essa diferença: em Beiru/Tancredo Neves a vulnerabilidade de renda é mais homogênea, enquanto Pernambués "
-                "apresenta forte desigualdade intrabairro (razão Média/Mediana de 1,91x contra 1,68x no Beiru), coexistindo setores de baixa renda na comunidade tradicional (médias entre R$ 1.150 e R$ 1.500) "
+                "A análise desagregada pelos 172 setores censitários explica essa diferença: em Beiru/Tancredo Neves a vulnerabilidade de renda é mais homogênea (85,92% dos setores válidos, 61/71, com rendimento médio ≤ 1,5 SM, ante 48,60% em Salvador), enquanto Pernambués "
+                "apresenta forte desigualdade intrabairro (razão Média/Mediana de 1,91x contra 1,68x no Beiru), coexistindo 72 setores de baixa renda (72,00%) na comunidade tradicional (médias entre R$ 1.150 e R$ 1.500) "
                 "com setores de condomínios verticalizados próximos à Av. Paralela e Horto Bela Vista (onde o rendimento médio supera R$ 4.500)."
             ),
             "data_criacao": now_str,
@@ -1215,7 +1215,7 @@ def build_analyses():
                 "(2) Ausência de calçadas e acessibilidade crítica: ambos os bairros sofrem com a falta de passeio público (apenas 39,46% têm calçada no Beiru e 38,57% em Pernambués, ante 56,87% em Salvador), "
                 "mas a acessibilidade por rampa para cadeirante é quase nula em Beiru/Tancredo Neves (0,73% contra 7,12% em Pernambués e 7,15% em Salvador), reflexo da topografia acidentada de cumeada e encostas sem urbanização padronizada; "
                 "(3) Drenagem urbana (bueiros/bocas de lobo): presente em 60,92% das faces no Beiru e 68,88% em Pernambués; "
-                "e (4) Iluminação pública: embora elevada, Beiru/Tancredo Neves apresenta cobertura inferior (96,51%, deixando 527 domicílios às escuras na face da quadra) em comparação a Pernambués (98,51%, com 321 domicílios sem iluminação)."
+                "e (4) Iluminação pública: embora elevada, Beiru/Tancredo Neves apresenta cobertura inferior (96,51%, deixando 528 domicílios às escuras na face da quadra) em comparação a Pernambués (98,51%, com 320 domicílios sem iluminação)."
             ),
             "data_criacao": now_str,
         },
@@ -1225,13 +1225,13 @@ def build_analyses():
             "titulo": "5. Quais indicadores permitem discutir riscos de vulnerabilidade energética?",
             "dimensao_foco": "Socioenergética",
             "descricao": (
-                "A vulnerabilidade energética multidimensional nos dois bairros emerge da interseção de cinco indicadores: "
-                "(1) Rendimento mediano de 1 salário mínimo (R$ 1.212,00 em ambos) e alta concentração de setores de baixa renda (68,06% dos setores do Beiru e 56,00% de Pernambués têm renda média ≤ 1,5 SM), "
+                "A vulnerabilidade energética multidimensional nos dois bairros emerge da interseção de quatro vetores críticos (consolidados no IEVS Base: 66,17 no Beiru vs 52,98 em Pernambués): "
+                "(1) Rendimento mediano de 1 salário mínimo (R$ 1.212,00 em ambos) e alta concentração de setores de baixa renda (85,92% dos setores válidos do Beiru e 72,00% de Pernambués têm renda média ≤ 1,5 SM), "
                 "indicando elevado comprometimento orçamentário com a fatura de energia elétrica e gás de cozinha (GLP); "
                 "(2) Déficit de arborização (74,37% sem árvores no Beiru e 65,07% em Pernambués) somado à hiperdensidade demográfica (23.425,5 hab/km² no Beiru e 16.388,4 hab/km² em Pernambués), "
                 "que intensifica ilhas de calor intraurbanas e exige uso prolongado de ventiladores e geladeiras em regime de esforço térmico; "
                 "(3) Precariedade viária (baixa coleta direta e ausência de calçadas), que reflete becos estreitos onde a rede de distribuição de baixa tensão sofre com ligações informais, sobrecarga de transformadores e dificuldade de acesso para manutenção; "
-                "e (4) Taxa de analfabetismo residual (4,96% no Beiru e 3,24% em Pernambués, totalizando quase 3.000 adultos), que cria barreiras burocráticas ao cadastramento na Tarifa Social de Energia Elétrica (TSEE)."
+                "e (4) Taxa de analfabetismo residual (4,96% no Beiru e 3,24% em Pernambués, totalizando 2.993 adultos), que cria barreiras burocráticas ao cadastramento na Tarifa Social de Energia Elétrica (TSEE)."
             ),
             "data_criacao": now_str,
         },
@@ -1241,11 +1241,11 @@ def build_analyses():
             "titulo": "6. Como os dados energéticos da Bahia contextualizam os territórios?",
             "dimensao_foco": "Energética",
             "descricao": (
-                "A série histórica oficial da EPE para a Bahia (2018-2025) mostra que o consumo residencial estadual cresceu de 7.039,93 GWh (2018) para 7.555,35 GWh no ano censitário de 2022 e 8.162,02 GWh em 2024 (+15,9%), "
+                "A série histórica oficial da EPE para a Bahia (2018-2025) mostra que o consumo residencial estadual cresceu de 7.039,93 GWh (2018) para 7.555,35 GWh no ano censitário de 2022, atingiu 8.162,02 GWh em 2024 (+15,9%) e fechou em 8.048,81 GWh em 2025, "
                 "enquanto o número de unidades consumidoras residenciais avançou de 5,25 milhões (2018) para 5,72 milhões (2022) e 6,16 milhões (2025). "
                 "O dado estrutural mais relevante extraído dos microdados abertos da EPE é o peso da Subclasse Residencial Baixa Renda (Tarifa Social - TSEE) na Bahia: "
                 "em 2022, 1.613.851 famílias baianas (28,22% de todos os consumidores residenciais do estado) estavam enquadradas na Baixa Renda, consumindo 2.102,72 GWh (média de 108,58 kWh/mês por unidade, muito próxima aos 110,68 kWh/mês da classe convencional). "
-                "Em 2025, a subclasse Baixa Renda atingiu 2.020.262 unidades consumidoras (32,78% do estado). Esse contexto estadual demonstra que quase um terço dos domicílios baianos depende de subsídio tarifário para manter um patamar básico de consumo (~110 kWh/mês), "
+                "Em 2025, a subclasse Baixa Renda atingiu 2.020.262 unidades consumidoras (32,78% do estado). Esse contexto estadual demonstra que quase um terço dos domicílios baianos depende de subsídio tarifário para manter um patamar básico de consumo (~109-110 kWh/mês), "
                 "sendo Beiru/Tancredo Neves e Pernambués territórios prioritários em Salvador para busca ativa do CadÚnico/TSEE devido à sua mediana salarial de 1 SM."
             ),
             "data_criacao": now_str,
@@ -1273,7 +1273,7 @@ def build_analyses():
             "dimensao_foco": "Socioenergética",
             "descricao": (
                 "Com base nas evidências empíricas do Censo 2022, IPEA e EPE, recomenda-se um plano integrado em 4 eixos prioritários: "
-                "(1) Eficiência Energética e Busca Ativa da Tarifa Social (Prioridade Máxima em ambos os bairros, com foco nos 68,1% de setores de baixa renda do Beiru e nos bolsões da FCU Pernambués): "
+                "(1) Eficiência Energética e Busca Ativa da Tarifa Social (Prioridade Máxima em ambos os bairros, com foco nos 61 setores (85,92%) de baixa renda do Beiru/Tancredo Neves e nos 72 setores (72,00%) de Pernambués): "
                 "mutirões de recadastramento automático no CadÚnico/TSEE articulados aos CRAS locais e ampliação dos programas de Eficiência Energética da ANEEL/Coelba para substituição gratuita de geladeiras antigas e lâmpadas por LED; "
                 "(2) Arborização Urbana e Mitigação de Ilhas de Calor (Prioridade Crítica em Beiru/Tancredo Neves, onde 74,37% das faces não têm árvores e a densidade chega a 23.425 hab/km²): "
                 "plantio de espécies arbóreas de porte compatível com redes elétricas compactas, implantação de telhados frios/pintura reflexiva em lajes comunitárias e criação de microparques de sombreamento; "
