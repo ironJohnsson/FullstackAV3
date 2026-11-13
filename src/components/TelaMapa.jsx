@@ -95,7 +95,7 @@ function getSectorColor(props, theme) {
   return '#38bdf8';
 }
 
-export default function TelaMapa({ data }) {
+export default function TelaMapa({ data, appTheme = 'dark' }) {
   const [granularity, setGranularity] = useState('setores_com_bairros');
   const [theme, setTheme] = useState('ievs');
   const [focusArea, setFocusArea] = useState('BOTH');
@@ -339,8 +339,13 @@ export default function TelaMapa({ data }) {
           >
             <MapViewportController center={viewport.center} zoom={viewport.zoom} />
             <TileLayer
+              key={appTheme}
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Malha Oficial: IBGE Censo Demográfico 2022'
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              url={
+                appTheme === 'light'
+                  ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+                  : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+              }
             />
 
             {data.geojsonBairros && (

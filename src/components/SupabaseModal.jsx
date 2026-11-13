@@ -32,7 +32,7 @@ export default function SupabaseModal({ isOpen, onClose, connectionStatus, onRec
         <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Database size={20} style={{ color: '#10b981' }} />
-            <h3>Persistência PostgreSQL / Supabase (Etapa 4)</h3>
+            <h3>Persistência PostgreSQL / Supabase</h3>
           </div>
           <button type="button" className="icon-close-btn" onClick={onClose}>
             <X size={18} />

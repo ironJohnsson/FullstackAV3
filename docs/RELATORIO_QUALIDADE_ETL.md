@@ -1,6 +1,6 @@
 # Relatório de Qualidade de Dados e Auditoria ETL (Etapa 3)
 
-**Data de Execução do Pipeline:** `2026-11-11 19:15:07`  
+**Data de Execução do Pipeline:** `2026-11-12 22:13:26`  
 **Script Principal:** `etl/run_etl.py`  
 **Status da Validação:** ✅ 100% Aprovado (0 violações de chave estrangeira, 0 inferências ecológicas indevidas)
 

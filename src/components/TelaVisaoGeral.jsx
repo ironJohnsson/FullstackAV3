@@ -36,6 +36,7 @@ import {
   getClassificacaoBadgeStyle,
   getDimensaoColor,
 } from '../utils/formatters';
+import { getChartTheme } from '../utils/chartTheme';
 import { queryObservacoesDetalhadas } from '../services/observatorioService';
 
 const TERRITORY_OPTIONS = [
@@ -61,7 +62,13 @@ const TERRITORY_OPTIONS = [
 
 const RACE_COLORS = ['#0ea5e9', '#6366f1', '#94a3b8'];
 
-export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro }) {
+export default function TelaVisaoGeral({
+  data,
+  selectedBairro,
+  setSelectedBairro,
+  onNavigateTab,
+  theme = 'dark',
+}) {
   const [activeModule, setActiveModule] = useState('kpis'); // 'kpis' | 'graficos' | 'tabela'
   const [activeChartTab, setActiveChartTab] = useState('infra'); // 'infra' | 'demografia' | 'ambos'
   const [showGeoNote, setShowGeoNote] = useState(false);
@@ -71,6 +78,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
   const [dimFilter, setDimFilter] = useState('ALL');
   const [classFilter, setClassFilter] = useState('ALL');
   const [fonteFilter, setFonteFilter] = useState('ALL');
+  const ct = getChartTheme(theme);
 
   const activeCode = selectedBairro === 'BOTH' ? '2927408018' : selectedBairro;
   const perfil = data.perfisTerritoriais[activeCode] || data.perfisTerritoriais['2927408018'];
@@ -161,6 +169,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
   const kpiCards = [
     {
       title: 'População Residente',
+      dimension: 'Demográfica',
       value: formatNumber(perfil.POP_RESIDENTE),
       unit: 'habitantes',
       subtitle: `Densidade: ${formatNumber(perfil.DENSIDADE_DEMOGRAFICA, 1)} hab/km² (${formatNumber(perfil.AREA_KM2, 2)} km²)`,
@@ -173,6 +182,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
     },
     {
       title: 'Domicílios Ocupados (DPPO)',
+      dimension: 'Habitacional',
       value: formatNumber(perfil.DOM_OCUPADOS),
       unit: `de ${formatNumber(perfil.DOM_TOTAIS)} totais`,
       subtitle: `Média: ${formatNumber(perfil.MEDIA_MORADORES_DOM, 2)} mor/dom · 6+ mor.: ${formatNumber(perfil.ADENSAMENTO_DOMICILIAR_6MAIS, 2)}%`,
@@ -185,6 +195,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
     },
     {
       title: 'Rendimento Médio / Mediano',
+      dimension: 'Econômica',
       value: formatCurrency(perfil.RENDA_MEDIA_RESP),
       unit: `Mediana: ${formatCurrency(perfil.RENDA_MEDIANA_RESP)}`,
       subtitle: `${formatNumber(perfil.PERC_SETORES_BAIXA_RENDA, 1)}% dos setores com renda média ≤ 1,5 SM`,
@@ -197,6 +208,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
     },
     {
       title: 'Taxa de Alfabetização (15+)',
+      dimension: 'Social',
       value: `${formatNumber(perfil.TAXA_ALFABETIZACAO_15MAIS, 2)}%`,
       unit: `${formatNumber(perfil.PESSOAS_NAO_ALFABETIZADAS_15MAIS)} não alfabetizados`,
       subtitle: `População Negra (Preta + Parda): ${formatNumber(perfil.PERC_POP_NEGRA, 2)}%`,
@@ -209,6 +221,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
     },
     {
       title: 'Déficit de Arborização no Entorno',
+      dimension: 'Urbana',
       value: `${formatNumber(perfil.ENTORNO_SEM_ARVORES, 2)}%`,
       unit: 'faces sem árvores',
       subtitle: `Apenas ${formatNumber(perfil.ENTORNO_ARBORIZACAO, 2)}% com ≥1 árvore · Calçada: ${formatNumber(perfil.ENTORNO_CALCADA, 1)}%`,
@@ -221,6 +234,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
     },
     {
       title: 'IEVS Exploratório (Cenário Base)',
+      dimension: 'Socioenergética',
       value: `${formatNumber(perfil.IEVS_EXPLORATORIO, 2)}`,
       unit: '/ 100 pontos',
       subtitle: `Risco Térmico: ${formatNumber(perfil.PROXY_RISCO_TERMICO_URBANO, 1)} · Pressão Tarifária: ${formatNumber(perfil.PROXY_COMPROMETIMENTO_RENDA_ENERGIA, 1)}%`,
@@ -233,10 +247,15 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
     },
   ];
 
-  function toggleCardDetail(idx) {
+  const filteredKpiCards = useMemo(() => {
+    if (dimFilter === 'ALL') return kpiCards;
+    return kpiCards.filter((card) => card.dimension === dimFilter);
+  }, [dimFilter, perfil, activeCode]);
+
+  function toggleCardDetail(cardKey) {
     setExpandedCards((prev) => ({
       ...prev,
-      [idx]: !(expandAllCards ? true : !!prev[idx]),
+      [cardKey]: !(expandAllCards ? true : !!prev[cardKey]),
     }));
     if (expandAllCards) {
       setExpandAllCards(false);
@@ -245,7 +264,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
 
   return (
     <div className="screen-container">
-      {/* Painel Superior Enxuto: Seletor de Território + Botão de Nota Geográfica */}
+      {/* Painel Superior Enxuto: Seletor de Território, Dimensão + Botão de Nota Geográfica */}
       <div className="control-panel-card">
         <div className="control-panel-header">
           <div>
@@ -255,7 +274,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
             </h2>
           </div>
 
-          <div className="territory-selector-group" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <div className="territory-selector-group">
             <div className="QuickSwitchPills" role="group" aria-label="Seleção rápida de território">
               {TERRITORY_OPTIONS.map((opt) => (
                 <button
@@ -268,6 +287,24 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                   {opt.shortLabel} <span style={{ opacity: 0.72, fontWeight: 400 }}>({opt.popLabel})</span>
                 </button>
               ))}
+            </div>
+
+            <div className="filter-item" title="Filtrar KPIs e tabela por dimensão temática">
+              <Filter size={13} />
+              <select
+                aria-label="Filtrar por dimensão temática"
+                value={dimFilter}
+                onChange={(e) => setDimFilter(e.target.value)}
+                className="select-input"
+              >
+                <option value="ALL">Todas as Dimensões</option>
+                <option value="Demográfica">Demográfica</option>
+                <option value="Econômica">Econômica</option>
+                <option value="Social">Social</option>
+                <option value="Habitacional">Habitacional</option>
+                <option value="Urbana">Urbana</option>
+                <option value="Socioenergética">Socioenergética</option>
+              </select>
             </div>
 
             <button
@@ -340,8 +377,8 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
               const next = !expandAllCards;
               setExpandAllCards(next);
               const map = {};
-              kpiCards.forEach((_, i) => {
-                map[i] = next;
+              kpiCards.forEach((c) => {
+                map[c.title] = next;
               });
               setExpandedCards(map);
             }}
@@ -378,21 +415,32 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
         )}
       </div>
 
-      {/* MÓDULO 1: 6 KPI CARDS LIMPÍSSIMOS COM DETALHES EXPANSÍVEIS AO CLICAR */}
+      {/* MÓDULO 1: 6 KPI CARDS LIMPÍSSIMOS COM FONTE/ANO VISÍVEIS E DETALHES EXPANSÍVEIS */}
       {activeModule === 'kpis' && (
         <>
+          {dimFilter !== 'ALL' && (
+            <div className="chart-card" style={{ padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                Filtro ativo: dimensão <strong>{dimFilter}</strong> ({filteredKpiCards.length} de {kpiCards.length} cards · {filteredObs.length} indicadores na tabela)
+              </span>
+              <button type="button" className="action-toggle-btn" onClick={() => setDimFilter('ALL')}>
+                Mostrar todas as dimensões
+              </button>
+            </div>
+          )}
+
           <div className="kpi-grid">
-            {kpiCards.map((card, idx) => {
+            {filteredKpiCards.map((card) => {
               const IconComp = card.icon;
               const badge = getClassificacaoBadgeStyle(card.classification);
-              const isOpen = expandAllCards || !!expandedCards[idx];
+              const isOpen = expandAllCards || !!expandedCards[card.title];
               return (
                 <div
-                  key={idx}
+                  key={card.title}
                   className="kpi-card"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => toggleCardDetail(idx)}
-                  title="Clique para abrir ou recolher detalhes metodológicos e fonte"
+                  onClick={() => toggleCardDetail(card.title)}
+                  title="Clique para abrir ou recolher detalhes metodológicos e escala"
                 >
                   <div className="kpi-card-top">
                     <div className="kpi-title-wrap">
@@ -436,10 +484,13 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                       </div>
                     </>
                   ) : (
-                    <div className="kpi-meta-footer" style={{ paddingTop: 6, marginTop: 4 }}>
-                      <span style={{ fontSize: '0.73rem', color: 'var(--accent-blue)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <ChevronDown size={13} /> Ver detalhes e fonte oficial
-                      </span>
+                    <div className="kpi-meta-footer">
+                      <div className="kpi-meta-inline">
+                        <span>{card.source} · Ref: {card.year}</span>
+                        <span className="kpi-expand-hint">
+                          <ChevronDown size={12} /> Detalhes
+                        </span>
+                      </div>
                       <span
                         className="kpi-icon-badge"
                         style={{ background: `${card.accent}18`, color: card.accent }}
@@ -463,7 +514,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
               padding: '10px 14px',
               background: 'var(--bg-card)',
               border: '1px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-md)',
+              borderRadius: '11px',
             }}
           >
             <span style={{ fontSize: '0.79rem', color: 'var(--text-secondary)' }}>
@@ -514,18 +565,12 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                     layout="vertical"
                     margin={{ top: 6, right: 20, left: 32, bottom: 6 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" horizontal={false} />
-                    <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" tick={{ fontSize: 11.5 }} />
-                    <YAxis type="category" dataKey="indicador" stroke="#94a3b8" width={132} tick={{ fontSize: 11.5 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} horizontal={false} />
+                    <XAxis type="number" domain={[0, 100]} stroke={ct.axisStroke} unit="%" tick={{ fontSize: 11.5, fill: ct.tickFill }} />
+                    <YAxis type="category" dataKey="indicador" stroke={ct.axisStroke} width={132} tick={{ fontSize: 11.5, fill: ct.tickFill }} />
                     <Tooltip
                       formatter={(value) => [`${formatNumber(value, 2)}%`, '']}
-                      contentStyle={{
-                        backgroundColor: '#0f172a',
-                        borderColor: '#334155',
-                        borderRadius: '8px',
-                        color: '#f8fafc',
-                        fontSize: '12px',
-                      }}
+                      contentStyle={ct.tooltipStyle}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Bar dataKey={perfil.nome} fill="#38bdf8" radius={[0, 4, 4, 0]} barSize={14} />
@@ -554,18 +599,12 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                 <div style={{ flex: 1.25, height: 270 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={ageChartData} margin={{ top: 10, right: 10, left: -8, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                      <XAxis dataKey="faixa" stroke="#94a3b8" tick={{ fontSize: 11 }} />
-                      <YAxis stroke="#94a3b8" unit="%" tick={{ fontSize: 11 }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} vertical={false} />
+                      <XAxis dataKey="faixa" stroke={ct.axisStroke} tick={{ fontSize: 11, fill: ct.tickFill }} />
+                      <YAxis stroke={ct.axisStroke} unit="%" tick={{ fontSize: 11, fill: ct.tickFill }} />
                       <Tooltip
                         formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
-                        contentStyle={{
-                          backgroundColor: '#0f172a',
-                          borderColor: '#334155',
-                          borderRadius: '8px',
-                          color: '#f8fafc',
-                          fontSize: '12px',
-                        }}
+                        contentStyle={ct.tooltipStyle}
                       />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
                       <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[4, 4, 0, 0]} />
@@ -597,13 +636,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
                       </Pie>
                       <Tooltip
                         formatter={(val) => [`${formatNumber(val, 2)}%`, 'Participação']}
-                        contentStyle={{
-                          backgroundColor: '#0f172a',
-                          borderColor: '#334155',
-                          borderRadius: '8px',
-                          color: '#f8fafc',
-                          fontSize: '12px',
-                        }}
+                        contentStyle={ct.tooltipStyle}
                       />
                     </PieChart>
                   </ResponsiveContainer>
@@ -626,7 +659,7 @@ export default function TelaVisaoGeral({ data, selectedBairro, setSelectedBairro
               <div className="filter-item">
                 <Filter size={14} />
                 <select value={dimFilter} onChange={(e) => setDimFilter(e.target.value)} className="select-input">
-                  <option value="ALL">Todas as Dimensões (7)</option>
+                  <option value="ALL">Todas as Dimensões</option>
                   <option value="Demográfica">Demográfica</option>
                   <option value="Econômica">Econômica</option>
                   <option value="Social">Social</option>
