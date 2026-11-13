@@ -1773,6 +1773,26 @@ code {
   background: transparent;
 }
 
+/* Recharts focus & high-contrast tooltip typography */
+.recharts-wrapper,
+.recharts-wrapper *:focus,
+.recharts-surface:focus {
+  outline: none !important;
+}
+
+.recharts-default-tooltip .recharts-tooltip-label {
+  color: var(--accent-blue) !important;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.recharts-default-tooltip .recharts-tooltip-item,
+.recharts-default-tooltip .recharts-tooltip-item-name,
+.recharts-default-tooltip .recharts-tooltip-item-value,
+.recharts-default-tooltip .recharts-tooltip-item-separator {
+  color: var(--text-primary) !important;
+}
+
 @keyframes panelReveal {
   from {
     opacity: 0;
