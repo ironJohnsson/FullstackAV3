@@ -148,7 +148,7 @@ export default function App() {
             >
               <span className="status-dot" />
               <Database size={13} />
-              <span>Supabase Live</span>
+              <span>{data.connectionStatus.mode === 'supabase_live' ? 'Supabase Live' : 'Espelho ETL'}</span>
             </button>
           </div>
         </div>
@@ -199,11 +199,12 @@ export default function App() {
             selectedBairro={selectedBairro}
             setSelectedBairro={setSelectedBairro}
             onNavigateTab={setActiveTab}
+            theme={theme}
           />
         )}
-        {activeTab === 'comparativo' && <TelaComparativo data={data} />}
-        {activeTab === 'mapa' && <TelaMapa data={data} />}
-        {activeTab === 'energia_ievs' && <TelaEnergiaIEVS data={data} />}
+        {activeTab === 'comparativo' && <TelaComparativo data={data} theme={theme} />}
+        {activeTab === 'mapa' && <TelaMapa data={data} appTheme={theme} />}
+        {activeTab === 'energia_ievs' && <TelaEnergiaIEVS data={data} theme={theme} />}
         {activeTab === 'metodologia' && <TelaMetodologiaAnalise data={data} />}
       </main>
 

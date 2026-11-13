@@ -26,12 +26,14 @@ import {
   Info,
 } from 'lucide-react';
 import { formatNumber } from '../utils/formatters';
+import { getChartTheme } from '../utils/chartTheme';
 
-export default function TelaEnergiaIEVS({ data }) {
+export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
   const [activeModule, setActiveModule] = useState('epe_bahia'); // 'epe_bahia' | 'simulador_ievs' | 'sensibilidade'
   const [showScaleNote, setShowScaleNote] = useState(false);
   const [showIevsNote, setShowIevsNote] = useState(false);
   const [showEpeCardMeta, setShowEpeCardMeta] = useState(false);
+  const ct = getChartTheme(theme);
 
   const [wRendaRaw, setWRendaRaw] = useState(40);
   const [wHabRaw, setWHabRaw] = useState(30);
@@ -366,18 +368,12 @@ export default function TelaEnergiaIEVS({ data }) {
               <div className="chart-wrapper" style={{ height: 295 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={epeSeries} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                    <XAxis dataKey="ano" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
-                    <YAxis stroke="#94a3b8" unit=" GWh" tick={{ fontSize: 11.5 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} vertical={false} />
+                    <XAxis dataKey="ano" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
+                    <YAxis stroke={ct.axisStroke} unit=" GWh" tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                     <Tooltip
                       formatter={(val) => [`${formatNumber(val, 2)} GWh`, '']}
-                      contentStyle={{
-                        backgroundColor: '#0f172a',
-                        borderColor: '#334155',
-                        borderRadius: '8px',
-                        color: '#f8fafc',
-                        fontSize: '12px',
-                      }}
+                      contentStyle={ct.tooltipStyle}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Area
@@ -418,26 +414,20 @@ export default function TelaEnergiaIEVS({ data }) {
               <div className="chart-wrapper" style={{ height: 295 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={epeSeries} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                    <XAxis dataKey="ano" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} vertical={false} />
+                    <XAxis dataKey="ano" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                     <YAxis
                       yAxisId="left"
-                      stroke="#94a3b8"
+                      stroke={ct.axisStroke}
                       tickFormatter={(v) => `${(v / 1_000_000).toFixed(1)}M`}
-                      tick={{ fontSize: 11.5 }}
+                      tick={{ fill: ct.tickFill, fontSize: 11.5 }}
                     />
-                    <YAxis yAxisId="right" orientation="right" stroke="#eab308" unit="%" domain={[0, 45]} tick={{ fontSize: 11.5 }} />
+                    <YAxis yAxisId="right" orientation="right" stroke="#eab308" unit="%" domain={[0, 45]} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                     <Tooltip
                       formatter={(val, name) =>
                         String(name).includes('%') ? [`${formatNumber(val, 2)}%`, name] : [formatNumber(val), name]
                       }
-                      contentStyle={{
-                        backgroundColor: '#0f172a',
-                        borderColor: '#334155',
-                        borderRadius: '8px',
-                        color: '#f8fafc',
-                        fontSize: '12px',
-                      }}
+                      contentStyle={ct.tooltipStyle}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Bar
@@ -616,18 +606,10 @@ export default function TelaEnergiaIEVS({ data }) {
               <div style={{ height: 245, marginTop: 14 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={simulatedIEVS.chartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                    <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
-                    <YAxis stroke="#94a3b8" domain={[0, 80]} tick={{ fontSize: 11.5 }} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#0f172a',
-                        borderColor: '#334155',
-                        borderRadius: '8px',
-                        color: '#f8fafc',
-                        fontSize: '12px',
-                      }}
-                    />
+                    <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} vertical={false} />
+                    <XAxis dataKey="territorio" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
+                    <YAxis stroke={ct.axisStroke} domain={[0, 80]} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
+                    <Tooltip contentStyle={ct.tooltipStyle} />
                     <Legend wrapperStyle={{ fontSize: 11.5 }} />
                     <Bar dataKey="Subíndice Renda (Ponderado)" stackId="ievs" fill="#f59e0b" />
                     <Bar dataKey="Subíndice Habitação (Ponderado)" stackId="ievs" fill="#10b981" />
