@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
-import { Layers, MapPin, Compass, Eye } from 'lucide-react';
+import { Layers, MapPin, Compass, Eye, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { formatNumber, formatCurrency } from '../utils/formatters';
 
 function MapViewportController({ center, zoom }) {
@@ -100,6 +100,8 @@ export default function TelaMapa({ data }) {
   const [theme, setTheme] = useState('ievs');
   const [focusArea, setFocusArea] = useState('BOTH');
   const [selectedFeature, setSelectedFeature] = useState(null);
+  const [showFcuList, setShowFcuList] = useState(false);
+  const [showLayerDesc, setShowLayerDesc] = useState(false);
 
   const activeLayerMeta = THEMATIC_LAYERS.find((l) => l.id === theme) || THEMATIC_LAYERS[0];
 
@@ -239,12 +241,21 @@ export default function TelaMapa({ data }) {
         <div className="control-panel-header">
           <div>
             <span className="section-eyebrow">
-              Tela 03 · Mapa Temático de Vulnerabilidade (Malha Oficial IBGE Censo 2022)
+              Mapa Temático · Malha Oficial IBGE Censo 2022
             </span>
             <h2 className="section-title">
-              Cartografia de Limites de Bairros e 172 Setores Censitários (Beiru/Tancredo Neves e Pernambués)
+              Cartografia de Bairros e 172 Setores Censitários (Beiru/Tancredo Neves e Pernambués)
             </h2>
           </div>
+          <button
+            type="button"
+            className={`action-toggle-btn ${showLayerDesc ? 'active' : ''}`}
+            onClick={() => setShowLayerDesc((v) => !v)}
+          >
+            <Info size={14} />
+            <span>{showLayerDesc ? 'Ocultar Descrição da Camada' : 'Sobre a Camada Selecionada'}</span>
+            {showLayerDesc ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+          </button>
         </div>
 
         <div className="map-controls-grid">
@@ -308,6 +319,15 @@ export default function TelaMapa({ data }) {
             </div>
           </div>
         </div>
+
+        {showLayerDesc && (
+          <div className="methodology-banner" style={{ marginTop: 10 }}>
+            <Info size={16} className="banner-icon" />
+            <div>
+              <strong>{activeLayerMeta.label}:</strong> {activeLayerMeta.description}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="map-workspace-grid">
@@ -315,7 +335,7 @@ export default function TelaMapa({ data }) {
           <MapContainer
             center={viewport.center}
             zoom={viewport.zoom}
-            style={{ height: '560px', width: '100%', borderRadius: '10px' }}
+            style={{ height: '540px', width: '100%', borderRadius: '10px' }}
           >
             <MapViewportController center={viewport.center} zoom={viewport.zoom} />
             <TileLayer
@@ -343,10 +363,6 @@ export default function TelaMapa({ data }) {
           </MapContainer>
 
           <div className="map-legend-bar">
-            <div className="legend-title">
-              <strong>Legenda ({activeLayerMeta.label}):</strong>
-              <span>{activeLayerMeta.description}</span>
-            </div>
             <div className="legend-items-row">
               {activeLayerMeta.legend.map((item, i) => (
                 <div key={i} className="legend-item">
@@ -372,10 +388,24 @@ export default function TelaMapa({ data }) {
 
         <div className="map-sidebar-card">
           <div className="sidebar-section">
-            <span className="section-eyebrow">Síntese dos Setores Exibidos</span>
-            <h3 style={{ margin: '4px 0 10px', fontSize: '1rem', fontWeight: 700 }}>
-              {sectorStats.total} Setores Censitários (IBGE 2022)
-            </h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <div>
+                <span className="section-eyebrow">Síntese dos Setores Exibidos</span>
+                <h3 style={{ margin: '2px 0 0', fontSize: '0.96rem', fontWeight: 700 }}>
+                  {sectorStats.total} Setores Censitários (IBGE 2022)
+                </h3>
+              </div>
+              <button
+                type="button"
+                className={`action-toggle-btn ${showFcuList ? 'active' : ''}`}
+                onClick={() => setShowFcuList((v) => !v)}
+                style={{ padding: '4px 9px', fontSize: '0.72rem' }}
+              >
+                <span>FCUs ({sectorStats.fcuNames.length})</span>
+                {showFcuList ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              </button>
+            </div>
+
             <div className="mini-stat-grid">
               <div className="mini-stat-box">
                 <span className="mini-stat-val" style={{ color: 'var(--accent-rose)' }}>
@@ -391,18 +421,20 @@ export default function TelaMapa({ data }) {
               </div>
             </div>
 
-            <div className="fcu-tags-box">
-              <span className="fcu-tags-title">
-                Comunidades Urbanas (FCUs) mapeadas pelo IBGE nestes setores:
-              </span>
-              <div className="fcu-tags-list">
-                {sectorStats.fcuNames.map((name) => (
-                  <span key={name} className="fcu-tag">
-                    {name}
-                  </span>
-                ))}
+            {showFcuList && (
+              <div className="fcu-tags-box" style={{ marginTop: 10 }}>
+                <span className="fcu-tags-title">
+                  Comunidades Urbanas (FCUs) mapeadas pelo IBGE nestes setores:
+                </span>
+                <div className="fcu-tags-list">
+                  {sectorStats.fcuNames.map((name) => (
+                    <span key={name} className="fcu-tag">
+                      {name}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <hr className="sidebar-divider" />
@@ -487,10 +519,10 @@ export default function TelaMapa({ data }) {
               </div>
             ) : (
               <div className="empty-inspector">
-                <MapPin size={24} style={{ color: 'var(--accent-blue)', marginBottom: 8 }} />
+                <MapPin size={22} style={{ color: 'var(--accent-blue)', marginBottom: 6 }} />
                 <p>
                   Clique em qualquer um dos <strong>172 Setores Censitários</strong> ou nos polígonos de{' '}
-                  <strong>Bairro</strong> no mapa ao lado para inspecionar seus dados oficiais do Censo 2022.
+                  <strong>Bairro</strong> no mapa ao lado para abrir os dados oficiais do Censo 2022.
                 </p>
               </div>
             )}

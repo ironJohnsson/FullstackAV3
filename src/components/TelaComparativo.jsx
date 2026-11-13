@@ -14,7 +14,16 @@ import {
   PolarRadiusAxis,
   Radar,
 } from 'recharts';
-import { Download, Filter } from 'lucide-react';
+import {
+  Download,
+  Filter,
+  BarChart3,
+  PieChart as PieChartIcon,
+  Table2,
+  ChevronDown,
+  ChevronUp,
+  Info,
+} from 'lucide-react';
 import {
   formatNumber,
   formatCurrency,
@@ -24,6 +33,8 @@ import {
 } from '../utils/formatters';
 
 export default function TelaComparativo({ data }) {
+  const [activeModule, setActiveModule] = useState('disparidades_radar'); // 'disparidades_radar' | 'renda_residuos' | 'tabela_delta'
+  const [showStripNotes, setShowStripNotes] = useState(false);
   const [dimFilter, setDimFilter] = useState('ALL');
   const [classFilter, setClassFilter] = useState('ALL');
 
@@ -236,337 +247,411 @@ export default function TelaComparativo({ data }) {
 
   return (
     <div className="screen-container">
-      {/* Cabeçalho Comparativo */}
+      {/* Cabeçalho Comparativo Enxuto */}
       <div className="control-panel-card">
         <div className="control-panel-header">
           <div>
-            <span className="section-eyebrow">Tela 02 · Comparativo Territorial Direto (Censo 2022)</span>
+            <span className="section-eyebrow">Comparativo Territorial · Censo 2022</span>
             <h2 className="section-title">
               Beiru / Tancredo Neves (2927408018) vs. Pernambués (2927408117)
             </h2>
           </div>
-          <button type="button" className="btn-secondary" onClick={handleExportCsv}>
-            <Download size={15} /> Exportar Comparativo (.CSV)
-          </button>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className={`action-toggle-btn ${showStripNotes ? 'active' : ''}`}
+              onClick={() => setShowStripNotes((v) => !v)}
+            >
+              <Info size={14} />
+              <span>{showStripNotes ? 'Recolher Síntese Interpretativa' : 'Ver Síntese Interpretativa'}</span>
+              {showStripNotes ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+            </button>
+            <button type="button" className="btn-secondary" onClick={handleExportCsv}>
+              <Download size={14} /> Exportar (.CSV)
+            </button>
+          </div>
         </div>
 
         <div className="comparison-highlight-strip">
-          <div className="comp-strip-box">
+          <div
+            className="comp-strip-box"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setShowStripNotes((v) => !v)}
+            title="Clique para mostrar ou ocultar a interpretação"
+          >
             <span className="comp-strip-label">População & Escala Física</span>
             <div className="comp-strip-values">
               <span className="val-beiru">Beiru: 38.329 hab (1,64 km²)</span>
               <span className="vs-badge">VS</span>
               <span className="val-pern">Pernambués: 52.564 hab (3,21 km²)</span>
             </div>
-            <p className="comp-strip-note">
-              Pernambués tem <strong>+14.235 habitantes (+37,1%)</strong>, mas Beiru/Tancredo Neves é{' '}
-              <strong>+42,9% mais denso</strong> (23.425,5 vs. 16.388,4 hab/km²).
-            </p>
+            {showStripNotes && (
+              <p className="comp-strip-note">
+                Pernambués tem <strong>+14.235 habitantes (+37,1%)</strong>, mas Beiru/Tancredo Neves é{' '}
+                <strong>+42,9% mais denso</strong> (23.425,5 vs. 16.388,4 hab/km²).
+              </p>
+            )}
           </div>
 
-          <div className="comp-strip-box">
+          <div
+            className="comp-strip-box"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setShowStripNotes((v) => !v)}
+            title="Clique para mostrar ou ocultar a interpretação"
+          >
             <span className="comp-strip-label">Rendimento Médio vs. Mediano (V06004/V06006)</span>
             <div className="comp-strip-values">
               <span className="val-beiru">Beiru: R$ 2.035,87 (Med: R$ 1.212)</span>
               <span className="vs-badge">VS</span>
               <span className="val-pern">Pernambués: R$ 2.316,25 (Med: R$ 1.212)</span>
             </div>
-            <p className="comp-strip-note">
-              Mediana idêntica de <strong>1 SM (R$ 1.212,00)</strong> nos dois bairros. A média de Pernambués é{' '}
-              <strong>+13,8% maior</strong> devido aos condomínios nas bordas da Av. Paralela/Horto Bela Vista.
-            </p>
+            {showStripNotes && (
+              <p className="comp-strip-note">
+                Mediana idêntica de <strong>1 SM (R$ 1.212,00)</strong> nos dois bairros. A média de Pernambués é{' '}
+                <strong>+13,8% maior</strong> devido aos condomínios nas bordas da Av. Paralela/Horto Bela Vista.
+              </p>
+            )}
           </div>
 
-          <div className="comp-strip-box">
+          <div
+            className="comp-strip-box"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setShowStripNotes((v) => !v)}
+            title="Clique para mostrar ou ocultar a interpretação"
+          >
             <span className="comp-strip-label">Vulnerabilidade Socioenergética (IEVS Base)</span>
             <div className="comp-strip-values">
               <span className="val-beiru">Beiru: 58,15 / 100</span>
               <span className="vs-badge">VS</span>
               <span className="val-pern">Pernambués: 48,26 / 100</span>
             </div>
-            <p className="comp-strip-note">
-              Beiru apresenta <strong>+9,89 pontos (+20,5%)</strong> de vulnerabilidade sintética, puxado pelo déficit de
-              arborização (74,4% sem árvores) e menor coleta direta (29,2%).
+            {showStripNotes && (
+              <p className="comp-strip-note">
+                Beiru apresenta <strong>+9,89 pontos (+20,5%)</strong> de vulnerabilidade sintética, puxado pelo déficit de
+                arborização (74,4% sem árvores) e menor coleta direta (29,2%).
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Seletor Modular de Visualização Comparativa */}
+      <div className="module-switcher-bar">
+        <div className="module-tabs-group" role="tablist" aria-label="Módulos do Comparativo">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeModule === 'disparidades_radar'}
+            className={`module-tab-btn ${activeModule === 'disparidades_radar' ? 'active' : ''}`}
+            onClick={() => setActiveModule('disparidades_radar')}
+          >
+            <BarChart3 size={14} />
+            <span>1. Disparidades Urbanas & Radar IEVS</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeModule === 'renda_residuos'}
+            className={`module-tab-btn ${activeModule === 'renda_residuos' ? 'active' : ''}`}
+            onClick={() => setActiveModule('renda_residuos')}
+          >
+            <PieChartIcon size={14} />
+            <span>2. Assimetria de Renda & Coleta de Lixo</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeModule === 'tabela_delta'}
+            className={`module-tab-btn ${activeModule === 'tabela_delta' ? 'active' : ''}`}
+            onClick={() => setActiveModule('tabela_delta')}
+          >
+            <Table2 size={14} />
+            <span>3. Tabela Comparativa Completa (Δ e Δ%)</span>
+          </button>
+        </div>
+      </div>
+
+      {/* MÓDULO 1: DISPARIDADES E RADAR MULTIDIMENSIONAL */}
+      {activeModule === 'disparidades_radar' && (
+        <div className="charts-two-col">
+          <div className="chart-card">
+            <div className="chart-card-header">
+              <div>
+                <span className="chart-tag">Visualização 01 · Barras Agrupadas (Censo 2022)</span>
+                <h3>Disparidades Socioeconômicas e de Infraestrutura Urbana (%)</h3>
+              </div>
+            </div>
+            <div className="chart-wrapper" style={{ height: 330, marginTop: 10 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={barPercentComparison}
+                  layout="vertical"
+                  margin={{ top: 6, right: 20, left: 42, bottom: 6 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" horizontal={false} />
+                  <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" tick={{ fontSize: 11.5 }} />
+                  <YAxis type="category" dataKey="metrica" stroke="#94a3b8" width={158} tick={{ fontSize: 11.5 }} />
+                  <Tooltip
+                    formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
+                    contentStyle={{
+                      backgroundColor: '#0f172a',
+                      borderColor: '#334155',
+                      borderRadius: '8px',
+                      color: '#f8fafc',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="Pernambués" fill="#38bdf8" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="Salvador" fill="#64748b" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="chart-card">
+            <div className="chart-card-header">
+              <div>
+                <span className="chart-tag">Visualização 02 · Radar Multidimensional (0–100)</span>
+                <h3>Assinatura Territorial de Riscos Socioenergéticos</h3>
+              </div>
+            </div>
+            <div className="chart-wrapper" style={{ height: 330, marginTop: 10 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart cx="50%" cy="50%" outerRadius="72%" data={radarData}>
+                  <PolarGrid stroke="rgba(148,163,184,0.22)" />
+                  <PolarAngleAxis dataKey="dimensao" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                  <Radar
+                    name="Beiru / Tancredo Neves"
+                    dataKey="Beiru / Tancredo Neves"
+                    stroke="#fb7185"
+                    fill="#fb7185"
+                    fillOpacity={0.32}
+                  />
+                  <Radar
+                    name="Pernambués"
+                    dataKey="Pernambués"
+                    stroke="#38bdf8"
+                    fill="#38bdf8"
+                    fillOpacity={0.26}
+                  />
+                  <Radar
+                    name="Salvador (Ref.)"
+                    dataKey="Salvador"
+                    stroke="#94a3b8"
+                    fill="#94a3b8"
+                    fillOpacity={0.14}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  <Tooltip
+                    formatter={(val) => [`${formatNumber(val, 2)} pts`, '']}
+                    contentStyle={{
+                      backgroundColor: '#0f172a',
+                      borderColor: '#334155',
+                      borderRadius: '8px',
+                      color: '#f8fafc',
+                      fontSize: '12px',
+                    }}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MÓDULO 2: ASSIMETRIA DE RENDIMENTO E MODALIDADE DE COLETA DE LIXO */}
+      {activeModule === 'renda_residuos' && (
+        <div className="charts-two-col">
+          <div className="chart-card">
+            <div className="chart-card-header">
+              <div>
+                <span className="chart-tag">Visualização 03 · Assimetria de Rendimento (IBGE Censo 2022)</span>
+                <h3>Rendimento Médio vs. Mediano do Responsável (R$)</h3>
+              </div>
+            </div>
+            <p className="chart-description">
+              A mediana idêntica de <strong>R$ 1.212,00</strong> revela que metade das famílias em ambos os bairros vive
+              com até 1 salário mínimo (2022), enquanto a média superior em Pernambués reflete maior desigualdade interna.
             </p>
+            <div className="chart-wrapper" style={{ height: 285 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={incomeChartData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
+                  <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
+                  <YAxis stroke="#94a3b8" tickFormatter={(v) => `R$${v}`} tick={{ fontSize: 11.5 }} />
+                  <Tooltip
+                    formatter={(val) => [formatCurrency(val), '']}
+                    contentStyle={{
+                      backgroundColor: '#0f172a',
+                      borderColor: '#334155',
+                      borderRadius: '8px',
+                      color: '#f8fafc',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  <Bar dataKey="Rendimento Médio (V06004)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Rendimento Mediano (V06006)" fill="#10b981" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="chart-card">
+            <div className="chart-card-header">
+              <div>
+                <span className="chart-tag">Visualização 04 · Morfologia Viária e Saneamento (V00397 / V00398)</span>
+                <h3>Modalidade de Coleta de Resíduos Sólidos (% dos DPPO)</h3>
+              </div>
+            </div>
+            <p className="chart-description">
+              A dependência de <strong>caçambas comunitárias</strong> (68,14% no Beiru e 54,61% em Pernambués) evidencia o
+              traçado urbano de becos, travessas e escadarias sem acesso para caminhões compactadores ou manutenção pesada.
+            </p>
+            <div className="chart-wrapper" style={{ height: 285 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={garbageChartData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
+                  <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
+                  <YAxis stroke="#94a3b8" unit="%" domain={[0, 100]} tick={{ fontSize: 11.5 }} />
+                  <Tooltip
+                    formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
+                    contentStyle={{
+                      backgroundColor: '#0f172a',
+                      borderColor: '#334155',
+                      borderRadius: '8px',
+                      color: '#f8fafc',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  <Bar dataKey="Coleta Direta Porta a Porta" stackId="a" fill="#10b981" />
+                  <Bar dataKey="Coleta em Caçamba Comunitária" stackId="a" fill="#f59e0b" />
+                  <Bar dataKey="Sem Coleta Regular" stackId="a" fill="#ef4444" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Linha 1 de Gráficos Comparativos */}
-      <div className="charts-two-col">
-        <div className="chart-card">
-          <div className="chart-card-header">
+      {/* MÓDULO 3: TABELA COMPARATIVA COMPLETA COM DIFERENÇAS ABSOLUTAS E PERCENTUAIS */}
+      {activeModule === 'tabela_delta' && (
+        <div className="table-section-card">
+          <div className="table-header-bar">
             <div>
-              <span className="chart-tag">Visualização 01 · Barras Agrupadas (Censo 2022)</span>
-              <h3>Disparidades Socioeconômicas e de Infraestrutura Urbana (%)</h3>
+              <span className="section-eyebrow">View Analítica · vw_comparativo_bairros (Censo 2022 + Derivados)</span>
+              <h3>Tabela Comparativa com Diferenças Absolutas (Δ) e Percentuais (Δ%)</h3>
+            </div>
+            <div className="filter-controls-row">
+              <div className="filter-item">
+                <Filter size={14} />
+                <select value={dimFilter} onChange={(e) => setDimFilter(e.target.value)} className="select-input">
+                  <option value="ALL">Todas as Dimensões</option>
+                  <option value="Demográfica">Demográfica</option>
+                  <option value="Econômica">Econômica</option>
+                  <option value="Social">Social</option>
+                  <option value="Habitacional">Habitacional</option>
+                  <option value="Urbana">Urbana</option>
+                  <option value="Socioenergética">Socioenergética</option>
+                </select>
+              </div>
+              <div className="filter-item">
+                <select value={classFilter} onChange={(e) => setClassFilter(e.target.value)} className="select-input">
+                  <option value="ALL">Todas as Classificações</option>
+                  <option value="Dado observado">Dado observado</option>
+                  <option value="Indicador derivado">Indicador derivado</option>
+                  <option value="Proxy/estimativa">Proxy/estimativa</option>
+                </select>
+              </div>
             </div>
           </div>
-          <div className="chart-wrapper" style={{ height: 330, marginTop: 10 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={barPercentComparison}
-                layout="vertical"
-                margin={{ top: 6, right: 20, left: 42, bottom: 6 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" horizontal={false} />
-                <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" unit="%" tick={{ fontSize: 11.5 }} />
-                <YAxis type="category" dataKey="metrica" stroke="#94a3b8" width={158} tick={{ fontSize: 11.5 }} />
-                <Tooltip
-                  formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
-                  contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
-                    borderRadius: '8px',
-                    color: '#f8fafc',
-                    fontSize: '12px',
-                  }}
-                />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Pernambués" fill="#38bdf8" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Salvador" fill="#64748b" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
 
-        <div className="chart-card">
-          <div className="chart-card-header">
-            <div>
-              <span className="chart-tag">Visualização 02 · Radar Multidimensional (0–100)</span>
-              <h3>Assinatura Territorial de Riscos Socioenergéticos</h3>
-            </div>
-          </div>
-          <div className="chart-wrapper" style={{ height: 330, marginTop: 10 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart cx="50%" cy="50%" outerRadius="72%" data={radarData}>
-                <PolarGrid stroke="rgba(148,163,184,0.22)" />
-                <PolarAngleAxis dataKey="dimensao" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                <Radar
-                  name="Beiru / Tancredo Neves"
-                  dataKey="Beiru / Tancredo Neves"
-                  stroke="#fb7185"
-                  fill="#fb7185"
-                  fillOpacity={0.32}
-                />
-                <Radar
-                  name="Pernambués"
-                  dataKey="Pernambués"
-                  stroke="#38bdf8"
-                  fill="#38bdf8"
-                  fillOpacity={0.26}
-                />
-                <Radar
-                  name="Salvador (Ref.)"
-                  dataKey="Salvador"
-                  stroke="#94a3b8"
-                  fill="#94a3b8"
-                  fillOpacity={0.14}
-                />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Tooltip
-                  formatter={(val) => [`${formatNumber(val, 2)} pts`, '']}
-                  contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
-                    borderRadius: '8px',
-                    color: '#f8fafc',
-                    fontSize: '12px',
-                  }}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Linha 2 de Gráficos Comparativos */}
-      <div className="charts-two-col">
-        <div className="chart-card">
-          <div className="chart-card-header">
-            <div>
-              <span className="chart-tag">Visualização 03 · Assimetria de Rendimento (IBGE Censo 2022)</span>
-              <h3>Rendimento Médio vs. Mediano do Responsável (R$)</h3>
-            </div>
-          </div>
-          <p className="chart-description">
-            A mediana idêntica de <strong>R$ 1.212,00</strong> revela que metade das famílias em ambos os bairros vive
-            com até 1 salário mínimo (2022), enquanto a média superior em Pernambués reflete maior desigualdade interna.
-          </p>
-          <div className="chart-wrapper" style={{ height: 265 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={incomeChartData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
-                <YAxis stroke="#94a3b8" tickFormatter={(v) => `R$${v}`} tick={{ fontSize: 11.5 }} />
-                <Tooltip
-                  formatter={(val) => [formatCurrency(val), '']}
-                  contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
-                    borderRadius: '8px',
-                    color: '#f8fafc',
-                    fontSize: '12px',
-                  }}
-                />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="Rendimento Médio (V06004)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Rendimento Mediano (V06006)" fill="#10b981" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="responsive-table-wrap">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Dimensão</th>
+                  <th>Indicador (Ano: 2022)</th>
+                  <th>Classificação</th>
+                  <th>Beiru / Tancredo Neves</th>
+                  <th>Pernambués</th>
+                  <th>Δ Absoluta (Beiru − Pern.)</th>
+                  <th>Δ Percentual (Beiru / Pern.)</th>
+                  <th>Ref. Salvador (Município)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparativeRows.map((row) => {
+                  const badge = getClassificacaoBadgeStyle(row.classificacao);
+                  const dimColor = getDimensaoColor(row.dimensao);
+                  const sign = row.diffAbs > 0 ? '+' : '';
+                  const pctSign = row.diffPct > 0 ? '+' : '';
+                  return (
+                    <tr key={row.id}>
+                      <td>
+                        <span
+                          className="dim-badge"
+                          style={{
+                            background: `${dimColor}16`,
+                            color: dimColor,
+                            border: `1px solid ${dimColor}38`,
+                          }}
+                        >
+                          {row.dimensao}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="td-main-title">{row.nome}</div>
+                        <div className="td-sub-code">
+                          <code>{row.codigo}</code> ({row.unidade})
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          className="classification-pill"
+                          style={{
+                            background: badge.bg,
+                            borderColor: badge.border,
+                            color: badge.text,
+                          }}
+                        >
+                          {badge.short}
+                        </span>
+                      </td>
+                      <td className="td-numeric-highlight" style={{ color: 'var(--accent-rose)' }}>
+                        {formatValueByUnit(row.vBeiru, row.unidade)}
+                      </td>
+                      <td className="td-numeric-highlight" style={{ color: 'var(--accent-blue)' }}>
+                        {formatValueByUnit(row.vPern, row.unidade)}
+                      </td>
+                      <td className="td-delta">
+                        <span className={row.diffAbs === 0 ? 'delta-neutral' : row.diffAbs > 0 ? 'delta-pos' : 'delta-neg'}>
+                          {sign}
+                          {formatNumber(row.diffAbs, row.unidade === 'habitantes' || row.unidade === 'domicílios' ? 0 : 2)}{' '}
+                          {row.unidade === '%' ? 'p.p.' : row.unidade}
+                        </span>
+                      </td>
+                      <td className="td-delta">
+                        <span className={row.diffPct === 0 ? 'delta-neutral' : 'delta-pill'}>
+                          {pctSign}
+                          {formatNumber(row.diffPct, 2)}%
+                        </span>
+                      </td>
+                      <td className="td-numeric-muted">
+                        {row.vSsa !== null ? formatValueByUnit(row.vSsa, row.unidade) : '—'}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
-
-        <div className="chart-card">
-          <div className="chart-card-header">
-            <div>
-              <span className="chart-tag">Visualização 04 · Morfologia Viária e Saneamento (V00397 / V00398)</span>
-              <h3>Modalidade de Coleta de Resíduos Sólidos (% dos DPPO)</h3>
-            </div>
-          </div>
-          <p className="chart-description">
-            A dependência de <strong>caçambas comunitárias</strong> (68,14% no Beiru e 54,61% em Pernambués) evidencia o
-            traçado urbano de becos, travessas e escadarias sem acesso para caminhões compactadores ou manutenção pesada.
-          </p>
-          <div className="chart-wrapper" style={{ height: 265 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={garbageChartData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" vertical={false} />
-                <XAxis dataKey="territorio" stroke="#94a3b8" tick={{ fontSize: 11.5 }} />
-                <YAxis stroke="#94a3b8" unit="%" domain={[0, 100]} tick={{ fontSize: 11.5 }} />
-                <Tooltip
-                  formatter={(val) => [`${formatNumber(val, 2)}%`, '']}
-                  contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#334155',
-                    borderRadius: '8px',
-                    color: '#f8fafc',
-                    fontSize: '12px',
-                  }}
-                />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="Coleta Direta Porta a Porta" stackId="a" fill="#10b981" />
-                <Bar dataKey="Coleta em Caçamba Comunitária" stackId="a" fill="#f59e0b" />
-                <Bar dataKey="Sem Coleta Regular" stackId="a" fill="#ef4444" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Tabela Comparativa Completa com Diferenças Absolutas e Percentuais */}
-      <div className="table-section-card">
-        <div className="table-header-bar">
-          <div>
-            <span className="section-eyebrow">View Analítica · vw_comparativo_bairros (Censo 2022 + Derivados)</span>
-            <h3>Tabela Comparativa com Diferenças Absolutas (Δ) e Percentuais (Δ%)</h3>
-          </div>
-          <div className="filter-controls-row">
-            <div className="filter-item">
-              <Filter size={14} />
-              <select value={dimFilter} onChange={(e) => setDimFilter(e.target.value)} className="select-input">
-                <option value="ALL">Todas as Dimensões</option>
-                <option value="Demográfica">Demográfica</option>
-                <option value="Econômica">Econômica</option>
-                <option value="Social">Social</option>
-                <option value="Habitacional">Habitacional</option>
-                <option value="Urbana">Urbana</option>
-                <option value="Socioenergética">Socioenergética</option>
-              </select>
-            </div>
-            <div className="filter-item">
-              <select value={classFilter} onChange={(e) => setClassFilter(e.target.value)} className="select-input">
-                <option value="ALL">Todas as Classificações</option>
-                <option value="Dado observado">Dado observado</option>
-                <option value="Indicador derivado">Indicador derivado</option>
-                <option value="Proxy/estimativa">Proxy/estimativa</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="responsive-table-wrap">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Dimensão</th>
-                <th>Indicador (Ano: 2022)</th>
-                <th>Classificação</th>
-                <th>Beiru / Tancredo Neves</th>
-                <th>Pernambués</th>
-                <th>Δ Absoluta (Beiru − Pern.)</th>
-                <th>Δ Percentual (Beiru / Pern.)</th>
-                <th>Ref. Salvador (Município)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {comparativeRows.map((row) => {
-                const badge = getClassificacaoBadgeStyle(row.classificacao);
-                const dimColor = getDimensaoColor(row.dimensao);
-                const sign = row.diffAbs > 0 ? '+' : '';
-                const pctSign = row.diffPct > 0 ? '+' : '';
-                return (
-                  <tr key={row.id}>
-                    <td>
-                      <span
-                        className="dim-badge"
-                        style={{
-                          background: `${dimColor}16`,
-                          color: dimColor,
-                          border: `1px solid ${dimColor}38`,
-                        }}
-                      >
-                        {row.dimensao}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="td-main-title">{row.nome}</div>
-                      <div className="td-sub-code">
-                        <code>{row.codigo}</code> ({row.unidade})
-                      </div>
-                    </td>
-                    <td>
-                      <span
-                        className="classification-pill"
-                        style={{
-                          background: badge.bg,
-                          borderColor: badge.border,
-                          color: badge.text,
-                        }}
-                      >
-                        {badge.short}
-                      </span>
-                    </td>
-                    <td className="td-numeric-highlight" style={{ color: 'var(--accent-rose)' }}>
-                      {formatValueByUnit(row.vBeiru, row.unidade)}
-                    </td>
-                    <td className="td-numeric-highlight" style={{ color: 'var(--accent-blue)' }}>
-                      {formatValueByUnit(row.vPern, row.unidade)}
-                    </td>
-                    <td className="td-delta">
-                      <span className={row.diffAbs === 0 ? 'delta-neutral' : row.diffAbs > 0 ? 'delta-pos' : 'delta-neg'}>
-                        {sign}
-                        {formatNumber(row.diffAbs, row.unidade === 'habitantes' || row.unidade === 'domicílios' ? 0 : 2)}{' '}
-                        {row.unidade === '%' ? 'p.p.' : row.unidade}
-                      </span>
-                    </td>
-                    <td className="td-delta">
-                      <span className={row.diffPct === 0 ? 'delta-neutral' : 'delta-pill'}>
-                        {pctSign}
-                        {formatNumber(row.diffPct, 2)}%
-                      </span>
-                    </td>
-                    <td className="td-numeric-muted">
-                      {row.vSsa !== null ? formatValueByUnit(row.vSsa, row.unidade) : '—'}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
