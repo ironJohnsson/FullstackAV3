@@ -56,7 +56,7 @@ A tabela a seguir confronta os indicadores oficiais do Censo Demográfico 2022 p
 | `MEDIA_MORADORES_DOM` | Média de moradores por DPPO (`V0005`) | `Dado observado` | **2,50 mor/dom** | **2,40 mor/dom** | 2,50 mor/dom | Maior média intradomiciliar em Beiru frente a Pernambués |
 | `RENDA_MEDIA_RESP` | Rendimento médio mensal do responsável (`V06004`) | `Dado observado` | **R$ 2.035,87** | **R$ 2.316,25** | R$ 3.160,73 | Beiru tem renda média **12,1% menor** que Pernambués e **35,6% menor** que Salvador |
 | `RENDA_MEDIANA_RESP` | Mediana do rendimento do responsável (`V06006`) | `Dado observado` | **R$ 1.212,00** | **R$ 1.212,00** | R$ 1.230,00 | Metade dos responsáveis recebe até 1 Salário Mínimo (2022) |
-| `PERC_SETORES_BAIXA_RENDA` | % de setores com renda média ≤ 1,5 SM (`R$ 1.818`) | `Indicador derivado` | **85,92%** (61/71 válidos) | **72,00%** (72/100) | 48,60% | Vulnerabilidade de renda generalizada em Beiru; desigualdade interna em Pernambués |
+| `PERC_SETORES_BAIXA_RENDA` | % de setores com renda média ≤ 1,5 SM (`R$ 1.818`) | `Indicador derivado` | **85,92%** (61/71 válidos) | **72,00%** (72/100) | 57,33% | Vulnerabilidade de renda generalizada em Beiru; desigualdade interna em Pernambués |
 | `TAXA_ALFABETIZACAO_15MAIS` | Taxa de alfabetização (15 anos ou mais) | `Indicador derivado` | **95,04%** | **96,76%** | 96,63% | Hiato educacional de -1,72 p.p. em Beiru frente a Pernambués |
 | `PERC_POP_NEGRA` | População negra (pretos + pardos) | `Indicador derivado` | **91,42%** | **86,54%** | 83,03% | Forte marcador de desigualdade sociorracial territorial |
 | `PERC_POP_0_14` | Proporção de crianças e adolescentes (0–14 anos) | `Indicador derivado` | **18,00%** | **15,81%** | 16,76% | Maior pressão demográfica jovem em Beiru |
@@ -69,17 +69,17 @@ A tabela a seguir confronta os indicadores oficiais do Censo Demográfico 2022 p
 | `ENTORNO_CALCADA` | Domicílios em vias com calçada/passeio | `Indicador derivado` | **39,46%** | **38,57%** | 56,87% | Mais de **60% dos domicílios sem calçada** em ambos os bairros |
 | `ENTORNO_ARBORIZACAO` | Domicílios em faces de quadra arborizadas | `Indicador derivado` | **24,48%** | **34,02%** | 34,51% | **Ilha de calor severa:** 74,37% dos domicílios em Beiru e 65,07% em Pernambués em vias **sem nenhuma árvore** |
 | `ENTORNO_RAMPA_CADEIRANTE` | Domicílios em vias com rampa para cadeirante | `Indicador derivado` | **0,73%** | **7,12%** | 7,15% | Exclusão quase total de mobilidade acessível em Beiru |
-| `IEVS_EXPLORATORIO` | **Índice Exploratório de Vulnerabilidade Socioenergética** | `Proxy/estimativa` | **66,17 / 100** | **52,98 / 100** | 38,62 / 100 | Beiru apresenta vulnerabilidade socioenergética **+13,19 pts (+24,9%) superior** a Pernambués |
+| `IEVS_EXPLORATORIO` | **Índice Exploratório de Vulnerabilidade Socioenergética** | `Proxy/estimativa` | **66,17 / 100** | **52,98 / 100** | 40,19 / 100 | Beiru apresenta vulnerabilidade socioenergética **+13,19 pts (+24,9%) superior** a Pernambués |
 
 ---
 
 ## 4. Respostas Fundamentadas ao Desafio Analítico Obrigatório (8 Questões — Seção 9)
 
 ### Questão 1 (Q1) — Qual dos dois bairros apresenta maior vulnerabilidade geral e por quê?
-**Resposta:** **Beiru / Tancredo Neves (`CD_BAIRRO = 2927408018`)** apresenta a maior vulnerabilidade geral acumulada (**IEVS = 66,17/100**, frente a **52,98/100** em Pernambués e **38,62/100** na média de Salvador).
+**Resposta:** **Beiru / Tancredo Neves (`CD_BAIRRO = 2927408018`)** apresenta a maior vulnerabilidade geral acumulada (**IEVS = 66,17/100**, frente a **52,98/100** em Pernambués e **40,19/100** em Salvador).
 
 **Evidências Empíricas:**
-1. **Renda e Pobreza:** O rendimento médio nominal do responsável pelo domicílio em Beiru (`R$ 2.035,87`) é **12,1% inferior** ao de Pernambués (`R$ 2.316,25`) e **35,6% inferior** à média de Salvador (`R$ 3.160,73`). Além disso, **85,92% dos setores censitários com renda válida (`61/71`)** de Beiru possuem renda média domiciliar de até 1,5 salário mínimo (`R$ 1.818,00`), contra `72,00%` (`72/100`) dos setores de Pernambués e `48,60%` em Salvador.
+1. **Renda e Pobreza:** O rendimento médio nominal do responsável pelo domicílio em Beiru (`R$ 2.035,87`) é **12,1% inferior** ao de Pernambués (`R$ 2.316,25`) e **35,6% inferior** à média de Salvador (`R$ 3.160,73`). Além disso, **85,92% dos setores censitários com renda válida (`61/71`)** de Beiru possuem renda média domiciliar de até 1,5 salário mínimo (`R$ 1.818,00`), contra `72,00%` (`72/100`) dos setores de Pernambués e `57,33%` em Salvador.
 2. **Adensamento Urbano Extremo:** Beiru comprime `38.329` habitantes em apenas `1,6362 km²`, resultando em uma densidade demográfica de **23.425,5 hab/km²** (`42,9%` acima dos `16.388,4 hab/km²` de Pernambués e `6,7 vezes` a média de Salvador), além de maior média de moradores por domicílio (`2,50` vs `2,40`).
 3. **Déficits de Entorno e Capital Humano:** Beiru registra menor coleta direta de lixo (`29,19%` vs `40,83%`), menor cobertura de iluminação pública (`96,51%` vs `98,51%`), menor arborização viária (`24,48%` vs `34,02%`), quase inexistência de rampas de acessibilidade (`0,73%` vs `7,12%`), menor taxa de alfabetização (`95,04%` vs `96,76%`) e maior proporção de população negra historicamente exposta a desigualdades urbanas (`91,42%` vs `86,54%`).
 
@@ -202,17 +202,17 @@ Em atendimento à Seção 10 da Situação de Aprendizagem, foi desenvolvido e i
 ### 5.2. Decomposição por Subdimensão Auditável
 | Subdimensão | Peso Padrão | Variáveis Oficiais Componentes (Censo 2022) | Score Beiru / Tancredo Neves | Score Pernambués | Score Salvador |
 | :--- | :---: | :--- | :---: | :---: | :---: |
-| **1. Renda & Setores Baixa Renda ($I_{\text{Renda}}$)** | **40%** | Déficit de renda média vs. R$ 3.500 (`55%`) + % de setores censitários ≤ 1,5 SM (`45%`) | **73,67** | **60,71** | 29,98 |
+| **1. Renda & Setores Baixa Renda ($I_{\text{Renda}}$)** | **40%** | Déficit de renda média vs. R$ 3.500 (`55%`) + % de setores censitários ≤ 1,5 SM (`45%`) | **73,67** | **60,71** | 33,91 |
 | **2. Habitação & Saneamento ($I_{\text{Hab}}$)** | **30%** | Déficit coleta direta (`50%`) + Esgoto precário escalonado (`25%`) + Adensamento 6+ moradores (`25%`) | **52,65** | **40,13** | 48,13 |
 | **3. Urbana & Térmica ($I_{\text{Urb}}$)** | **30%** | Proxy de risco térmico (`50%`) + Déficit de calçada (`30%`) + Déficit de iluminação pública ×15 (`20%`) | **69,69** | **55,51** | 40,63 |
-| **IEVS Base Global** | **100%** | Combinação linear ponderada ($0{,}40 \cdot I_{\text{Renda}} + 0{,}30 \cdot I_{\text{Hab}} + 0{,}30 \cdot I_{\text{Urb}}$) | **66,17 / 100** | **52,98 / 100** | **38,62 / 100** |
+| **IEVS Base Global** | **100%** | Combinação linear ponderada ($0{,}40 \cdot I_{\text{Renda}} + 0{,}30 \cdot I_{\text{Hab}} + 0{,}30 \cdot I_{\text{Urb}}$) | **66,17 / 100** | **52,98 / 100** | **40,19 / 100** |
 
 ### 5.3. Análise de Sensibilidade (Robustez do Ranking)
 No simulador interativo da aplicação (`Tela 4 — Energia & Simulador IEVS`) e no pacote auditado pelo ETL (`observatorio_bundle.json`), o teste de sensibilidade sob os **4 cenários oficiais de ponderação** confirma robustez absoluta do ordenamento:
-- **Cenário 1 — Base Multidimensional (`40% / 30% / 30%`):** Beiru **`66,17`** vs Pernambués **`52,98`** vs Salvador `38,62` (`+13,19 pts`)
-- **Cenário 2 — Ênfase Econômica / Tarifária (`60% / 20% / 20%`):** Beiru **`68,67`** vs Pernambués **`55,55`** vs Salvador `35,74` (`+13,12 pts`)
-- **Cenário 3 — Ênfase Climática / Conforto Térmico (`25% / 25% / 50%`):** Beiru **`66,42`** vs Pernambués **`52,97`** vs Salvador `39,84` (`+13,45 pts`)
-- **Cenário 4 — Pesos Iguais (`33,3% / 33,3% / 33,4%`):** Beiru **`65,34`** vs Pernambués **`52,12`** vs Salvador `39,58` (`+13,22 pts`)
+- **Cenário 1 — Base Multidimensional (`40% / 30% / 30%`):** Beiru **`66,17`** vs Pernambués **`52,98`** vs Salvador `40,19` (`+13,19 pts`)
+- **Cenário 2 — Ênfase Econômica / Tarifária (`60% / 20% / 20%`):** Beiru **`68,67`** vs Pernambués **`55,55`** vs Salvador `38,10` (`+13,12 pts`)
+- **Cenário 3 — Ênfase Climática / Conforto Térmico (`25% / 25% / 50%`):** Beiru **`66,42`** vs Pernambués **`52,97`** vs Salvador `40,83` (`+13,45 pts`)
+- **Cenário 4 — Pesos Iguais (`33,3% / 33,3% / 33,4%`):** Beiru **`65,34`** vs Pernambués **`52,12`** vs Salvador `40,89` (`+13,22 pts`)
 
 Em qualquer combinação convexa de pesos, **Beiru / Tancredo Neves supera Pernambués simultaneamente nas três subdimensões** ($73{,}67 > 60{,}71$; $52{,}65 > 40{,}13$; $69{,}69 > 55{,}51$), provando que sua maior vulnerabilidade socioenergética é uma dominância empírica estrutural, não um artefato de ponderação.
 

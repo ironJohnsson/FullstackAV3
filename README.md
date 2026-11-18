@@ -18,14 +18,14 @@ Aplicação web analítica fullstack para investigação multiescalar da vulnera
 | **Domicílios Particulares Ocupados (`DOM_OCUP`)** | `Dado observado` | **15.454 DPPO** | **21.561 DPPO** | 958.539 DPPO |
 | **Renda Média do Responsável (`RENDA_MEDIA_RESP`)** | `Dado observado` | **R$ 2.035,87** | **R$ 2.316,25** | R$ 3.160,73 |
 | **Renda Mediana do Responsável (`RENDA_MEDIANA_RESP`)** | `Dado observado` | **R$ 1.212,00** | **R$ 1.212,00** | R$ 1.230,00 |
-| **Setores Censitários Baixa Renda (≤ 1,5 SM)** | `Indicador derivado` | **85,92%** (61/71 válidos) | **72,00%** (72/100) | 48,60% |
+| **Setores Censitários Baixa Renda (≤ 1,5 SM)** | `Indicador derivado` | **85,92%** (61/71 válidos) | **72,00%** (72/100) | 57,33% |
 | **Taxa de Alfabetização 15+ anos (`TAXA_ALFABETIZACAO`)** | `Indicador derivado` | **95,04%** | **96,76%** | 96,63% |
 | **População Negra (`PROP_NEGROS`)** | `Indicador derivado` | **91,42%** | **86,54%** | 83,03% |
 | **Coleta Direta de Lixo Porta a Porta (`LIXO_COLETA_DIRETA`)** | `Indicador derivado` | **29,19%** | **40,83%** | 57,26% |
 | **Iluminação Pública no Entorno (`ENTORNO_ILUMINACAO`)** | `Indicador derivado` | **96,51%** (528 sem) | **98,51%** (320 sem) | 98,22% |
 | **Vias com Calçada (`ENTORNO_CALCADA`)** | `Indicador derivado` | **39,46%** | **38,57%** | 56,87% |
 | **Vias Arborizadas (`ENTORNO_ARBORIZACAO`)** | `Indicador derivado` | **24,48%** (74,4% sem) | **34,02%** (65,1% sem) | 34,51% |
-| **IEVS — Índice Exploratório Socioenergético** | `Proxy/estimativa` | **66,17 / 100** | **52,98 / 100** | 38,62 / 100 |
+| **IEVS — Índice Exploratório Socioenergético** | `Proxy/estimativa` | **66,17 / 100** | **52,98 / 100** | 40,19 / 100 |
 
 > **Nota Metodológica sobre Escalas:** Dados estaduais da **EPE** (Consumo Residencial na Bahia = `7.555,35 GWh` em 2022 e `8.048,81 GWh` em 2025; Consumidores na Tarifa Social Baixa Renda = `28,22%` em 2022 e `32,78%` em 2025) e do **IPEA/IVS** (Bahia, Salvador e UDHs) são armazenados e visualizados estritamente em suas escalas geográficas reais (`uf`, `municipio`, `udh`), **nunca sendo replicados artificialmente como dados nativos de bairro**.
 
