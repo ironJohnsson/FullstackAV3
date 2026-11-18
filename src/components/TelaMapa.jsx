@@ -20,6 +20,12 @@ import {
   Home,
 } from 'lucide-react';
 import { formatNumber, formatCurrency } from '../utils/formatters';
+import { getSeriesColors } from '../utils/chartTheme';
+
+// Escala sequencial (baixa → alta vulnerabilidade), igual nos dois temas
+const SEQ = ['#e9e2cf', '#d6b27a', '#b9733f', '#8a3b25'];
+const NO_DATA = '#b8bfca';
+const REGULAR = '#9fb4c9';
 
 function MapViewportController({ boundsData, fallbackViewport, recenterTick }) {
   const map = useMap();
@@ -55,12 +61,12 @@ const THEMATIC_LAYERS = [
     unit: 'pts',
     icon: Flame,
     description:
-      'Combina restrição de renda (40%), adensamento/saneamento (30%) e estresse térmico/urbano (30%) nos 172 setores censitários.',
+      'Versão setorial simplificada do IEVS (proxy exploratória): renda média do responsável (40%), porte domiciliar e tipologia FCU (30%) e densidade e tipologia FCU (30%). Usa variáveis diferentes do IEVS por bairro e não é diretamente comparável a ele; setores sem renda divulgada recebem valor imputado.',
     legend: [
-      { color: '#ef4444', label: 'Muito Alta (≥ 60 pts)' },
-      { color: '#f97316', label: 'Alta (50–59,9 pts)' },
-      { color: '#eab308', label: 'Média-Alta (40–49,9 pts)' },
-      { color: '#22c55e', label: 'Moderada / Baixa (< 40 pts)' },
+      { color: SEQ[3], label: 'Muito alta (≥ 60)' },
+      { color: SEQ[2], label: 'Alta (50–59,9)' },
+      { color: SEQ[1], label: 'Média-alta (40–49,9)' },
+      { color: SEQ[0], label: 'Moderada (< 40)' },
     ],
   },
   {
@@ -72,10 +78,11 @@ const THEMATIC_LAYERS = [
     description:
       'Valor do rendimento nominal médio mensal das pessoas responsáveis pelo domicílio no setor censitário (IBGE Censo 2022).',
     legend: [
-      { color: '#dc2626', label: 'Até R$ 1.400 (≤ 1,15 SM)' },
-      { color: '#f97316', label: 'R$ 1.401–1.818 (≤ 1,5 SM)' },
-      { color: '#eab308', label: 'R$ 1.819–2.800 (Interm.)' },
-      { color: '#10b981', label: 'Acima de R$ 2.800' },
+      { color: SEQ[3], label: 'Até R$ 1.400 (≤ 1,15 SM)' },
+      { color: SEQ[2], label: 'R$ 1.401–1.818 (≤ 1,5 SM)' },
+      { color: SEQ[1], label: 'R$ 1.819–2.800' },
+      { color: SEQ[0], label: 'Acima de R$ 2.800' },
+      { color: NO_DATA, label: 'Não divulgado' },
     ],
   },
   {
@@ -85,12 +92,12 @@ const THEMATIC_LAYERS = [
     unit: 'hab/km²',
     icon: Users,
     description:
-      'Pressão demográfica por quilômetro quadrado (V0001 / AREA_KM2), indicador-chave de adensamento construtivo e ilha de calor.',
+      'Habitantes por quilômetro quadrado (V0001 / AREA_KM2). Indica adensamento e é um dos componentes da proxy de risco térmico.',
     legend: [
-      { color: '#be123c', label: 'Extrema (≥ 30 mil)' },
-      { color: '#f43f5e', label: 'Muito Alta (20–29,9 mil)' },
-      { color: '#fb923c', label: 'Alta (12–19,9 mil)' },
-      { color: '#38bdf8', label: 'Moderada (< 12 mil)' },
+      { color: SEQ[3], label: '≥ 30 mil' },
+      { color: SEQ[2], label: '20–29,9 mil' },
+      { color: SEQ[1], label: '12–19,9 mil' },
+      { color: SEQ[0], label: '< 12 mil' },
     ],
   },
   {
@@ -102,47 +109,49 @@ const THEMATIC_LAYERS = [
     description:
       'Classificação oficial do setor censitário no Censo 2022 (CD_TIPO = 1: Favela e Comunidade Urbana vs. CD_TIPO = 0: Regular).',
     legend: [
-      { color: '#e11d48', label: 'CD_TIPO = 1: Favela / Comunidade Urbana (FCU)' },
-      { color: '#0ea5e9', label: 'CD_TIPO = 0: Setor Urbano Regular' },
+      { color: SEQ[3], label: 'CD_TIPO = 1: Favela / Comunidade Urbana (FCU)' },
+      { color: REGULAR, label: 'CD_TIPO = 0: Setor urbano regular' },
     ],
   },
 ];
 
 function getSectorColor(props, theme) {
   if (theme === 'ievs') {
-    const v = Number(props.ievs_setor ?? props.IEVS_EXPLORATORIO ?? 50);
-    if (v >= 60) return '#ef4444';
-    if (v >= 50) return '#f97316';
-    if (v >= 40) return '#eab308';
-    return '#22c55e';
+    const raw = props.ievs_setor ?? props.IEVS_EXPLORATORIO;
+    if (raw === undefined || raw === null) return NO_DATA;
+    const v = Number(raw);
+    if (v >= 60) return SEQ[3];
+    if (v >= 50) return SEQ[2];
+    if (v >= 40) return SEQ[1];
+    return SEQ[0];
   }
   if (theme === 'renda') {
     const r = Number(props.renda_media_resp ?? props.RENDA_MEDIA_RESP ?? 0);
-    if (r === 0) return '#64748b';
-    if (r <= 1400) return '#dc2626';
-    if (r <= 1818) return '#f97316';
-    if (r <= 2800) return '#eab308';
-    return '#10b981';
+    if (r === 0) return NO_DATA;
+    if (r <= 1400) return SEQ[3];
+    if (r <= 1818) return SEQ[2];
+    if (r <= 2800) return SEQ[1];
+    return SEQ[0];
   }
   if (theme === 'densidade') {
     const d = Number(props.densidade_hab_km2 ?? props.DENSIDADE_DEMOGRAFICA ?? 0);
-    if (d >= 30000) return '#be123c';
-    if (d >= 20000) return '#f43f5e';
-    if (d >= 12000) return '#fb923c';
-    return '#38bdf8';
+    if (d >= 30000) return SEQ[3];
+    if (d >= 20000) return SEQ[2];
+    if (d >= 12000) return SEQ[1];
+    return SEQ[0];
   }
   if (theme === 'tipologia') {
-    return String(props.cd_tipo) === '1' ? '#e11d48' : '#0ea5e9';
+    return String(props.cd_tipo) === '1' ? SEQ[3] : REGULAR;
   }
-  return '#38bdf8';
+  return SEQ[1];
 }
 
 function getIevsSeverity(val) {
   const n = Number(val || 0);
-  if (n >= 60) return { label: 'Muito Alta', color: '#ef4444' };
-  if (n >= 50) return { label: 'Alta', color: '#f97316' };
-  if (n >= 40) return { label: 'Média-Alta', color: '#eab308' };
-  return { label: 'Moderada', color: '#22c55e' };
+  if (n >= 60) return { label: 'Muito alta', color: SEQ[3] };
+  if (n >= 50) return { label: 'Alta', color: SEQ[2] };
+  if (n >= 40) return { label: 'Média-alta', color: SEQ[1] };
+  return { label: 'Moderada', color: SEQ[0] };
 }
 
 function formatPrimaryLayerMetric(props, theme) {
@@ -184,7 +193,8 @@ function createTerritoryLabelIcon({ name, subtitle, accentColor, isActive }) {
   });
 }
 
-export default function TelaMapa({ data, appTheme = 'dark' }) {
+export default function TelaMapa({ data, appTheme = 'light' }) {
+  const sc = getSeriesColors(appTheme);
   const [granularity, setGranularity] = useState('setores_com_bairros');
   const [theme, setTheme] = useState('ievs');
   const [focusArea, setFocusArea] = useState('BOTH');
@@ -272,7 +282,7 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
           position: [center.lat, center.lng],
           name: isBeiru ? 'Beiru / Tancredo Neves' : 'Pernambués',
           subtitle: isBeiru ? `72 set. · ${ievsLabel}` : `100 set. · ${ievsLabel}`,
-          accentColor: isBeiru ? '#fb7185' : '#38bdf8',
+          accentColor: isBeiru ? sc.beiru : sc.pern,
           isActive: focusArea === code,
         });
       } catch {
@@ -280,7 +290,7 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
       }
     });
     return items;
-  }, [data.geojsonBairros, focusArea, beiruPerfil, pernPerfil]);
+  }, [data.geojsonBairros, focusArea, beiruPerfil, pernPerfil, sc]);
 
   const sectorStats = useMemo(() => {
     const feats = filteredSetoresGeo.features.map((f) => f.properties);
@@ -318,7 +328,9 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
     const p = feature.properties;
     const isFoco = p.is_foco;
     const isBeiru = p.cd_bairro === '2927408018';
-    const focusStroke = isBeiru ? '#fb7185' : '#38bdf8';
+    // Sobre a imagem de satélite usamos as variantes claras das cores dos bairros para manter contraste
+    const outline = basemap === 'satellite' ? getSeriesColors('dark') : sc;
+    const focusStroke = isBeiru ? outline.beiru : outline.pern;
 
     if (granularity === 'setores_com_bairros') {
       return {
@@ -331,7 +343,7 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
     }
 
     return {
-      fillColor: isFoco ? getSectorColor(p, theme) : appTheme === 'light' ? '#94a3b8' : '#334155',
+      fillColor: isFoco ? getSectorColor(p, theme) : appTheme === 'light' ? '#cbd2dc' : '#334155',
       weight: isFoco ? 2.8 : 1.1,
       opacity: isFoco ? 1 : 0.7,
       color: isFoco ? focusStroke : appTheme === 'light' ? '#475569' : '#64748b',
@@ -349,11 +361,13 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
       weight: isSelected ? 2.8 : 0.85,
       opacity: 1,
       color: isSelected
-        ? '#ffffff'
+        ? appTheme === 'light' && basemap !== 'satellite'
+          ? '#1a2230'
+          : '#ffffff'
         : basemap === 'satellite'
-          ? 'rgba(255, 255, 255, 0.52)'
+          ? 'rgba(255, 255, 255, 0.55)'
           : appTheme === 'light'
-            ? 'rgba(15, 23, 42, 0.38)'
+            ? 'rgba(255, 255, 255, 0.9)'
             : 'rgba(15, 23, 42, 0.72)',
       fillOpacity: isSelected ? Math.min(0.95, layerOpacity + 0.14) : layerOpacity,
     };
@@ -391,8 +405,8 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
       mouseover: (e) => {
         const target = e.target;
         target.setStyle({
-          weight: 2.6,
-          color: '#ffffff',
+          weight: 2.4,
+          color: appTheme === 'light' && basemap !== 'satellite' ? '#1a2230' : '#ffffff',
           fillOpacity: Math.min(0.96, layerOpacity + 0.18),
         });
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -665,7 +679,7 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
             <MapContainer
               center={fallbackViewport.center}
               zoom={fallbackViewport.zoom}
-              style={{ height: '560px', width: '100%', borderRadius: '11px' }}
+              className="leaflet-map-el"
             >
               <MapViewportController
                 boundsData={boundsData}
@@ -722,11 +736,14 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
           </div>
 
           <div className="map-legend-bar">
+            {theme === 'ievs' && (
+              <p className="legend-note">
+                Proxy exploratória — não é índice oficial nem medida de pobreza energética.
+              </p>
+            )}
             <div className="legend-header-row">
               <strong>{activeLayerMeta.label}</strong>
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                Base geográfica: Malha Setorial IBGE Censo 2022
-              </span>
+              <span className="legend-source">Base geográfica: malha setorial IBGE · Censo 2022</span>
             </div>
             <div className="legend-items-row">
               {activeLayerMeta.legend.map((item, i) => (
@@ -736,11 +753,11 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
                 </div>
               ))}
               <div className="legend-item">
-                <span className="legend-Swatch-outline" style={{ borderColor: '#fb7185' }} />
+                <span className="legend-Swatch-outline" style={{ borderColor: sc.beiru }} />
                 <span>Limite Beiru / Tancredo Neves</span>
               </div>
               <div className="legend-item">
-                <span className="legend-Swatch-outline" style={{ borderColor: '#38bdf8' }} />
+                <span className="legend-Swatch-outline" style={{ borderColor: sc.pern }} />
                 <span>Limite Pernambués</span>
               </div>
             </div>
@@ -750,18 +767,17 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
         {/* Painel Lateral Direito: Síntese dos Setores + Inspetor com Comparativo */}
         <div className="map-sidebar-card">
           <div className="sidebar-section">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <div className="sidebar-head">
               <div>
                 <span className="section-eyebrow">Síntese dos Setores Exibidos</span>
-                <h3 style={{ margin: '2px 0 0', fontSize: '0.96rem', fontWeight: 700 }}>
+                <h3 className="sidebar-title">
                   {sectorStats.total} Setores Censitários
                 </h3>
               </div>
               <button
                 type="button"
-                className={`action-toggle-btn ${showFcuList ? 'active' : ''}`}
+                className={`action-toggle-btn compact ${showFcuList ? 'active' : ''}`}
                 onClick={() => setShowFcuList((v) => !v)}
-                style={{ padding: '4px 9px', fontSize: '0.72rem' }}
               >
                 <span>FCUs ({sectorStats.fcuNames.length})</span>
                 {showFcuList ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
@@ -770,28 +786,28 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
 
             <div className="mini-stat-grid">
               <div className="mini-stat-box">
-                <span className="mini-stat-val" style={{ color: 'var(--accent-rose)' }}>
+                <span className="mini-stat-val">
                   {sectorStats.fcuCount} ({formatNumber(sectorStats.fcuPct, 1)}%)
                 </span>
                 <span className="mini-stat-lbl">Em Favelas/Comunidades Urbanas (FCU)</span>
               </div>
               <div className="mini-stat-box">
-                <span className="mini-stat-val" style={{ color: 'var(--accent-amber)' }}>
+                <span className="mini-stat-val">
                   {sectorStats.lowIncomeCount} ({formatNumber(sectorStats.lowIncomePct, 1)}%)
                 </span>
                 <span className="mini-stat-lbl">Setores com Renda ≤ 1,5 SM</span>
               </div>
             </div>
 
-            <div className="mini-stat-grid" style={{ marginBottom: 0 }}>
+            <div className="mini-stat-grid flush">
               <div className="mini-stat-box">
-                <span className="mini-stat-val" style={{ color: 'var(--accent-blue)' }}>
+                <span className="mini-stat-val">
                   {formatNumber(sectorStats.avgIevs, 1)} pts
                 </span>
-                <span className="mini-stat-lbl">IEVS Médio dos Setores</span>
+                <span className="mini-stat-lbl">IEVS setorial médio (simplificado)</span>
               </div>
               <div className="mini-stat-box">
-                <span className="mini-stat-val" style={{ color: 'var(--accent-emerald)' }}>
+                <span className="mini-stat-val">
                   {formatCurrency(sectorStats.avgIncome)}
                 </span>
                 <span className="mini-stat-lbl">Renda Média dos Setores Válidos</span>
@@ -799,7 +815,7 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
             </div>
 
             {showFcuList && (
-              <div className="fcu-tags-box" style={{ marginTop: 10 }}>
+              <div className="fcu-tags-box">
                 <span className="fcu-tags-title">
                   Comunidades Urbanas (FCUs) mapeadas pelo IBGE nestes setores:
                 </span>
@@ -817,13 +833,12 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
           <hr className="sidebar-divider" />
 
           <div className="sidebar-section">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="sidebar-head">
               <span className="section-eyebrow">Inspeção de Feição</span>
               {selectedFeature && (
                 <button
                   type="button"
-                  className="action-toggle-btn"
-                  style={{ padding: '2px 8px', fontSize: '0.7rem' }}
+                  className="action-toggle-btn compact"
                   onClick={() => setSelectedFeature(null)}
                 >
                   <X size={12} /> Limpar
@@ -847,8 +862,8 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
                 {selectedIevs !== undefined && (
                   <div className="ievs-meter-box">
                     <div className="ievs-meter-header">
-                      <span>IEVS Exploratório</span>
-                      <strong style={{ color: selectedIevsMeta.color }}>
+                      <span>IEVS exploratório</span>
+                      <strong>
                         {formatNumber(selectedIevs, 1)} / 100 ({selectedIevsMeta.label})
                       </strong>
                     </div>
@@ -890,14 +905,14 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
                     <>
                       <div className="insp-row">
                         <span>Renda Média (V06004):</span>
-                        <strong style={{ color: 'var(--accent-amber)' }}>
+                        <strong>
                           {selectedRenda > 0 ? formatCurrency(selectedRenda) : 'Não divulgado'}
                         </strong>
                       </div>
                       {rendaVsSalvador !== null && (
                         <div className="insp-row">
-                          <span>Vs. Salvador (R$ 3.160,73):</span>
-                          <strong style={{ color: rendaVsSalvador < 0 ? 'var(--accent-rose)' : 'var(--accent-emerald)' }}>
+                          <span>Vs. Salvador ({formatCurrency(salvadorRenda)}):</span>
+                          <strong className={rendaVsSalvador < 0 ? 'delta-neg' : 'delta-pos'}>
                             {rendaVsSalvador > 0 ? '+' : ''}
                             {formatNumber(rendaVsSalvador, 1)}%
                           </strong>
@@ -923,7 +938,7 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
               </div>
             ) : (
               <div className="empty-inspector">
-                <MapPin size={22} style={{ color: 'var(--accent-blue)', marginBottom: 6 }} />
+                <MapPin size={22} className="empty-icon" />
                 <p>
                   Passe o mouse sobre qualquer setor para visualizar métricas instantâneas ou clique em um dos{' '}
                   <strong>172 Setores Censitários</strong> / <strong>Bairros</strong> para inspecionar todos os dados.
@@ -932,12 +947,12 @@ export default function TelaMapa({ data, appTheme = 'dark' }) {
                 {beiruPerfil && pernPerfil && (
                   <div className="sidebar-quick-compare">
                     <div className="quick-compare-row">
-                      <span className="quick-dot" style={{ background: '#fb7185' }} />
+                      <span className="quick-dot" style={{ background: sc.beiru }} />
                       <span>Beiru / T. Neves</span>
                       <strong>IEVS {formatNumber(beiruPerfil.IEVS_EXPLORATORIO, 2)}</strong>
                     </div>
                     <div className="quick-compare-row">
-                      <span className="quick-dot" style={{ background: '#38bdf8' }} />
+                      <span className="quick-dot" style={{ background: sc.pern }} />
                       <span>Pernambués</span>
                       <strong>IEVS {formatNumber(pernPerfil.IEVS_EXPLORATORIO, 2)}</strong>
                     </div>

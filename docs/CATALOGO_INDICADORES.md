@@ -41,8 +41,8 @@
 | 20 | `EPE_CONSUMO_RES_TOTAL_BA` | **Consumo Residencial de Energia Elétrica na Bahia** | Energética | `Dado observado` | EPE Dados Abertos Anuário Estatístico | Estadual (UF - Bahia) | 2022 | GWh |
 | 21 | `EPE_PERC_CONSUMIDORES_BAIXA_RENDA_BA` | **Participação da Subclasse Residencial Baixa Renda (Tarifa Social) na Bahia** | Energética | `Indicador derivado` | EPE Dados Abertos | Estadual (UF - Bahia) | 2022 | % |
 | 22 | `PROXY_RISCO_TERMICO_URBANO` | **Índice Proxy de Exposição ao Desconforto Térmico Urbano** | Socioenergética | `Proxy/estimativa` | IBGE Censo 2022 | Bairro / Município | 2022 | índice (0 a 100) |
-| 23 | `PROXY_COMPROMETIMENTO_RENDA_ENERGIA` | **Proxy de Pressão Tarifária Potencial sobre a Renda Mediana** | Socioenergética | `Proxy/estimativa` | IBGE Censo 2022 (V06004, V06006, V0005) + Parâmetro Contextual EPE Bahia (Consumo médio ~110,1 kWh/mês ajustado pelo porte domiciliar) | Bairro / Município (Cruzamento Multiescalar Contextual) | 2022 | % da renda mediana |
-| 24 | `IEVS_EXPLORATORIO` | **Índice Exploratório de Vulnerabilidade Socioenergética (IEVS)** | Socioenergética | `Proxy/estimativa` | Subíndices normalizados (0-100) | Bairro / Setor Censitário / Município | 2022 | índice (0 a 100) |
+| 23 | `PROXY_COMPROMETIMENTO_RENDA_ENERGIA` | **Proxy de Pressão Tarifária Potencial sobre a Renda Local** | Socioenergética | `Proxy/estimativa` | IBGE Censo 2022 (V06004, V06006, V0005, V05030) + parâmetro contextual EPE Bahia 2022 (consumo médio residencial de 110,09 kWh/mês por UC) + tarifa de referência assumida de R$ 0,98/kWh com tributos (premissa do projeto, não extraída das bases oficiais) | Bairro / Município (Cruzamento Multiescalar Contextual) | 2022 | % da renda de referência |
+| 24 | `IEVS_EXPLORATORIO` | **Índice Exploratório de Vulnerabilidade Socioenergética (IEVS)** | Socioenergética | `Proxy/estimativa` | IBGE Censo 2022 — I_Renda | Bairro / Setor Censitário / Município | 2022 | índice (0 a 100) |
 
 ---
 
@@ -224,18 +224,18 @@
 - **Metodologia:** Combinação ponderada entre a ausência de sombreamento arbóreo na quadra (60%) e a compacidade construtiva/populacional relativa a 25.000 hab/km² (40%).
 - **Limitações e Cuidados Interpretativos:** Trata-se de uma proxy ambiental/urbana: não mede a temperatura interna das edificações nem o padrão construtivo do telhado (fibrocimento/laje sem isolamento térmico).
 
-### 23. Proxy de Pressão Tarifária Potencial sobre a Renda Mediana (`PROXY_COMPROMETIMENTO_RENDA_ENERGIA`)
-- **Dimensão:** Socioenergética | **Classificação:** `Proxy/estimativa` | **Unidade:** `% da renda mediana`
+### 23. Proxy de Pressão Tarifária Potencial sobre a Renda Local (`PROXY_COMPROMETIMENTO_RENDA_ENERGIA`)
+- **Dimensão:** Socioenergética | **Classificação:** `Proxy/estimativa` | **Unidade:** `% da renda de referência`
 - **Escala Geográfica:** Bairro / Município (Cruzamento Multiescalar Contextual) | **Ano de Referência:** 2022
-- **Variáveis de Origem:** `IBGE Censo 2022 (V06004, V06006, V0005) + Parâmetro Contextual EPE Bahia (Consumo médio ~110,1 kWh/mês ajustado pelo porte domiciliar)`
-- **Fórmula de Cálculo:** `((Consumo_Ref_kWh * Tarifa_Media_Ref_R$_kWh * Fator_Pressao_Local) / Renda_Referencia_Local) * 100`
+- **Variáveis de Origem:** `IBGE Censo 2022 (V06004, V06006, V0005, V05030) + parâmetro contextual EPE Bahia 2022 (consumo médio residencial de 110,09 kWh/mês por UC) + tarifa de referência assumida de R$ 0,98/kWh com tributos (premissa do projeto, não extraída das bases oficiais)`
+- **Fórmula de Cálculo:** `Fatura = 110,09 kWh * R$ 0,98 * (Moradores_Dom / 2,45) * (1 + (Perc_Sem_Arvores - 60) / 250); Renda_Ref = 0,65 * Mediana_V06006 + 0,35 * Media_V06004; Proxy = Fatura / Renda_Ref * 100`
 - **Metodologia:** Avalia a vulnerabilidade econômica ao custo da energia elétrica caso a família não usufrua integralmente do desconto da Tarifa Social (TSEE) ou sofra acréscimo de consumo por equipamentos ineficientes (geladeiras antigas/ventiladores em uso contínuo).
-- **Limitações e Cuidados Interpretativos:** PROXY EXPLORATÓRIA: Como a EPE não divulga consumo por bairro e o Censo 2022 não coleta valor da conta de luz, este indicador estima a sensibilidade orçamentária a partir da renda local observada e de parâmetros médios estaduais, não comprovando pobreza energética individual.
+- **Limitações e Cuidados Interpretativos:** PROXY EXPLORATÓRIA: a EPE não divulga consumo por bairro e o Censo 2022 não coleta o valor da conta de luz. O consumo estadual é usado apenas como parâmetro hipotético comum a todos os territórios (não como consumo observado no bairro); a tarifa e os fatores de ajuste são premissas do projeto. O resultado indica sensibilidade orçamentária relativa e não comprova pobreza energética individual.
 
 ### 24. Índice Exploratório de Vulnerabilidade Socioenergética (IEVS) (`IEVS_EXPLORATORIO`)
 - **Dimensão:** Socioenergética | **Classificação:** `Proxy/estimativa` | **Unidade:** `índice (0 a 100)`
 - **Escala Geográfica:** Bairro / Setor Censitário / Município | **Ano de Referência:** 2022
-- **Variáveis de Origem:** `Subíndices normalizados (0-100): Déficit de Renda (I_Renda), Vulnerabilidade Habitacional/Acesso (I_Hab) e Risco Urbano-Térmico (I_Urb)`
-- **Fórmula de Cálculo:** `IEVS = w_renda * I_Renda + w_hab * I_Hab + w_urb * I_Urb (Pesos base: 0.40, 0.30, 0.30)`
-- **Metodologia:** Normalização min-max padronizada (0 = menor vulnerabilidade, 100 = maior vulnerabilidade) sobre variáveis oficiais do Censo 2022, acompanhada de teste de sensibilidade sob 4 cenários de pesos.
-- **Limitações e Cuidados Interpretativos:** AVISO OBRIGATÓRIO: O IEVS é um instrumento analítico exploratório para priorização territorial e NÃO constitui índice oficial nem medida validada direta de pobreza energética domiciliar.
+- **Variáveis de Origem:** `IBGE Censo 2022 — I_Renda: V06004 e % de setores com renda média <= 1,5 SM; I_Hab: coleta direta de lixo (V00397), esgotamento precário (V00312-V00315) e domicílios com 6+ moradores; I_Urb: proxy de risco térmico (V05030 + densidade), ausência de calçada (V05021) e ausência de iluminação pública (V05012)`
+- **Fórmula de Cálculo:** `I_Renda = 0,55 * clip((3500 - Renda_Media) / 2300 * 100) + 0,45 * Perc_Setores_Baixa_Renda; I_Hab = 0,50 * (100 - Perc_Coleta_Direta) + 0,25 * min(100, Perc_Esgoto_Precario * 15) + 0,25 * min(100, Perc_Dom_6Mais * 35); I_Urb = 0,50 * Proxy_Risco_Termico + 0,30 * (100 - Perc_Calcada) + 0,20 * min(100, (100 - Perc_Iluminacao) * 15); IEVS = 0,40 * I_Renda + 0,30 * I_Hab + 0,30 * I_Urb`
+- **Metodologia:** Normalização por limiares de referência fixos (não min-max): cada variável é reescalada para 0-100 (0 = menor vulnerabilidade) com pontos de corte e fatores multiplicadores definidos pela equipe e limitados a 100. Os subíndices são combinados por média ponderada e o resultado é submetido a teste de sensibilidade em 4 cenários de pesos.
+- **Limitações e Cuidados Interpretativos:** AVISO OBRIGATÓRIO: O IEVS é um instrumento analítico exploratório para priorização territorial e NÃO constitui índice oficial nem medida validada de pobreza energética domiciliar. Os limiares e multiplicadores são escolhas da equipe e influenciam o resultado; o IEVS por setor censitário usa uma versão simplificada (renda, porte domiciliar, densidade e tipologia FCU) e não é diretamente comparável ao IEVS do bairro.

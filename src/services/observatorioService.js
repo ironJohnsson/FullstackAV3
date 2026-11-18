@@ -33,6 +33,11 @@ export async function fetchObservatorioData() {
 
       const firstError = errT || errF || errI || errO || errA;
       if (!firstError && territories?.length && indicadores?.length && observacoes?.length) {
+        const observacoesNum = observacoes.map((o) => ({
+          ...o,
+          valor: Number(o.valor),
+          ano: Number(o.ano),
+        }));
         return {
           connectionStatus: {
             mode: 'supabase_live',
@@ -44,13 +49,16 @@ export async function fetchObservatorioData() {
           territories,
           fontes: fontes || bundleData.fontes,
           indicadores,
-          observacoes: observacoes.map((o) => ({
-            ...o,
-            valor: Number(o.valor),
-            ano: Number(o.ano),
-          })),
+          observacoes: observacoesNum,
           analyses: analyses?.length ? analyses : bundleData.analyses,
-          perfisTerritoriais: bundleData.perfis_territoriais,
+          // Os perfis partem do espelho ETL (variáveis auxiliares, ex.: faixas etárias),
+          // mas todo indicador persistido no banco é sobrescrito pelo valor vindo do Supabase.
+          perfisTerritoriais: mergePerfisWithObservacoes(
+            bundleData.perfis_territoriais,
+            territories,
+            indicadores,
+            observacoesNum
+          ),
           epeBahiaSeries: bundleData.epe_bahia_series,
           ievsSensibilidade: bundleData.ievs_sensibilidade,
           resumoSetores: bundleData.resumo_setores,
@@ -86,6 +94,27 @@ export async function fetchObservatorioData() {
     geojsonBairros,
     geojsonSetores,
   };
+}
+
+/**
+ * Sobrescreve os perfis territoriais com os valores das observações de 2022 persistidas no banco,
+ * casando território por `codigo_ibge` e indicador por `codigo` (independe dos ids gerados).
+ */
+function mergePerfisWithObservacoes(perfisBase, territories, indicadores, observacoes) {
+  const perfis = Object.fromEntries(
+    Object.entries(perfisBase).map(([code, perfil]) => [code, { ...perfil }])
+  );
+  const terrById = Object.fromEntries(territories.map((t) => [t.id, t]));
+  const indById = Object.fromEntries(indicadores.map((i) => [i.id, i]));
+  for (const o of observacoes) {
+    if (o.ano !== 2022) continue;
+    const code = terrById[o.territorio_id]?.codigo_ibge;
+    const indCode = indById[o.indicador_id]?.codigo;
+    if (code && indCode && perfis[code] && Number.isFinite(o.valor)) {
+      perfis[code][indCode] = o.valor;
+    }
+  }
+  return perfis;
 }
 
 /**

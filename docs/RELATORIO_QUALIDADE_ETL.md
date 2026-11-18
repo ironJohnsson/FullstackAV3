@@ -1,6 +1,6 @@
 # Relatório de Qualidade de Dados e Auditoria ETL (Etapa 3)
 
-**Data de Execução do Pipeline:** `2026-11-12 22:13:26`  
+**Data de Execução do Pipeline:** `2026-11-18 11:49:06`  
 **Script Principal:** `etl/run_etl.py`  
 **Status da Validação:** ✅ 100% Aprovado (0 violações de chave estrangeira, 0 inferências ecológicas indevidas)
 
@@ -39,4 +39,4 @@
 | **Taxa de Alfabetização 15+ (`%`)** | 95.04% | 96.76% | 96.63% |
 | **Coleta de Lixo Direta Porta a Porta (`%`)** | 29.19% | 40.83% | 57.26% |
 | **Arborização no Entorno (`% com ≥1 árvore`)** | 24.48% | 34.02% | 34.51% |
-| **IEVS Exploratório (Cenário Base)** | **66.17 / 100** | **52.98 / 100** | **38.62 / 100** |
+| **IEVS Exploratório (Cenário Base)** | **66.17 / 100** | **52.98 / 100** | **40.19 / 100** |
