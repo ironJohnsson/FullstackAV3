@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Observatório de Vulnerabilidade Socioenergética de Salvador | SENAI CIMATEC</title>
     <meta
       name="description"
-      content="Observatório Digital de Vulnerabilidade Social e Socioenergética de Beiru/Tancredo Neves e Pernambués (Salvador/BA) — Integração IBGE Censo 2022, IPEA IVS e EPE."
+      content="Observatório de vulnerabilidade social e socioenergética de Beiru/Tancredo Neves e Pernambués (Salvador/BA) — integração de dados do IBGE (Censo 2022), IPEA (IVS) e EPE."
     />
+    <meta name="theme-color" content="#ffffff" />
+    <script>
+      // Aplica o tema salvo antes da renderização para evitar troca visual ao carregar
+      try {
+        var t = localStorage.getItem('obs_ui_theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap"
       rel="stylesheet"
     />
     <link

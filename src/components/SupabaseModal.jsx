@@ -30,8 +30,8 @@ export default function SupabaseModal({ isOpen, onClose, connectionStatus, onRec
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Database size={20} style={{ color: '#10b981' }} />
+          <div className="modal-title">
+            <Database size={18} className="modal-title-icon" />
             <h3>Persistência PostgreSQL / Supabase</h3>
           </div>
           <button type="button" className="icon-close-btn" onClick={onClose}>
@@ -41,10 +41,10 @@ export default function SupabaseModal({ isOpen, onClose, connectionStatus, onRec
 
         <div className="modal-body">
           <div className="status-banner-modal">
-            <CheckCircle2 size={18} style={{ color: '#10b981', flexShrink: 0 }} />
+            <CheckCircle2 size={18} className="modal-icon" />
             <div>
               <strong>Status Atual:</strong> {connectionStatus?.label}
-              <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: 2 }}>
+              <div className="modal-muted">
                 Tabelas modeladas: <code>territories</code>, <code>fontes</code>, <code>indicadores</code>,{' '}
                 <code>observacoes</code> ({connectionStatus?.totalObservacoes} registros) e <code>analyses</code> (8
                 questões).
@@ -53,7 +53,7 @@ export default function SupabaseModal({ isOpen, onClose, connectionStatus, onRec
           </div>
 
           <div className="security-note-modal">
-            <ShieldCheck size={17} style={{ color: '#38bdf8', flexShrink: 0 }} />
+            <ShieldCheck size={17} className="modal-icon" />
             <span>
               <strong>Boas Práticas de Segurança (RLS):</strong> O frontend utiliza exclusivamente a chave pública{' '}
               <code>anon</code> com políticas de <em>Row Level Security (SELECT-only)</em> definidas em{' '}

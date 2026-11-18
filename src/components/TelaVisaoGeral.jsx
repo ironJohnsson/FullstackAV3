@@ -19,7 +19,6 @@ import {
   TreePine,
   Zap,
   GraduationCap,
-  MapPin,
   Info,
   Filter,
   LayoutGrid,
@@ -60,14 +59,11 @@ const TERRITORY_OPTIONS = [
   },
 ];
 
-const RACE_COLORS = ['#0ea5e9', '#6366f1', '#94a3b8'];
-
 export default function TelaVisaoGeral({
   data,
   selectedBairro,
   setSelectedBairro,
-  onNavigateTab,
-  theme = 'dark',
+  theme = 'light',
 }) {
   const [activeModule, setActiveModule] = useState('kpis'); // 'kpis' | 'graficos' | 'tabela'
   const [activeChartTab, setActiveChartTab] = useState('infra'); // 'infra' | 'demografia' | 'ambos'
@@ -79,12 +75,16 @@ export default function TelaVisaoGeral({
   const [classFilter, setClassFilter] = useState('ALL');
   const [fonteFilter, setFonteFilter] = useState('ALL');
   const ct = getChartTheme(theme);
+  const sc = ct.series;
 
   const activeCode = selectedBairro === 'BOTH' ? '2927408018' : selectedBairro;
   const perfil = data.perfisTerritoriais[activeCode] || data.perfisTerritoriais['2927408018'];
   const beiru = data.perfisTerritoriais['2927408018'];
   const pern = data.perfisTerritoriais['2927408117'];
   const ssa = data.perfisTerritoriais['2927408'];
+
+  const perfilColor =
+    activeCode === '2927408117' ? sc.pern : activeCode === '2927408' ? sc.ssa : sc.beiru;
 
   const filteredObs = useMemo(() => {
     return queryObservacoesDetalhadas(data, {
@@ -178,11 +178,10 @@ export default function TelaVisaoGeral({
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Dado observado',
       icon: Users,
-      accent: '#38bdf8',
     },
     {
       title: 'Domicílios Ocupados (DPPO)',
-      dimension: 'Habitacional',
+      dimension: 'Demográfica',
       value: formatNumber(perfil.DOM_OCUPADOS),
       unit: `de ${formatNumber(perfil.DOM_TOTAIS)} totais`,
       subtitle: `Média: ${formatNumber(perfil.MEDIA_MORADORES_DOM, 2)} mor/dom · 6+ mor.: ${formatNumber(perfil.ADENSAMENTO_DOMICILIAR_6MAIS, 2)}%`,
@@ -191,7 +190,6 @@ export default function TelaVisaoGeral({
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Dado observado',
       icon: Home,
-      accent: '#10b981',
     },
     {
       title: 'Rendimento Médio / Mediano',
@@ -204,7 +202,6 @@ export default function TelaVisaoGeral({
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Dado observado',
       icon: DollarSign,
-      accent: '#f59e0b',
     },
     {
       title: 'Taxa de Alfabetização (15+)',
@@ -217,7 +214,6 @@ export default function TelaVisaoGeral({
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Indicador derivado',
       icon: GraduationCap,
-      accent: '#a855f7',
     },
     {
       title: 'Déficit de Arborização no Entorno',
@@ -230,7 +226,6 @@ export default function TelaVisaoGeral({
       scale: activeCode === '2927408' ? 'Município' : 'Bairro Oficial',
       classification: 'Indicador derivado',
       icon: TreePine,
-      accent: '#06b6d4',
     },
     {
       title: 'IEVS Exploratório (Cenário Base)',
@@ -238,12 +233,11 @@ export default function TelaVisaoGeral({
       value: `${formatNumber(perfil.IEVS_EXPLORATORIO, 2)}`,
       unit: '/ 100 pontos',
       subtitle: `Risco Térmico: ${formatNumber(perfil.PROXY_RISCO_TERMICO_URBANO, 1)} · Pressão Tarifária: ${formatNumber(perfil.PROXY_COMPROMETIMENTO_RENDA_ENERGIA, 1)}%`,
-      source: 'Observatório (IBGE + Contexto EPE)',
+      source: 'Índice do projeto · base IBGE Censo 2022',
       year: '2022',
       scale: 'Bairro (Índice Exploratório)',
       classification: 'Proxy/estimativa',
       icon: Zap,
-      accent: '#f43f5e',
     },
   ];
 
@@ -283,8 +277,7 @@ export default function TelaVisaoGeral({
                   className={`territory-pill ${activeCode === opt.code ? 'active' : ''}`}
                   onClick={() => setSelectedBairro(opt.code)}
                 >
-                  <MapPin size={13} style={{ marginRight: 5, verticalAlign: '-2px' }} />
-                  {opt.shortLabel} <span style={{ opacity: 0.72, fontWeight: 400 }}>({opt.popLabel})</span>
+                  {opt.shortLabel} <span className="pill-sub">{opt.popLabel}</span>
                 </button>
               ))}
             </div>
@@ -419,8 +412,8 @@ export default function TelaVisaoGeral({
       {activeModule === 'kpis' && (
         <>
           {dimFilter !== 'ALL' && (
-            <div className="chart-card" style={{ padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+            <div className="hint-bar">
+              <span>
                 Filtro ativo: dimensão <strong>{dimFilter}</strong> ({filteredKpiCards.length} de {kpiCards.length} cards · {filteredObs.length} indicadores na tabela)
               </span>
               <button type="button" className="action-toggle-btn" onClick={() => setDimFilter('ALL')}>
@@ -444,7 +437,9 @@ export default function TelaVisaoGeral({
                 >
                   <div className="kpi-card-top">
                     <div className="kpi-title-wrap">
-                      <span className="kpi-accent-dot" style={{ background: card.accent }} />
+                      <span className="kpi-icon-badge">
+                        <IconComp size={15} />
+                      </span>
                       <span className="kpi-title">{card.title}</span>
                     </div>
                     <span
@@ -475,12 +470,6 @@ export default function TelaVisaoGeral({
                           <span>·</span>
                           <span>Ref: {card.year}</span>
                         </div>
-                        <span
-                          className="kpi-icon-badge"
-                          style={{ background: `${card.accent}18`, color: card.accent }}
-                        >
-                          <IconComp size={15} />
-                        </span>
                       </div>
                     </>
                   ) : (
@@ -491,12 +480,6 @@ export default function TelaVisaoGeral({
                           <ChevronDown size={12} /> Detalhes
                         </span>
                       </div>
-                      <span
-                        className="kpi-icon-badge"
-                        style={{ background: `${card.accent}18`, color: card.accent }}
-                      >
-                        <IconComp size={15} />
-                      </span>
                     </div>
                   )}
                 </div>
@@ -504,23 +487,11 @@ export default function TelaVisaoGeral({
             })}
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 10,
-              padding: '10px 14px',
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '11px',
-            }}
-          >
-            <span style={{ fontSize: '0.79rem', color: 'var(--text-secondary)' }}>
-              Dica: clique em qualquer card acima para detalhar sua fórmula/fonte ou navegue para os módulos analíticos:
+          <div className="hint-bar">
+            <span>
+              Clique em um indicador para ver escala e detalhes da fonte, ou abra os outros módulos:
             </span>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div className="hint-bar-actions">
               <button
                 type="button"
                 className="action-toggle-btn"
@@ -575,9 +546,11 @@ export default function TelaVisaoGeral({
                       itemStyle={ct.tooltipItemStyle}
                       labelStyle={ct.tooltipLabelStyle}
                     />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Bar dataKey={perfil.nome} fill="#38bdf8" radius={[0, 4, 4, 0]} barSize={14} />
-                    <Bar dataKey="Salvador" fill="#64748b" radius={[0, 4, 4, 0]} barSize={14} />
+                    <Legend wrapperStyle={ct.legendStyle} />
+                    <Bar dataKey={perfil.nome} fill={perfilColor} radius={[0, 2, 2, 0]} barSize={12} />
+                    {activeCode !== '2927408' && (
+                      <Bar dataKey="Salvador" fill={sc.ssa} radius={[0, 2, 2, 0]} barSize={12} />
+                    )}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -612,15 +585,15 @@ export default function TelaVisaoGeral({
                         itemStyle={ct.tooltipItemStyle}
                         labelStyle={ct.tooltipLabelStyle}
                       />
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                      <Bar dataKey="Beiru / Tancredo Neves" fill="#fb7185" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="Pernambués" fill="#38bdf8" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="Salvador" fill="#64748b" radius={[4, 4, 0, 0]} />
+                      <Legend wrapperStyle={ct.legendStyle} />
+                      <Bar dataKey="Beiru / Tancredo Neves" fill={sc.beiru} radius={[2, 2, 0, 0]} />
+                      <Bar dataKey="Pernambués" fill={sc.pern} radius={[2, 2, 0, 0]} />
+                      <Bar dataKey="Salvador" fill={sc.ssa} radius={[2, 2, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
                 <div style={{ flex: 0.9, height: 270, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                  <span className="mini-chart-caption">
                     Autodeclaração Racial ({perfil.nome})
                   </span>
                   <ResponsiveContainer width="100%" height="100%">
@@ -633,12 +606,13 @@ export default function TelaVisaoGeral({
                         cy="46%"
                         innerRadius={36}
                         outerRadius={54}
-                        paddingAngle={3}
+                        paddingAngle={2}
+                        stroke="var(--bg-card)"
                         labelLine={{ stroke: ct.tickFill, strokeWidth: 1 }}
                         label={({ value }) => `${formatNumber(value, 1)}%`}
                       >
                         {racePieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={RACE_COLORS[index % RACE_COLORS.length]} />
+                          <Cell key={`cell-${index}`} fill={[sc.cat[0], sc.cat[2], sc.ssa][index]} />
                         ))}
                       </Pie>
                       <Tooltip
@@ -647,7 +621,7 @@ export default function TelaVisaoGeral({
                         itemStyle={ct.tooltipItemStyle}
                         labelStyle={ct.tooltipLabelStyle}
                       />
-                      <Legend wrapperStyle={{ fontSize: 11 }} iconSize={9} />
+                      <Legend wrapperStyle={ct.legendStyle} iconSize={9} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -720,11 +694,7 @@ export default function TelaVisaoGeral({
                       <td>
                         <span
                           className="dim-badge"
-                          style={{
-                            background: `${dimColor}16`,
-                            color: dimColor,
-                            border: `1px solid ${dimColor}38`,
-                          }}
+                          style={{ '--dim': dimColor }}
                         >
                           {row.indicador.dimensao}
                         </span>
@@ -752,7 +722,7 @@ export default function TelaVisaoGeral({
                         </span>
                       </td>
                       <td>
-                        <div className="td-main-title" style={{ fontSize: '0.78rem' }}>{row.fonte.instituicao}</div>
+                        <div className="td-main-title">{row.fonte.instituicao}</div>
                         <div className="td-sub-code">{row.indicador.variaveis_origem}</div>
                       </td>
                       <td>

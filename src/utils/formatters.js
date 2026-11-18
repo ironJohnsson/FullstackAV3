@@ -28,48 +28,43 @@ export function formatValueByUnit(val, unidade) {
   return `${formatNumber(val, 2)} ${unidade || ''}`.trim();
 }
 
+/**
+ * Estilo do selo de classificação metodológica (Dado observado / Indicador derivado / Proxy).
+ * As cores vêm de variáveis CSS para acompanhar os modos claro e escuro.
+ */
 export function getClassificacaoBadgeStyle(classificacao) {
-  switch (classificacao) {
-    case 'Dado observado':
-      return {
-        bg: 'rgba(16, 185, 129, 0.14)',
-        border: 'rgba(16, 185, 129, 0.4)',
-        text: '#34d399',
-        short: 'Dado Observado',
-      };
-    case 'Indicador derivado':
-      return {
-        bg: 'rgba(56, 189, 248, 0.14)',
-        border: 'rgba(56, 189, 248, 0.4)',
-        text: '#38bdf8',
-        short: 'Indicador Derivado',
-      };
-    case 'Proxy/estimativa':
-      return {
-        bg: 'rgba(245, 158, 11, 0.15)',
-        border: 'rgba(245, 158, 11, 0.45)',
-        text: '#fbbf24',
-        short: 'Proxy / Estimativa',
-      };
-    default:
-      return {
-        bg: 'rgba(148, 163, 184, 0.15)',
-        border: 'rgba(148, 163, 184, 0.4)',
-        text: '#cbd5e1',
-        short: classificacao || 'Indicador',
-      };
-  }
+  const key =
+    classificacao === 'Dado observado'
+      ? 'obs'
+      : classificacao === 'Indicador derivado'
+        ? 'der'
+        : classificacao === 'Proxy/estimativa'
+          ? 'proxy'
+          : 'neutral';
+  const short = {
+    obs: 'Dado observado',
+    der: 'Indicador derivado',
+    proxy: 'Proxy / estimativa',
+    neutral: classificacao || 'Indicador',
+  }[key];
+  return {
+    bg: `var(--badge-${key}-bg)`,
+    border: `var(--badge-${key}-border)`,
+    text: `var(--badge-${key}-text)`,
+    short,
+  };
 }
 
+/** Cor discreta usada apenas no marcador (ponto) do selo de dimensão. */
 export function getDimensaoColor(dimensao) {
   const map = {
-    Demográfica: '#38bdf8',
-    Econômica: '#f59e0b',
-    Social: '#a855f7',
-    Habitacional: '#10b981',
-    Urbana: '#06b6d4',
-    Energética: '#eab308',
-    Socioenergética: '#f43f5e',
+    Demográfica: '#1f4e79',
+    Econômica: '#b7791f',
+    Social: '#6b5b95',
+    Habitacional: '#3f6e5a',
+    Urbana: '#4a7a8c',
+    Energética: '#a08a2c',
+    Socioenergética: '#8c4a5a',
   };
   return map[dimensao] || '#64748b';
 }
