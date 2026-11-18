@@ -21,19 +21,18 @@ import {
   TrendingUp,
   RotateCcw,
   Table2,
-  ChevronDown,
-  ChevronUp,
   Info,
 } from 'lucide-react';
-import { formatNumber } from '../utils/formatters';
+import { formatNumber, getClassificacaoBadgeStyle } from '../utils/formatters';
 import { getChartTheme } from '../utils/chartTheme';
 
-export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
+export default function TelaEnergiaIEVS({ data, theme = 'light' }) {
   const [activeModule, setActiveModule] = useState('epe_bahia'); // 'epe_bahia' | 'simulador_ievs' | 'sensibilidade'
-  const [showScaleNote, setShowScaleNote] = useState(false);
-  const [showIevsNote, setShowIevsNote] = useState(false);
   const [showEpeCardMeta, setShowEpeCardMeta] = useState(false);
   const ct = getChartTheme(theme);
+  const sc = ct.series;
+  const badgeObs = getClassificacaoBadgeStyle('Dado observado');
+  const badgeDer = getClassificacaoBadgeStyle('Indicador derivado');
 
   const [wRendaRaw, setWRendaRaw] = useState(40);
   const [wHabRaw, setWHabRaw] = useState(30);
@@ -42,6 +41,13 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
   const epeSeries = data.epeBahiaSeries || [];
   const epe2022 = epeSeries.find((r) => r.ano === 2022) || epeSeries[4] || {};
   const epeLatest = epeSeries[epeSeries.length - 1] || {};
+  const epeFirst = epeSeries[0] || {};
+  const pctChange = (a, b) => (a ? ((b - a) / a) * 100 : 0);
+  const consumoGrowth = pctChange(epeFirst.consumo_total_gwh, epeLatest.consumo_total_gwh);
+  const baixaRendaGrowth = pctChange(epeFirst.consumo_baixa_renda_gwh, epeLatest.consumo_baixa_renda_gwh);
+  const consumoMedioValues = epeSeries.map((r) => r.consumo_medio_mensal_kwh_uc).filter((v) => Number.isFinite(v));
+  const consumoMedioMin = consumoMedioValues.length ? Math.min(...consumoMedioValues) : 0;
+  const consumoMedioMax = consumoMedioValues.length ? Math.max(...consumoMedioValues) : 0;
 
   const beiru = data.perfisTerritoriais['2927408018'];
   const pern = data.perfisTerritoriais['2927408117'];
@@ -104,6 +110,10 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
     };
   }, [normWeights, beiru, pern, ssa]);
 
+  const sensRows = data.ievsSensibilidade || [];
+  const beiruAlwaysFirst = sensRows.length > 0 && sensRows.every((s) => s.scores.diferenca_beiru_pernambues > 0);
+  const signed = (v, dec = 2) => `${v > 0 ? '+' : ''}${formatNumber(v, dec)}`;
+
   function applyPresetScenario(r, h, u) {
     setWRendaRaw(r);
     setWHabRaw(h);
@@ -124,31 +134,17 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
             </h2>
           </div>
 
-          <button
-            type="button"
-            className={`action-toggle-btn ${showScaleNote ? 'active' : ''}`}
-            onClick={() => setShowScaleNote((v) => !v)}
-          >
-            <AlertTriangle size={14} style={{ color: 'var(--accent-amber)' }} />
-            <span>Nota Metodológica: Escala Estadual EPE</span>
-            {showScaleNote ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-          </button>
         </div>
 
-        {showScaleNote && (
-          <div className="warning-methodology-box">
-            <AlertTriangle size={18} className="warn-icon" />
-            <div>
-              <strong>Cuidado Metodológico de Escala Geográfica (Requisito Obrigatório):</strong> Os dados abertos do{' '}
-              <strong>Anuário Estatístico de Energia Elétrica da EPE</strong> são publicados exclusivamente em{' '}
-              <strong>escala estadual (UF: Bahia — código IBGE 29)</strong>. Em conformidade com as boas práticas
-              científicas e de modelagem no banco de dados (<code>territorio_id = 2</code>), os valores estaduais da EPE{' '}
-              <strong>não são replicados nem atribuídos diretamente aos bairros</strong>. Eles contextualizam a dinâmica
-              estadual do consumo residencial e da Tarifa Social (Baixa Renda), sendo articulados às condições locais de
-              Beiru/Tancredo Neves e Pernambués por meio de proxies documentadas e do simulador exploratório IEVS.
-            </div>
+        <div className="warning-methodology-box">
+          <AlertTriangle size={18} className="warn-icon" />
+          <div>
+            <strong>Escala estadual:</strong> os dados do Anuário Estatístico de Energia Elétrica (EPE) são publicados
+            apenas para a <strong>Bahia (UF 29)</strong> e estão armazenados no banco vinculados ao território estadual.
+            Eles <strong>não são atribuídos aos bairros</strong>: servem como contexto. Os indicadores locais desta tela
+            (IEVS e proxies) são calculados exclusivamente com dados do Censo 2022.
           </div>
-        )}
+        </div>
       </div>
 
       {/* Seletor Modular da Tela de Energia & IEVS */}
@@ -209,10 +205,12 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
             >
               <div className="kpi-card-top">
                 <div className="kpi-title-wrap">
-                  <span className="kpi-accent-dot" style={{ background: '#eab308' }} />
-                  <span className="kpi-title">Consumo Residencial (BA)</span>
+                  <span className="kpi-icon-badge">
+                    <Zap size={15} />
+                  </span>
+                  <span className="kpi-title">Consumo residencial · Bahia</span>
                 </div>
-                <span className="classification-pill" style={{ color: '#34d399', borderColor: '#34d39955', background: '#10b98118' }}>
+                <span className="classification-pill" style={{ color: badgeObs.text, borderColor: badgeObs.border, background: badgeObs.bg }}>
                   Observado
                 </span>
               </div>
@@ -223,7 +221,8 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
               {showEpeCardMeta && (
                 <>
                   <p className="kpi-subtitle">
-                    Evoluiu para <strong>{formatNumber(epeLatest.consumo_total_gwh, 2)} GWh</strong> em {epeLatest.ano} (+14,3% desde 2018)
+                    Evoluiu para <strong>{formatNumber(epeLatest.consumo_total_gwh, 2)} GWh</strong> em {epeLatest.ano} (
+                    {signed(consumoGrowth, 1)}% desde {epeFirst.ano})
                   </p>
                   <div className="kpi-meta-footer">
                     <div className="kpi-meta-inline">
@@ -231,9 +230,6 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                       <span>·</span>
                       <span>Escala: UF Bahia</span>
                     </div>
-                    <span className="kpi-icon-badge" style={{ background: 'rgba(234,179,8,0.15)', color: '#eab308' }}>
-                      <Zap size={15} />
-                    </span>
                   </div>
                 </>
               )}
@@ -246,10 +242,12 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
             >
               <div className="kpi-card-top">
                 <div className="kpi-title-wrap">
-                  <span className="kpi-accent-dot" style={{ background: '#38bdf8' }} />
-                  <span className="kpi-title">Unidades Consumidoras (BA)</span>
+                  <span className="kpi-icon-badge">
+                    <TrendingUp size={15} />
+                  </span>
+                  <span className="kpi-title">Unidades consumidoras · Bahia</span>
                 </div>
-                <span className="classification-pill" style={{ color: '#34d399', borderColor: '#34d39955', background: '#10b98118' }}>
+                <span className="classification-pill" style={{ color: badgeObs.text, borderColor: badgeObs.border, background: badgeObs.bg }}>
                   Observado
                 </span>
               </div>
@@ -268,9 +266,6 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                       <span>·</span>
                       <span>Escala: UF Bahia</span>
                     </div>
-                    <span className="kpi-icon-badge" style={{ background: 'rgba(56,189,248,0.15)', color: '#38bdf8' }}>
-                      <TrendingUp size={15} />
-                    </span>
                   </div>
                 </>
               )}
@@ -283,10 +278,12 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
             >
               <div className="kpi-card-top">
                 <div className="kpi-title-wrap">
-                  <span className="kpi-accent-dot" style={{ background: '#10b981' }} />
+                  <span className="kpi-icon-badge">
+                    <Zap size={15} />
+                  </span>
                   <span className="kpi-title">Subclasse Baixa Renda (TSEE)</span>
                 </div>
-                <span className="classification-pill" style={{ color: '#38bdf8', borderColor: '#38bdf855', background: '#38bdf818' }}>
+                <span className="classification-pill" style={{ color: badgeDer.text, borderColor: badgeDer.border, background: badgeDer.bg }}>
                   Derivado
                 </span>
               </div>
@@ -297,7 +294,7 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
               {showEpeCardMeta && (
                 <>
                   <p className="kpi-subtitle">
-                    Cresceu para <strong>{formatNumber(epeLatest.perc_consumidores_baixa_renda, 2)}%</strong> ({formatNumber(epeLatest.consumidores_baixa_renda)} famílias na Tarifa Social em {epeLatest.ano})
+                    Cresceu para <strong>{formatNumber(epeLatest.perc_consumidores_baixa_renda, 2)}%</strong> ({formatNumber(epeLatest.consumidores_baixa_renda)} unidades consumidoras em {epeLatest.ano})
                   </p>
                   <div className="kpi-meta-footer">
                     <div className="kpi-meta-inline">
@@ -305,9 +302,6 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                       <span>·</span>
                       <span>Escala: UF Bahia</span>
                     </div>
-                    <span className="kpi-icon-badge" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981' }}>
-                      <Zap size={15} />
-                    </span>
                   </div>
                 </>
               )}
@@ -320,10 +314,12 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
             >
               <div className="kpi-card-top">
                 <div className="kpi-title-wrap">
-                  <span className="kpi-accent-dot" style={{ background: '#f43f5e' }} />
-                  <span className="kpi-title">Consumo Médio Mensal / UC</span>
+                  <span className="kpi-icon-badge">
+                    <Zap size={15} />
+                  </span>
+                  <span className="kpi-title">Consumo médio mensal por UC</span>
                 </div>
-                <span className="classification-pill" style={{ color: '#38bdf8', borderColor: '#38bdf855', background: '#38bdf818' }}>
+                <span className="classification-pill" style={{ color: badgeDer.text, borderColor: badgeDer.border, background: badgeDer.bg }}>
                   Derivado
                 </span>
               </div>
@@ -343,9 +339,6 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                       <span>·</span>
                       <span>Escala: UF Bahia</span>
                     </div>
-                    <span className="kpi-icon-badge" style={{ background: 'rgba(244,63,94,0.15)', color: '#f43f5e' }}>
-                      <Zap size={15} />
-                    </span>
                   </div>
                 </>
               )}
@@ -361,40 +354,47 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                 </div>
               </div>
               <p className="chart-description">
-                O consumo da subclasse <strong>Residencial Baixa Renda (Tarifa Social)</strong> na Bahia praticamente dobrou
-                entre 2018 (1.219,6 GWh) e 2025 (2.427,6 GWh), demonstrando a relevância estrutural do subsídio tarifário no
-                estado.
+                O consumo da subclasse <strong>Residencial Baixa Renda (Tarifa Social)</strong> na Bahia passou de{' '}
+                {formatNumber(epeFirst.consumo_baixa_renda_gwh, 1)} GWh ({epeFirst.ano}) para{' '}
+                {formatNumber(epeLatest.consumo_baixa_renda_gwh, 1)} GWh ({epeLatest.ano}), variação de{' '}
+                <strong>{signed(baixaRendaGrowth, 1)}%</strong>. Valores estaduais — não representam o consumo dos bairros.
               </p>
               <div className="chart-wrapper" style={{ height: 295 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={epeSeries} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={ct.gridStroke} vertical={false} />
                     <XAxis dataKey="ano" stroke={ct.axisStroke} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
-                    <YAxis stroke={ct.axisStroke} unit=" GWh" tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
+                    <YAxis
+                      stroke={ct.axisStroke}
+                      width={58}
+                      tickFormatter={(v) => formatNumber(v)}
+                      tick={{ fill: ct.tickFill, fontSize: 11.5 }}
+                      label={{ value: 'GWh', angle: -90, position: 'insideLeft', fill: ct.tickFill, fontSize: 11, dx: -2 }}
+                    />
                     <Tooltip
                       formatter={(val) => [`${formatNumber(val, 2)} GWh`, '']}
                       contentStyle={ct.tooltipStyle}
                       itemStyle={ct.tooltipItemStyle}
                       labelStyle={ct.tooltipLabelStyle}
                     />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Legend wrapperStyle={ct.legendStyle} />
                     <Area
                       type="monotone"
                       dataKey="consumo_convencional_gwh"
                       name="Residencial Convencional (GWh)"
                       stackId="1"
-                      stroke="#38bdf8"
-                      fill="#38bdf8"
-                      fillOpacity={0.4}
+                      stroke={sc.cat[0]}
+                      fill={sc.cat[0]}
+                      fillOpacity={0.28}
                     />
                     <Area
                       type="monotone"
                       dataKey="consumo_baixa_renda_gwh"
                       name="Residencial Baixa Renda - TSEE (GWh)"
                       stackId="1"
-                      stroke="#eab308"
-                      fill="#eab308"
-                      fillOpacity={0.6}
+                      stroke={sc.cat[1]}
+                      fill={sc.cat[1]}
+                      fillOpacity={0.4}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -409,9 +409,14 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                 </div>
               </div>
               <p className="chart-description">
-                A proporção de famílias baianas enquadradas na subclasse <strong>Baixa Renda</strong> subiu de{' '}
-                <strong>20,35% (2018)</strong> para <strong>28,22% no Censo 2022</strong> e <strong>32,78% em 2025</strong>,
-                enquanto o consumo médio mensal manteve-se na faixa de 108 a 113 kWh/mês.
+                A participação das unidades consumidoras residenciais da Bahia na subclasse <strong>Baixa Renda</strong>{' '}
+                passou de <strong>{formatNumber(epeFirst.perc_consumidores_baixa_renda, 2)}% ({epeFirst.ano})</strong> para{' '}
+                <strong>{formatNumber(epe2022.perc_consumidores_baixa_renda, 2)}% em 2022</strong> e{' '}
+                <strong>
+                  {formatNumber(epeLatest.perc_consumidores_baixa_renda, 2)}% em {epeLatest.ano}
+                </strong>
+                , enquanto o consumo médio mensal por UC variou entre {formatNumber(consumoMedioMin, 1)} e{' '}
+                {formatNumber(consumoMedioMax, 1)} kWh.
               </p>
               <div className="chart-wrapper" style={{ height: 295 }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -424,7 +429,7 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                       tickFormatter={(v) => `${(v / 1_000_000).toFixed(1)}M`}
                       tick={{ fill: ct.tickFill, fontSize: 11.5 }}
                     />
-                    <YAxis yAxisId="right" orientation="right" stroke="#eab308" unit="%" domain={[0, 45]} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
+                    <YAxis yAxisId="right" orientation="right" stroke={ct.axisStroke} unit="%" domain={[0, 45]} tick={{ fill: ct.tickFill, fontSize: 11.5 }} />
                     <Tooltip
                       cursor={ct.barCursor}
                       formatter={(val, name) =>
@@ -434,29 +439,29 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                       itemStyle={ct.tooltipItemStyle}
                       labelStyle={ct.tooltipLabelStyle}
                     />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Legend wrapperStyle={ct.legendStyle} />
                     <Bar
                       yAxisId="left"
                       dataKey="consumidores_convencional"
                       name="UCs Convencionais (BA)"
                       stackId="ucs"
-                      fill="#475569"
+                      fill={sc.ssa}
                     />
                     <Bar
                       yAxisId="left"
                       dataKey="consumidores_baixa_renda"
                       name="UCs Baixa Renda / Tarifa Social (BA)"
                       stackId="ucs"
-                      fill="#10b981"
+                      fill={sc.cat[1]}
                     />
                     <Line
                       yAxisId="right"
                       type="monotone"
                       dataKey="perc_consumidores_baixa_renda"
                       name="% UCs Baixa Renda na Bahia"
-                      stroke="#eab308"
-                      strokeWidth={2.5}
-                      dot={{ r: 3.5 }}
+                      stroke={sc.cat[0]}
+                      strokeWidth={2}
+                      dot={{ r: 3 }}
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
@@ -478,15 +483,7 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                 Simulador de Ponderação Multidimensional (Renda, Habitação e Urbano-Térmico)
               </h2>
             </div>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                className={`action-toggle-btn ${showIevsNote ? 'active' : ''}`}
-                onClick={() => setShowIevsNote((v) => !v)}
-              >
-                <ShieldAlert size={14} />
-                <span>{showIevsNote ? 'Ocultar Ressalva Metodológica' : 'Nota de Rigor Metodológico'}</span>
-              </button>
+            <div className="header-actions">
               <button
                 type="button"
                 className="btn-secondary"
@@ -497,17 +494,14 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
             </div>
           </div>
 
-          {showIevsNote && (
-            <div className="ievs-disclaimer-box">
-              <ShieldAlert size={17} style={{ color: 'var(--accent-amber)', flexShrink: 0 }} />
-              <span>
-                <strong>Nota de Rigor Metodológico (Seção 9):</strong> O <strong>IEVS</strong> é uma proposta analítica
-                exploratória construída sobre variáveis oficiais normalizadas do Censo 2022 para apoiar a priorização de
-                políticas públicas no território. <strong>Não deve ser apresentado como índice oficial nem como medida
-                direta validada de pobreza energética familiar.</strong>
-              </span>
-            </div>
-          )}
+          <div className="ievs-disclaimer-box">
+            <ShieldAlert size={17} className="warn-icon" />
+            <span>
+              <strong>Índice exploratório.</strong> O IEVS é uma proposta analítica da equipe, construída com variáveis do
+              Censo 2022 reescaladas por limiares de referência, para apoiar a priorização territorial.{' '}
+              <strong>Não é um índice oficial nem uma medida validada de pobreza energética.</strong>
+            </span>
+          </div>
 
           <div className="simulator-grid">
             <div className="sliders-panel">
@@ -518,7 +512,7 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
               <div className="slider-item">
                 <div className="slider-label-row">
                   <span>1. Dimensão Renda & Capacidade Tarifária (I_Renda)</span>
-                  <strong style={{ color: 'var(--accent-amber)' }}>Peso Efetivo: {normWeights.rendaPct}%</strong>
+                  <strong className="slider-weight">Peso efetivo: {normWeights.rendaPct}%</strong>
                 </div>
                 <input
                   type="range"
@@ -537,7 +531,7 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
               <div className="slider-item">
                 <div className="slider-label-row">
                   <span>2. Dimensão Habitação, Saneamento & Adensamento (I_Hab)</span>
-                  <strong style={{ color: 'var(--accent-emerald)' }}>Peso Efetivo: {normWeights.habPct}%</strong>
+                  <strong className="slider-weight">Peso efetivo: {normWeights.habPct}%</strong>
                 </div>
                 <input
                   type="range"
@@ -556,7 +550,7 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
               <div className="slider-item">
                 <div className="slider-label-row">
                   <span>3. Dimensão Condições Urbanas & Estresse Térmico (I_Urb)</span>
-                  <strong style={{ color: 'var(--accent-rose)' }}>Peso Efetivo: {normWeights.urbPct}%</strong>
+                  <strong className="slider-weight">Peso efetivo: {normWeights.urbPct}%</strong>
                 </div>
                 <input
                   type="range"
@@ -567,8 +561,8 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                   className="range-slider"
                 />
                 <small className="slider-help">
-                  Base: Proxy de Ilha de Calor (74,4% sem árvores no Beiru + densidade 23,4 mil hab/km²), déficit de
-                  calçadas e iluminação pública (Beiru = {beiru.IEVS_SUB_URBANA} pts · Pernambués = {pern.IEVS_SUB_URBANA}{' '}
+                  Base: proxy de risco térmico (faces sem árvores e densidade demográfica), déficit de calçadas e de
+                  iluminação pública (Beiru = {beiru.IEVS_SUB_URBANA} pts · Pernambués = {pern.IEVS_SUB_URBANA}{' '}
                   pts).
                 </small>
               </div>
@@ -603,8 +597,14 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                 </div>
                 <div className="sim-score-box diff-box">
                   <span className="sim-score-title">Diferença (Beiru − Pern.)</span>
-                  <strong className="sim-score-value">+{formatNumber(simulatedIEVS.diff, 2)}</strong>
-                  <span className="sim-score-sub">Beiru 1º em todos os cenários</span>
+                  <strong className="sim-score-value">{signed(simulatedIEVS.diff)}</strong>
+                  <span className="sim-score-sub">
+                    {simulatedIEVS.diff > 0
+                      ? 'Beiru com maior índice nestes pesos'
+                      : simulatedIEVS.diff < 0
+                        ? 'Pernambués com maior índice nestes pesos'
+                        : 'Empate nestes pesos'}
+                  </span>
                 </div>
               </div>
 
@@ -620,10 +620,10 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                       itemStyle={ct.tooltipItemStyle}
                       labelStyle={ct.tooltipLabelStyle}
                     />
-                    <Legend wrapperStyle={{ fontSize: 11.5 }} />
-                    <Bar dataKey="Subíndice Renda (Ponderado)" stackId="ievs" fill="#f59e0b" />
-                    <Bar dataKey="Subíndice Habitação (Ponderado)" stackId="ievs" fill="#10b981" />
-                    <Bar dataKey="Subíndice Urbano/Térmico (Ponderado)" stackId="ievs" fill="#fb7185" />
+                    <Legend wrapperStyle={ct.legendStyle} />
+                    <Bar dataKey="Subíndice Renda (Ponderado)" stackId="ievs" fill={sc.cat[0]} />
+                    <Bar dataKey="Subíndice Habitação (Ponderado)" stackId="ievs" fill={sc.cat[2]} />
+                    <Bar dataKey="Subíndice Urbano/Térmico (Ponderado)" stackId="ievs" fill={sc.cat[1]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -641,6 +641,11 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
               <h3>Matriz de Robustez do Índice Exploratório de Vulnerabilidade Socioenergética (IEVS)</h3>
             </div>
           </div>
+          <p className="chart-description">
+            {beiruAlwaysFirst
+              ? 'A ordem entre os bairros se mantém em todos os cenários testados: Beiru / Tancredo Neves apresenta o maior índice, com diferença estável entre os pesos.'
+              : 'A ordem entre os bairros muda conforme os pesos — o resultado é sensível à ponderação escolhida.'}
+          </p>
 
           <div className="responsive-table-wrap">
             <table className="data-table">
@@ -652,34 +657,32 @@ export default function TelaEnergiaIEVS({ data, theme = 'dark' }) {
                   <th>IEVS Pernambués</th>
                   <th>IEVS Salvador (Ref.)</th>
                   <th>Δ (Beiru − Pern.)</th>
-                  <th>Diagnóstico de Robustez</th>
+                  <th>Ordenação</th>
                 </tr>
               </thead>
               <tbody>
-                {(data.ievsSensibilidade || []).map((sc) => (
-                  <tr key={sc.id}>
+                {sensRows.map((row) => (
+                  <tr key={row.id}>
                     <td>
-                      <div className="td-main-title">{sc.nome}</div>
-                      <div className="td-sub-code">{sc.justificativa}</div>
+                      <div className="td-main-title">{row.nome}</div>
+                      <div className="td-sub-code">{row.justificativa}</div>
                     </td>
                     <td>
                       <code>
-                        {(sc.pesos.renda * 100).toFixed(0)}% / {(sc.pesos.habitacao * 100).toFixed(0)}% /{' '}
-                        {(sc.pesos.urbana * 100).toFixed(0)}%
+                        {(row.pesos.renda * 100).toFixed(0)}% / {(row.pesos.habitacao * 100).toFixed(0)}% /{' '}
+                        {(row.pesos.urbana * 100).toFixed(0)}%
                       </code>
                     </td>
-                    <td className="td-numeric-highlight" style={{ color: 'var(--accent-rose)' }}>
-                      {formatNumber(sc.scores.beiru_tancredo_neves, 2)} pts
-                    </td>
-                    <td className="td-numeric-highlight" style={{ color: 'var(--accent-blue)' }}>
-                      {formatNumber(sc.scores.pernambues, 2)} pts
-                    </td>
-                    <td className="td-numeric-muted">{formatNumber(sc.scores.salvador, 2)} pts</td>
+                    <td className="td-numeric-highlight">{formatNumber(row.scores.beiru_tancredo_neves, 2)}</td>
+                    <td className="td-numeric-highlight">{formatNumber(row.scores.pernambues, 2)}</td>
+                    <td className="td-numeric-muted">{formatNumber(row.scores.salvador, 2)}</td>
                     <td className="td-delta">
-                      <span className="delta-pos">+{formatNumber(sc.scores.diferenca_beiru_pernambues, 2)} pts</span>
+                      <span className={row.scores.diferenca_beiru_pernambues >= 0 ? 'delta-pos' : 'delta-neg'}>
+                        {signed(row.scores.diferenca_beiru_pernambues)} pts
+                      </span>
                     </td>
                     <td>
-                      <span className="meta-tag">Ranking Invariante ({sc.scores.territorio_mais_vulneravel} 1º)</span>
+                      <span className="meta-tag">Maior índice: {row.scores.territorio_mais_vulneravel}</span>
                     </td>
                   </tr>
                 ))}

@@ -11,6 +11,16 @@ import {
 } from 'lucide-react';
 import { getClassificacaoBadgeStyle, getDimensaoColor, formatNumber } from '../utils/formatters';
 
+// Faixas oficiais do IVS (IPEA): 0–0,200 muito baixa; 0,201–0,300 baixa; 0,301–0,400 média;
+// 0,401–0,500 alta; 0,501–1 muito alta.
+function getIvsFaixa(v) {
+  if (v > 0.5) return { label: 'Muito alta (0,501 – 1,000)', tone: 'high' };
+  if (v > 0.4) return { label: 'Alta (0,401 – 0,500)', tone: 'high' };
+  if (v > 0.3) return { label: 'Média (0,301 – 0,400)', tone: 'mid' };
+  if (v > 0.2) return { label: 'Baixa (0,201 – 0,300)', tone: 'low' };
+  return { label: 'Muito baixa (0,000 – 0,200)', tone: 'low' };
+}
+
 export default function TelaMetodologiaAnalise({ data }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [dimFilter, setDimFilter] = useState('ALL');
@@ -40,13 +50,14 @@ export default function TelaMetodologiaAnalise({ data }) {
 
   const ipeaObs = useMemo(() => {
     const terrMap = Object.fromEntries((data.territories || []).map((t) => [t.id, t]));
+    const ivsId = (data.indicadores || []).find((i) => i.codigo === 'IVS_GERAL_IPEA')?.id;
     return (data.observacoes || [])
-      .filter((o) => o.indicador_id === 11)
+      .filter((o) => o.indicador_id === ivsId)
       .map((o) => ({
         ...o,
         territorio: terrMap[o.territorio_id],
       }));
-  }, [data.observacoes, data.territories]);
+  }, [data.observacoes, data.territories, data.indicadores]);
 
   function toggleIndAccordion(id) {
     setOpenIndIds((prev) => ({
@@ -73,7 +84,7 @@ export default function TelaMetodologiaAnalise({ data }) {
               Metodologia, Fontes Oficiais & Desafio Analítico
             </span>
             <h2 className="section-title">
-              Dicionário de Indicadores (24), Fórmulas, Limitações e 8 Questões Fundamentadas
+              Dicionário de indicadores, fórmulas, escalas, fontes e limitações
             </h2>
           </div>
         </div>
@@ -84,7 +95,7 @@ export default function TelaMetodologiaAnalise({ data }) {
             className={`subtab-btn ${activeSubTab === 'dicionario' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('dicionario')}
           >
-            <BookOpen size={15} /> 1. Dicionário de Indicadores (24)
+            <BookOpen size={15} /> 1. Dicionário de indicadores ({(data.indicadores || []).length})
           </button>
           <button
             type="button"
@@ -111,7 +122,7 @@ export default function TelaMetodologiaAnalise({ data }) {
               <span className="section-eyebrow">
                 Clique em qualquer indicador abaixo para abrir sua fórmula, origem, metodologia e limitações
               </span>
-              <h3>Dicionário Metodológico ({filteredIndicadores.length} de 24 indicadores)</h3>
+              <h3>Dicionário Metodológico ({filteredIndicadores.length} de {(data.indicadores || []).length} indicadores)</h3>
             </div>
             <div className="filter-controls-row">
               <div className="search-input-wrap">
@@ -178,11 +189,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                     <div className="accordion-trigger-right">
                       <span
                         className="dim-badge"
-                        style={{
-                          background: `${dimColor}16`,
-                          color: dimColor,
-                          border: `1px solid ${dimColor}38`,
-                        }}
+                          style={{ '--dim': dimColor }}
                       >
                         {ind.dimensao}
                       </span>
@@ -280,11 +287,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                     <div className="accordion-trigger-right">
                       <span
                         className="dim-badge"
-                        style={{
-                          background: `${dimColor}16`,
-                          color: dimColor,
-                          border: `1px solid ${dimColor}38`,
-                        }}
+                          style={{ '--dim': dimColor }}
                       >
                         {item.dimensao_foco}
                       </span>
@@ -297,7 +300,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                       <p className="analysis-body-text" style={{ marginTop: 10 }}>
                         {item.descricao}
                       </p>
-                      <div style={{ marginTop: 8, display: 'flex', justifyContent: 'flex-end' }}>
+                      <div className="accordion-meta">
                         <span className="meta-tag">Registro #{item.id} · Atualizado em {item.data_criacao}</span>
                       </div>
                     </div>
@@ -368,7 +371,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                       <tr key={f.id}>
                         <td>#{f.id}</td>
                         <td>
-                          <strong style={{ color: 'var(--accent-blue)' }}>{f.instituicao}</strong>
+                          <strong>{f.instituicao}</strong>
                         </td>
                         <td className="td-main-title">{f.titulo}</td>
                         <td>
@@ -406,7 +409,7 @@ export default function TelaMetodologiaAnalise({ data }) {
               </div>
               <p className="chart-description" style={{ marginBottom: 14 }}>
                 O <strong>Índice de Vulnerabilidade Social (IVS)</strong> do IPEA varia de <strong>0 a 1</strong> (quanto
-                mais próximo de 1, maior a vulnerabilidade social; valores ≥ 0,400 indicam Alta Vulnerabilidade). Conforme
+                mais próximo de 1, maior a vulnerabilidade social; valores acima de 0,400 indicam alta vulnerabilidade). Conforme
                 a orientação metodológica, apresentamos os valores exatamente nas escalas e anos publicados pelo IPEA: as{' '}
                 <strong>Unidades de Desenvolvimento Humano (UDHs)</strong> intramunicipais de Beiru/Tancredo Neves (
                 <strong>0,442</strong>) e Pernambués (<strong>0,398</strong>) no marco censitário do Atlas, e a evolução
@@ -427,12 +430,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                   <tbody>
                     {ipeaObs.map((row) => {
                       const v = Number(row.valor);
-                      const faixa =
-                        v >= 0.4
-                          ? 'Alta Vulnerabilidade (0,401 – 0,500)'
-                          : v >= 0.3
-                          ? 'Média Vulnerabilidade (0,301 – 0,400)'
-                          : 'Baixa Vulnerabilidade (0,201 – 0,300)';
+                      const faixa = getIvsFaixa(v);
                       return (
                         <tr key={row.id}>
                           <td className="td-main-title">{row.territorio?.nome}</td>
@@ -444,16 +442,7 @@ export default function TelaMetodologiaAnalise({ data }) {
                           </td>
                           <td className="td-numeric-highlight">{formatNumber(v, 3)}</td>
                           <td>
-                            <span
-                              className="classification-pill"
-                              style={{
-                                color: v >= 0.4 ? 'var(--accent-rose)' : v >= 0.3 ? 'var(--accent-amber)' : 'var(--accent-emerald)',
-                                borderColor: 'var(--border-medium)',
-                                background: 'var(--bg-subtle)',
-                              }}
-                            >
-                              {faixa}
-                            </span>
+                            <span className={`ivs-band ivs-band-${faixa.tone}`}>{faixa.label}</span>
                           </td>
                           <td>{row.escala_registro}</td>
                         </tr>
@@ -497,13 +486,13 @@ export default function TelaMetodologiaAnalise({ data }) {
                       ['Malhas Cartográficas', 'BA_bairros_CD2022.zip & BA_setores_CD2022.zip (Shapefiles CD2022)', 'IBGE Malha Digital', 'Poligonais oficiais de bairros e 172 setores em GeoJSON', '2022 / 2026-11-11'],
                       ['Energia Elétrica', 'Dados brutos.xlsx (epe_dados_brutos.xlsx — Consumo e Consumidores)', 'EPE Anuário Estatístico', 'Série 2018–2025 estritamente na escala UF (Bahia)', '2018–2025 / 2026-11-11'],
                       ['Vulnerabilidade Social', 'Atlas da Vulnerabilidade Social (tabelas UF, RM Salvador e UDHs)', 'IPEA / FJP / PNUD', 'Escalado por UF (PNAD 2022) e UDH (malha Censo 2010)', '2010–2022 / 2026-11-11'],
-                      ['Pipeline & Banco', 'etl/run_etl.py · supabase/schema.sql · supabase/seed.sql · observatorio_bundle.json', 'Observatório SENAI CIMATEC', 'ETL auditável, DDL relacional, 85 observações e GeoJSON', '2026-11-11'],
+                      ['Pipeline & Banco', 'etl/run_etl.py · supabase/schema.sql · supabase/seed.sql · observatorio_bundle.json', 'Observatório SENAI CIMATEC', `ETL auditável, DDL relacional, ${(data.observacoes || []).length} observações e GeoJSON`, '2026-11-11'],
                       ['Relatório Analítico', 'docs/RELATORIO_COMPARATIVO_ANALITICO.md & docs/CATALOGO_INDICADORES.md', 'Observatório SENAI CIMATEC', 'Síntese das 8 questões, limitações e metodologia IEVS', '2026-11-11'],
                     ].map(([cat, arq, inst, esc, dt], i) => (
                       <tr key={i}>
                         <td><span className="meta-tag">{cat}</span></td>
                         <td><code>{arq}</code></td>
-                        <td><strong style={{ color: 'var(--accent-blue)' }}>{inst}</strong></td>
+                        <td><strong>{inst}</strong></td>
                         <td>{esc}</td>
                         <td>{dt}</td>
                       </tr>
