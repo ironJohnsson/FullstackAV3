@@ -24,7 +24,9 @@ export function formatValueByUnit(val, unidade) {
   if (u === 'habitantes' || u === 'domicílios') return formatNumber(val, 0);
   if (u === 'hab/km²') return `${formatNumber(val, 1)} hab/km²`;
   if (u === 'gwh') return `${formatNumber(val, 2)} GWh`;
-  if (u.includes('0 a 1')) return formatNumber(val, 3);
+  // "índice (0 a 100)" também contém "0 a 1": testar a escala 0–100 primeiro
+  if (u.includes('0 a 100')) return `${formatNumber(val, 2)} pts`;
+  if (u.includes('0 a 1)')) return formatNumber(val, 3);
   return `${formatNumber(val, 2)} ${unidade || ''}`.trim();
 }
 

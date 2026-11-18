@@ -652,7 +652,7 @@ export default function TelaComparativo({ data, theme = 'light' }) {
                         <span className={row.diffAbs === 0 ? 'delta-neutral' : row.diffAbs > 0 ? 'delta-pos' : 'delta-neg'}>
                           {sign}
                           {formatNumber(row.diffAbs, row.unidade === 'habitantes' || row.unidade === 'domicílios' ? 0 : 2)}{' '}
-                          {row.unidade === '%' ? 'p.p.' : row.unidade}
+                          {row.unidade === '%' ? 'p.p.' : row.unidade.includes('0 a 100') ? 'pts' : row.unidade}
                         </span>
                       </td>
                       <td className="td-delta">
