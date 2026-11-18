@@ -592,32 +592,32 @@ def build_indicadores():
         {
             "id": 23,
             "codigo": "PROXY_COMPROMETIMENTO_RENDA_ENERGIA",
-            "nome": "Proxy de Pressão Tarifária Potencial sobre a Renda Mediana",
-            "descricao": "Estimativa exploratória do peso percentual de uma fatura elétrica residencial de referência estadual (consumo médio residencial da Bahia na tarifa convencional) sobre o rendimento mediano do responsável no território.",
-            "unidade": "% da renda mediana",
+            "nome": "Proxy de Pressão Tarifária Potencial sobre a Renda Local",
+            "descricao": "Estimativa exploratória do peso percentual de uma fatura elétrica residencial hipotética (consumo médio residencial da Bahia em 2022, ajustado pelo porte domiciliar e pelo déficit de arborização local) sobre uma renda de referência do território (65% mediana + 35% média do responsável).",
+            "unidade": "% da renda de referência",
             "dimensao": "Socioenergética",
             "classificacao": "Proxy/estimativa",
             "escala_geografica": "Bairro / Município (Cruzamento Multiescalar Contextual)",
             "ano_referencia": 2022,
-            "variaveis_origem": "IBGE Censo 2022 (V06004, V06006, V0005) + Parâmetro Contextual EPE Bahia (Consumo médio ~110,1 kWh/mês ajustado pelo porte domiciliar)",
-            "formula": "((Consumo_Ref_kWh * Tarifa_Media_Ref_R$_kWh * Fator_Pressao_Local) / Renda_Referencia_Local) * 100",
+            "variaveis_origem": "IBGE Censo 2022 (V06004, V06006, V0005, V05030) + parâmetro contextual EPE Bahia 2022 (consumo médio residencial de 110,09 kWh/mês por UC) + tarifa de referência assumida de R$ 0,98/kWh com tributos (premissa do projeto, não extraída das bases oficiais)",
+            "formula": "Fatura = 110,09 kWh * R$ 0,98 * (Moradores_Dom / 2,45) * (1 + (Perc_Sem_Arvores - 60) / 250); Renda_Ref = 0,65 * Mediana_V06006 + 0,35 * Media_V06004; Proxy = Fatura / Renda_Ref * 100",
             "metodologia": "Avalia a vulnerabilidade econômica ao custo da energia elétrica caso a família não usufrua integralmente do desconto da Tarifa Social (TSEE) ou sofra acréscimo de consumo por equipamentos ineficientes (geladeiras antigas/ventiladores em uso contínuo).",
-            "limitacoes": "PROXY EXPLORATÓRIA: Como a EPE não divulga consumo por bairro e o Censo 2022 não coleta valor da conta de luz, este indicador estima a sensibilidade orçamentária a partir da renda local observada e de parâmetros médios estaduais, não comprovando pobreza energética individual.",
+            "limitacoes": "PROXY EXPLORATÓRIA: a EPE não divulga consumo por bairro e o Censo 2022 não coleta o valor da conta de luz. O consumo estadual é usado apenas como parâmetro hipotético comum a todos os territórios (não como consumo observado no bairro); a tarifa e os fatores de ajuste são premissas do projeto. O resultado indica sensibilidade orçamentária relativa e não comprova pobreza energética individual.",
         },
         {
             "id": 24,
             "codigo": "IEVS_EXPLORATORIO",
             "nome": "Índice Exploratório de Vulnerabilidade Socioenergética (IEVS)",
-            "descricao": "Índice sintético multidimensional proposto pelo projeto (Desafio Adicional) integrando Renda (40%), Habitação/Saneamento (30%) e Condições Urbanas/Térmicas (30%).",
+            "descricao": "Índice sintético exploratório proposto pelo projeto (Desafio Adicional) integrando Renda (40%), Habitação/Saneamento (30%) e Condições Urbanas/Térmicas (30%). Usa apenas variáveis do Censo 2022 — nenhum dado da EPE entra no cálculo.",
             "unidade": "índice (0 a 100)",
             "dimensao": "Socioenergética",
             "classificacao": "Proxy/estimativa",
             "escala_geografica": "Bairro / Setor Censitário / Município",
             "ano_referencia": 2022,
-            "variaveis_origem": "Subíndices normalizados (0-100): Déficit de Renda (I_Renda), Vulnerabilidade Habitacional/Acesso (I_Hab) e Risco Urbano-Térmico (I_Urb)",
-            "formula": "IEVS = w_renda * I_Renda + w_hab * I_Hab + w_urb * I_Urb (Pesos base: 0.40, 0.30, 0.30)",
-            "metodologia": "Normalização min-max padronizada (0 = menor vulnerabilidade, 100 = maior vulnerabilidade) sobre variáveis oficiais do Censo 2022, acompanhada de teste de sensibilidade sob 4 cenários de pesos.",
-            "limitacoes": "AVISO OBRIGATÓRIO: O IEVS é um instrumento analítico exploratório para priorização territorial e NÃO constitui índice oficial nem medida validada direta de pobreza energética domiciliar.",
+            "variaveis_origem": "IBGE Censo 2022 — I_Renda: V06004 e % de setores com renda média <= 1,5 SM; I_Hab: coleta direta de lixo (V00397), esgotamento precário (V00312-V00315) e domicílios com 6+ moradores; I_Urb: proxy de risco térmico (V05030 + densidade), ausência de calçada (V05021) e ausência de iluminação pública (V05012)",
+            "formula": "I_Renda = 0,55 * clip((3500 - Renda_Media) / 2300 * 100) + 0,45 * Perc_Setores_Baixa_Renda; I_Hab = 0,50 * (100 - Perc_Coleta_Direta) + 0,25 * min(100, Perc_Esgoto_Precario * 15) + 0,25 * min(100, Perc_Dom_6Mais * 35); I_Urb = 0,50 * Proxy_Risco_Termico + 0,30 * (100 - Perc_Calcada) + 0,20 * min(100, (100 - Perc_Iluminacao) * 15); IEVS = 0,40 * I_Renda + 0,30 * I_Hab + 0,30 * I_Urb",
+            "metodologia": "Normalização por limiares de referência fixos (não min-max): cada variável é reescalada para 0-100 (0 = menor vulnerabilidade) com pontos de corte e fatores multiplicadores definidos pela equipe e limitados a 100. Os subíndices são combinados por média ponderada e o resultado é submetido a teste de sensibilidade em 4 cenários de pesos.",
+            "limitacoes": "AVISO OBRIGATÓRIO: O IEVS é um instrumento analítico exploratório para priorização territorial e NÃO constitui índice oficial nem medida validada de pobreza energética domiciliar. Os limiares e multiplicadores são escolhas da equipe e influenciam o resultado; o IEVS por setor censitário usa uma versão simplificada (renda, porte domiciliar, densidade e tipologia FCU) e não é diretamente comparável ao IEVS do bairro.",
         },
     ]
 
@@ -653,6 +653,13 @@ def extract_censo_metrics():
     setores_bas, s_bas_tot = read_zip_csv_filtered_by_bairro("setores_basico.zip", b_targets)
     setores_ren, s_ren_tot = read_zip_csv_filtered("setores_renda.zip", "CD_SETOR", set(setores_bas.keys()))
     audit_stats["setores"] = {"setores_br_lidos": s_bas_tot, "setores_filtrados": len(setores_bas)}
+    mun_sector_stats = compute_municipal_sector_stats("2927408")
+    audit_stats["setores_salvador"] = mun_sector_stats
+    print(
+        f"[ETL] Salvador: {mun_sector_stats['setores_validos']} setores com renda divulgada · "
+        f"{mun_sector_stats['perc_setores_baixa_renda']:.2f}% com renda média <= 1,5 SM · "
+        f"{mun_sector_stats['perc_setores_fcu']:.2f}% em FCU"
+    )
 
     setores_joined = {}
     for cs, b_row in setores_bas.items():
@@ -768,9 +775,10 @@ def extract_censo_metrics():
             perc_setores_baixa_renda = (sum(1 for s in b_secs if s["baixa_renda_1_5sm"]) / len(b_secs) * 100.0) if b_secs else 0.0
             perc_setores_fcu = (sum(1 for s in b_secs if s["cd_tipo"] == "1") / len(b_secs) * 100.0) if b_secs else 0.0
         else:
-            # Salvador municipal reference across census tracts
-            perc_setores_baixa_renda = 48.60
-            perc_setores_fcu = 42.10
+            # Referência municipal: calculada sobre todos os setores censitários de Salvador
+            # com o mesmo critério aplicado aos bairros (renda média do responsável <= R$ 1.818,00).
+            perc_setores_baixa_renda = mun_sector_stats["perc_setores_baixa_renda"]
+            perc_setores_fcu = mun_sector_stats["perc_setores_fcu"]
 
         # Socio-energy proxies & IEVS components (0-100 scale)
         risco_termico = round(0.60 * ent_sem_arv + 0.40 * min(100.0, (dens / 25000.0) * 100.0), 2)
@@ -859,6 +867,43 @@ def extract_censo_metrics():
         }
 
     return computed, setores_joined, audit_stats
+
+
+def read_zip_csv_filtered_by_municipio(zip_name, cd_mun):
+    """Lê todos os setores censitários de um município (CD_MUN) a partir de um CSV compactado do IBGE."""
+    path = os.path.join(RAW_DIR, zip_name)
+    out = {}
+    with zipfile.ZipFile(path) as z:
+        csv_files = [f for f in z.namelist() if f.lower().endswith(".csv")]
+        raw = z.read(csv_files[0]).decode("utf-8-sig", errors="replace")
+        delim = ";" if ";" in raw.split("\n", 1)[0] else ","
+        reader = csv.DictReader(io.StringIO(raw), delimiter=delim)
+        for r in reader:
+            cm = r.get("CD_MUN") or r.get("cd_mun")
+            if cm == cd_mun:
+                cs = r.get("CD_SETOR") or r.get("cd_setor")
+                out[cs] = {col.upper(): val for col, val in r.items()}
+    return out
+
+
+def compute_municipal_sector_stats(cd_mun="2927408"):
+    """Calcula, para o município de referência, os mesmos indicadores setoriais usados nos bairros
+    (% de setores com renda média <= 1,5 SM e % de setores em Favelas e Comunidades Urbanas),
+    a partir dos agregados por setor censitário do Censo 2022 — sem valores fixados manualmente."""
+    setores_mun = read_zip_csv_filtered_by_municipio("setores_basico.zip", cd_mun)
+    renda_mun, _ = read_zip_csv_filtered("setores_renda.zip", "CD_SETOR", set(setores_mun.keys()))
+    validos = []
+    for cs, b_row in setores_mun.items():
+        renda_med = fval(renda_mun.get(cs, {}).get("V06004"))
+        if renda_med > 0:
+            validos.append((renda_med, str(b_row.get("CD_TIPO", "0")).strip()))
+    total = len(validos)
+    return {
+        "setores_total": len(setores_mun),
+        "setores_validos": total,
+        "perc_setores_baixa_renda": (sum(1 for r, _ in validos if r <= 1818.0) / total * 100.0) if total else 0.0,
+        "perc_setores_fcu": (sum(1 for _, t in validos if t == "1") / total * 100.0) if total else 0.0,
+    }
 
 
 def read_zip_csv_filtered_by_bairro(zip_name, target_bairros):
@@ -1151,9 +1196,28 @@ def build_observacoes(censo_computed, epe_series):
     return obs
 
 
-def build_analyses():
-    """Constrói a tabela `analyses` respondendo às 8 perguntas do Desafio Analítico Obrigatório + IEVS."""
+def fmt_br(val, dec=2):
+    """Formata número no padrão brasileiro (milhar com ponto, decimal com vírgula)."""
+    return f"{val:,.{dec}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+def build_analyses(censo_computed):
+    """Constrói a tabela `analyses` respondendo às 8 perguntas do Desafio Analítico Obrigatório + IEVS.
+    Valores que dependem de cálculo (ex.: referência municipal) são injetados a partir de `censo_computed`."""
     now_str = "2026-11-11"
+    placeholders = {
+        "{SSA_BAIXA_RENDA}": fmt_br(censo_computed["2927408"]["PERC_SETORES_BAIXA_RENDA"]) + "%",
+        "{IEVS_BEIRU}": fmt_br(censo_computed["2927408018"]["IEVS_EXPLORATORIO"]),
+        "{IEVS_PERN}": fmt_br(censo_computed["2927408117"]["IEVS_EXPLORATORIO"]),
+    }
+    analyses = _analyses_template(now_str)
+    for item in analyses:
+        for key, val in placeholders.items():
+            item["descricao"] = item["descricao"].replace(key, val)
+    return analyses
+
+
+def _analyses_template(now_str):
     return [
         {
             "id": 1,
@@ -1180,11 +1244,11 @@ def build_analyses():
             "descricao": (
                 "Ambos os bairros apresentam forte restrição de renda em comparação à média de Salvador (R$ 3.160,73), mas com estruturas distributivas distintas. "
                 "O rendimento nominal mediano do responsável pelo domicílio (V06006) é idêntico nos dois territórios: R$ 1.212,00 (exatamente 1 salário mínimo vigente em 2022), "
-                "comprovando que em ambos os bairros pelo menos 50% dos chefes de família sobrevivem com até 1 salário mínimo. Contudo, o rendimento nominal médio (V06004) em Beiru/Tancredo Neves "
+                "o que indica que, em ambos os bairros, metade dos responsáveis por domicílio recebe até 1 salário mínimo. Contudo, o rendimento nominal médio (V06004) em Beiru/Tancredo Neves "
                 "é de R$ 2.035,87 (35,6% abaixo da média municipal), enquanto em Pernambués atinge R$ 2.316,25 (13,8% superior ao Beiru e 26,7% abaixo de Salvador). "
-                "A análise desagregada pelos 172 setores censitários explica essa diferença: em Beiru/Tancredo Neves a vulnerabilidade de renda é mais homogênea (85,92% dos setores válidos, 61/71, com rendimento médio ≤ 1,5 SM, ante 48,60% em Salvador), enquanto Pernambués "
-                "apresenta forte desigualdade intrabairro (razão Média/Mediana de 1,91x contra 1,68x no Beiru), coexistindo 72 setores de baixa renda (72,00%) na comunidade tradicional (médias entre R$ 1.150 e R$ 1.500) "
-                "com setores de condomínios verticalizados próximos à Av. Paralela e Horto Bela Vista (onde o rendimento médio supera R$ 4.500)."
+                "A análise desagregada pelos 172 setores censitários explica essa diferença: em Beiru/Tancredo Neves a vulnerabilidade de renda é mais homogênea (85,92% dos setores válidos, 61/71, com rendimento médio ≤ 1,5 SM, ante {SSA_BAIXA_RENDA} dos setores de Salvador), enquanto Pernambués "
+                "apresenta forte desigualdade intrabairro (razão Média/Mediana de 1,91x contra 1,68x no Beiru), coexistindo 72 setores de baixa renda (72,00%) com 6 setores cujo rendimento médio supera R$ 4.500. "
+                "Limitação: a concentração por setor é uma medida ecológica — famílias de baixa renda também residem em setores de média mais alta, e vice-versa."
             ),
             "data_criacao": now_str,
         },
@@ -1195,11 +1259,12 @@ def build_analyses():
             "dimensao_foco": "Habitacional",
             "descricao": (
                 "Embora o acesso físico à rede geral de água seja quase universal (99,82% no Beiru e 99,74% em Pernambués) e a cobertura de rede de esgoto/pluvial supere 98%, "
-                "quatro condições habitacionais revelam vulnerabilidade crítica: (1) Morfologia da coleta de resíduos sólidos: apenas 29,19% dos domicílios do Beiru/Tancredo Neves e 40,83% de Pernambués "
+                "quatro condições habitacionais podem representar vulnerabilidade: (1) Morfologia da coleta de resíduos sólidos: apenas 29,19% dos domicílios do Beiru/Tancredo Neves e 40,83% de Pernambués "
                 "contam com coleta direta porta a porta (contra 57,26% em Salvador); a maioria depende de caçambas comunitárias (68,14% no Beiru e 54,61% em Pernambués), e em Pernambués 4,56% dos domicílios (983 moradias) "
-                "não possuem coleta regular; (2) Saneamento precário residual em fundos de vale: 230 domicílios no Beiru (1,49%) e 135 em Pernambués (0,63%) ainda lançam esgoto em fossa rudimentar ou vala aberta; "
-                "(3) Adensamento domiciliar elevado: 206 famílias no Beiru (1,33%) e 202 em Pernambués (0,94%) têm 6 ou mais moradores, elevando a demanda contínua por refrigeração de alimentos e banho; "
-                "e (4) Predominância de edificações autoconstruídas (89,6% de casas no Beiru vs 77,9% em Pernambués), frequentemente em alvenaria sem reboco térmico ou lajes expostas."
+                "não possuem coleta regular; (2) Saneamento precário residual: 230 domicílios no Beiru (1,49%) e 135 em Pernambués (0,63%) ainda lançam esgoto em fossa rudimentar ou vala aberta; "
+                "(3) Adensamento domiciliar elevado: 206 famílias no Beiru (1,33%) e 202 em Pernambués (0,94%) têm 6 ou mais moradores, o que tende a elevar a demanda domiciliar por energia (refrigeração e banho); "
+                "e (4) Predominância de casas (89,6% dos domicílios no Beiru vs 77,9% em Pernambués e 69,4% em Salvador). O Censo 2022 não informa material de cobertura nem isolamento térmico, "
+                "de modo que o desempenho térmico das moradias permanece uma hipótese a ser verificada em campo."
             ),
             "data_criacao": now_str,
         },
@@ -1209,13 +1274,13 @@ def build_analyses():
             "titulo": "4. Quais diferenças existem na infraestrutura urbana?",
             "dimensao_foco": "Urbana",
             "descricao": (
-                "Os dados de Características Urbanísticas do Entorno do Censo 2022 revelam contrastes marcantes entre os dois bairros e a média soteropolitana: "
+                "Os dados de Características Urbanísticas do Entorno do Censo 2022 mostram contrastes entre os dois bairros e o conjunto de Salvador: "
                 "(1) Déficit severo de arborização viária: em Beiru/Tancredo Neves, 74,37% dos domicílios estão em faces de quadra sem nenhuma árvore (apenas 24,48% com arborização), "
                 "situação substancialmente mais crítica que em Pernambués (34,02% com arborização e 65,07% sem árvores) e Salvador (34,51%); "
                 "(2) Ausência de calçadas e acessibilidade crítica: ambos os bairros sofrem com a falta de passeio público (apenas 39,46% têm calçada no Beiru e 38,57% em Pernambués, ante 56,87% em Salvador), "
-                "mas a acessibilidade por rampa para cadeirante é quase nula em Beiru/Tancredo Neves (0,73% contra 7,12% em Pernambués e 7,15% em Salvador), reflexo da topografia acidentada de cumeada e encostas sem urbanização padronizada; "
+                "mas a acessibilidade por rampa para cadeirante é quase nula em Beiru/Tancredo Neves (0,73% contra 7,12% em Pernambués e 7,15% em Salvador), diferença possivelmente associada ao relevo e ao padrão de ocupação, hipótese que os dados do Censo não permitem confirmar; "
                 "(3) Drenagem urbana (bueiros/bocas de lobo): presente em 60,92% das faces no Beiru e 68,88% em Pernambués; "
-                "e (4) Iluminação pública: embora elevada, Beiru/Tancredo Neves apresenta cobertura inferior (96,51%, deixando 528 domicílios às escuras na face da quadra) em comparação a Pernambués (98,51%, com 320 domicílios sem iluminação)."
+                "e (4) Iluminação pública: embora elevada, Beiru/Tancredo Neves apresenta cobertura inferior (96,51%, com 528 domicílios em faces de quadra sem iluminação pública) em comparação a Pernambués (98,51%, com 320 domicílios nessa condição). Iluminação pública não mede a continuidade nem a qualidade do fornecimento residencial."
             ),
             "data_criacao": now_str,
         },
@@ -1225,13 +1290,13 @@ def build_analyses():
             "titulo": "5. Quais indicadores permitem discutir riscos de vulnerabilidade energética?",
             "dimensao_foco": "Socioenergética",
             "descricao": (
-                "A vulnerabilidade energética multidimensional nos dois bairros emerge da interseção de quatro vetores críticos (consolidados no IEVS Base: 66,17 no Beiru vs 52,98 em Pernambués): "
+                "Nenhum indicador disponível mede diretamente a vulnerabilidade energética familiar; os indicadores abaixo permitem discutir riscos (sintetizados no IEVS exploratório, cenário base: {IEVS_BEIRU} no Beiru vs {IEVS_PERN} em Pernambués): "
                 "(1) Rendimento mediano de 1 salário mínimo (R$ 1.212,00 em ambos) e alta concentração de setores de baixa renda (85,92% dos setores válidos do Beiru e 72,00% de Pernambués têm renda média ≤ 1,5 SM), "
-                "indicando elevado comprometimento orçamentário com a fatura de energia elétrica e gás de cozinha (GLP); "
+                "o que sugere maior sensibilidade orçamentária ao custo da energia elétrica e do gás de cozinha — sem comprovar pobreza energética de cada família; "
                 "(2) Déficit de arborização (74,37% sem árvores no Beiru e 65,07% em Pernambués) somado à hiperdensidade demográfica (23.425,5 hab/km² no Beiru e 16.388,4 hab/km² em Pernambués), "
-                "que intensifica ilhas de calor intraurbanas e exige uso prolongado de ventiladores e geladeiras em regime de esforço térmico; "
-                "(3) Precariedade viária (baixa coleta direta e ausência de calçadas), que reflete becos estreitos onde a rede de distribuição de baixa tensão sofre com ligações informais, sobrecarga de transformadores e dificuldade de acesso para manutenção; "
-                "e (4) Taxa de analfabetismo residual (4,96% no Beiru e 3,24% em Pernambués, totalizando 2.993 adultos), que cria barreiras burocráticas ao cadastramento na Tarifa Social de Energia Elétrica (TSEE)."
+                "fatores associados na literatura a ilhas de calor e a maior demanda por ventilação e refrigeração (proxy, não medição de temperatura); "
+                "(3) Precariedade viária (baixa coleta direta e ausência de calçadas), que sugere vias estreitas e pode dificultar o acesso para manutenção de redes — hipótese que exigiria dados da distribuidora para ser testada; "
+                "e (4) Taxa de analfabetismo residual (4,96% no Beiru e 3,24% em Pernambués, totalizando 2.993 adultos), que pode dificultar o acesso a cadastros como o da Tarifa Social de Energia Elétrica (TSEE)."
             ),
             "data_criacao": now_str,
         },
@@ -1245,8 +1310,9 @@ def build_analyses():
                 "enquanto o número de unidades consumidoras residenciais avançou de 5,25 milhões (2018) para 5,72 milhões (2022) e 6,16 milhões (2025). "
                 "O dado estrutural mais relevante extraído dos microdados abertos da EPE é o peso da Subclasse Residencial Baixa Renda (Tarifa Social - TSEE) na Bahia: "
                 "em 2022, 1.613.851 famílias baianas (28,22% de todos os consumidores residenciais do estado) estavam enquadradas na Baixa Renda, consumindo 2.102,72 GWh (média de 108,58 kWh/mês por unidade, muito próxima aos 110,68 kWh/mês da classe convencional). "
-                "Em 2025, a subclasse Baixa Renda atingiu 2.020.262 unidades consumidoras (32,78% do estado). Esse contexto estadual demonstra que quase um terço dos domicílios baianos depende de subsídio tarifário para manter um patamar básico de consumo (~109-110 kWh/mês), "
-                "sendo Beiru/Tancredo Neves e Pernambués territórios prioritários em Salvador para busca ativa do CadÚnico/TSEE devido à sua mediana salarial de 1 SM."
+                "Em 2025, a subclasse Baixa Renda atingiu 2.020.262 unidades consumidoras (32,78% do estado). Esse contexto estadual mostra que cerca de um terço das unidades consumidoras residenciais da Bahia está na subclasse Baixa Renda. "
+                "Esses valores são estaduais e não foram atribuídos aos bairros: a EPE não publica consumo por bairro. A articulação com os territórios é apenas contextual — "
+                "a mediana de 1 SM em ambos os bairros sugere elevada elegibilidade potencial à TSEE, o que poderia ser confirmado com dados de CadÚnico e da distribuidora."
             ),
             "data_criacao": now_str,
         },
@@ -1296,7 +1362,7 @@ def build_ievs_sensitivity(censo_computed):
         },
         {
             "id": "foco_economico",
-            "nome": "Cenário 2 — ênfase Econômica / Tarifária",
+            "nome": "Cenário 2 — Ênfase Econômica / Tarifária",
             "pesos": {"renda": 0.60, "habitacao": 0.20, "urbana": 0.20},
             "justificativa": "Prioriza a capacidade de pagamento da fatura energética e a concentração de setores censitários de baixa renda (≤ 1,5 SM).",
         },
@@ -1304,7 +1370,7 @@ def build_ievs_sensitivity(censo_computed):
             "id": "foco_termico_urbano",
             "nome": "Cenário 3 — Ênfase Climática / Conforto Térmico",
             "pesos": {"renda": 0.25, "habitacao": 0.25, "urbana": 0.50},
-            "justificativa": "Destaca o efeito das ilhas de calor intraurbanas (déficit de arborização de 74,4% no Beiru + hiperdensidade de 23,4 mil hab/km²) sobre a demanda reprimida de refrigeração.",
+            "justificativa": "Dá mais peso às condições urbanas associadas a ilhas de calor (déficit de arborização de 74,4% no Beiru e densidade de 23,4 mil hab/km²), que podem elevar a demanda por ventilação e refrigeração.",
         },
         {
             "id": "pesos_iguais",
@@ -1555,7 +1621,7 @@ def main():
 
     print("[ETL] Construindo tabela relacional de observações, análises e sensibilidade IEVS...")
     observacoes = build_observacoes(censo_computed, epe_series)
-    analyses = build_analyses()
+    analyses = build_analyses(censo_computed)
     ievs_sensibilidade = build_ievs_sensitivity(censo_computed)
 
     # Salvar artefatos em data/processed/
