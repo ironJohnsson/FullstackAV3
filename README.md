@@ -149,6 +149,27 @@ O comando `npm run etl` executa `etl/run_etl.py`, que processa os arquivos ofici
 
 ---
 
+## Testes e Integração Contínua
+
+```bash
+# Testes do ETL e da integridade dos dados (pytest)
+pip install -r etl/requirements-dev.txt
+python -m pytest
+
+# Testes do frontend (Vitest)
+npm test
+```
+
+| Suíte | O que verifica |
+| :--- | :--- |
+| `etl/tests/test_data_integrity.py` | Chaves e unicidade das 5 tabelas; classificação obrigatória e documentação de cada indicador; dados da EPE somente na escala estadual (nunca em bairros); IVS do IPEA somente nas escalas publicadas; faixas de valores; coerência entre tabelas, bundle do frontend e `seed.sql`; recálculo do IEVS e dos cenários de sensibilidade; 8 questões respondidas; malha de 172 setores. |
+| `etl/tests/test_etl_functions.py` | Funções do pipeline: conversão de valores do IBGE (incluindo células sigilosas `X`), formatação brasileira, escape de SQL, sensibilidade do IEVS e textos analíticos gerados a partir dos valores calculados. |
+| `src/**/*.test.js(x)` | Formatadores (incluindo índice 0–100 vs. 0–1), consulta filtrada por bairro/dimensão/fonte/classificação/ano, prioridade aos dados do Supabase, conteúdo obrigatório das Telas 1, 2, 4 e 5 e ausência de chaves privilegiadas no código do navegador. |
+
+O workflow [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) executa as duas suítes e o build de produção a cada push em `main`, `develop` e `feature/**` e em todo pull request para `main` e `develop`.
+
+---
+
 ## Deploy na Vercel (Etapa 7)
 
 O repositório já inclui [`vercel.json`](./vercel.json) pré-configurado para deploy imediato na **Vercel**:
