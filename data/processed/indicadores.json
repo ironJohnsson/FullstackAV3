@@ -84,10 +84,10 @@
     "classificacao": "Indicador derivado",
     "escala_geografica": "Bairro / Município",
     "ano_referencia": 2022,
-    "variaveis_origem": "IBGE Censo 2022 Cor ou Raça: V01318 (Preta), V01320 (Parda), V0001 (População)",
-    "formula": "((V01318 + V01320) / V0001) * 100",
-    "metodologia": "Agregação das categorias censitárias Preta e Parda sobre o total populacional do território.",
-    "limitacoes": "Evidencia a dimensão racial da segregação socioespacial em Salvador, mas deve ser cruzada com indicadores de renda e infraestrutura para análise interseccional."
+    "variaveis_origem": "IBGE Censo 2022 Cor ou Raça: V01317 (Branca), V01318 (Preta), V01319 (Amarela), V01320 (Parda), V01321 (Indígena)",
+    "formula": "((V01318 + V01320) / (V01317 + V01318 + V01319 + V01320 + V01321)) * 100",
+    "metodologia": "Agregação das categorias censitárias Preta e Parda sobre o total de pessoas com cor ou raça informada no agregado. O denominador é a soma das categorias, e não V0001, porque os agregados por setor do IBGE suprimem células pequenas.",
+    "limitacoes": "Evidencia a dimensão racial da segregação socioespacial em Salvador, mas deve ser cruzada com indicadores de renda e infraestrutura para análise interseccional. A supressão de células pelo IBGE afeta o total em até 0,3% da população."
   },
   {
     "id": 7,
