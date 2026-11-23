@@ -58,9 +58,9 @@ A tabela a seguir confronta os indicadores oficiais do Censo Demográfico 2022 p
 | `RENDA_MEDIANA_RESP` | Mediana do rendimento do responsável (`V06006`) | `Dado observado` | **R$ 1.212,00** | **R$ 1.212,00** | R$ 1.230,00 | Metade dos responsáveis recebe até 1 Salário Mínimo (2022) |
 | `PERC_SETORES_BAIXA_RENDA` | % de setores com renda média ≤ 1,5 SM (`R$ 1.818`) | `Indicador derivado` | **85,92%** (61/71 válidos) | **72,00%** (72/100) | 57,33% | Vulnerabilidade de renda generalizada em Beiru; desigualdade interna em Pernambués |
 | `TAXA_ALFABETIZACAO_15MAIS` | Taxa de alfabetização (15 anos ou mais) | `Indicador derivado` | **95,04%** | **96,76%** | 96,63% | Hiato educacional de -1,72 p.p. em Beiru frente a Pernambués |
-| `PERC_POP_NEGRA` | População negra (pretos + pardos) | `Indicador derivado` | **91,42%** | **86,54%** | 83,03% | Forte marcador de desigualdade sociorracial territorial |
-| `PERC_POP_0_14` | Proporção de crianças e adolescentes (0–14 anos) | `Indicador derivado` | **18,00%** | **15,81%** | 16,76% | Maior pressão demográfica jovem em Beiru |
-| `PERC_POP_60_MAIS` | Proporção de pessoas idosas (60 anos ou mais) | `Indicador derivado` | **14,98%** | **15,04%** | 16,49% | Menor participação relativa de idosos nas periferias densas |
+| `PERC_POP_NEGRA` | População negra (pretos + pardos) | `Indicador derivado` | **91,50%** | **86,61%** | 83,28% | Forte marcador de desigualdade sociorracial territorial |
+| `PERC_POP_0_14` | Proporção de crianças e adolescentes (0–14 anos) | `Indicador derivado` | **18,01%** | **15,81%** | 16,80% | Maior pressão demográfica jovem em Beiru |
+| `PERC_POP_60_MAIS` | Proporção de pessoas idosas (60 anos ou mais) | `Indicador derivado` | **14,99%** | **15,04%** | 16,53% | Menor participação relativa de idosos nas periferias densas |
 | `ACESSO_AGUA_REDE` | Domicílios ligados à rede geral de água | `Indicador derivado` | **99,82%** | **99,74%** | 99,13% | Cobertura quase universal da rede física de abastecimento |
 | `ESGOTO_REDE_ADEQUADO` | Esgotamento sanitário via rede geral ou fossa ligada | `Indicador derivado` | **98,16%** | **98,76%** | 94,86% | Alta conexão física; déficit residual persiste em fundos de vale |
 | `COLETA_LIXO_DIRETA` | Coleta **direta** de lixo (porta a porta) | `Indicador derivado` | **29,19%** | **40,83%** | 57,26% | **Gargalo crítico:** 68,14% em Beiru e 54,61% em Pernambués dependem de caçamba; **4,56%** (~983 DPPO) em Pernambués sem coleta |
@@ -81,7 +81,7 @@ A tabela a seguir confronta os indicadores oficiais do Censo Demográfico 2022 p
 **Evidências Empíricas:**
 1. **Renda e Pobreza:** O rendimento médio nominal do responsável pelo domicílio em Beiru (`R$ 2.035,87`) é **12,1% inferior** ao de Pernambués (`R$ 2.316,25`) e **35,6% inferior** à média de Salvador (`R$ 3.160,73`). Além disso, **85,92% dos setores censitários com renda válida (`61/71`)** de Beiru possuem renda média domiciliar de até 1,5 salário mínimo (`R$ 1.818,00`), contra `72,00%` (`72/100`) dos setores de Pernambués e `57,33%` em Salvador.
 2. **Adensamento Urbano Extremo:** Beiru comprime `38.329` habitantes em apenas `1,6362 km²`, resultando em uma densidade demográfica de **23.425,5 hab/km²** (`42,9%` acima dos `16.388,4 hab/km²` de Pernambués e `6,7 vezes` a média de Salvador), além de maior média de moradores por domicílio (`2,50` vs `2,40`).
-3. **Déficits de Entorno e Capital Humano:** Beiru registra menor coleta direta de lixo (`29,19%` vs `40,83%`), menor cobertura de iluminação pública (`96,51%` vs `98,51%`), menor arborização viária (`24,48%` vs `34,02%`), quase inexistência de rampas de acessibilidade (`0,73%` vs `7,12%`), menor taxa de alfabetização (`95,04%` vs `96,76%`) e maior proporção de população negra historicamente exposta a desigualdades urbanas (`91,42%` vs `86,54%`).
+3. **Déficits de Entorno e Capital Humano:** Beiru registra menor coleta direta de lixo (`29,19%` vs `40,83%`), menor cobertura de iluminação pública (`96,51%` vs `98,51%`), menor arborização viária (`24,48%` vs `34,02%`), quase inexistência de rampas de acessibilidade (`0,73%` vs `7,12%`), menor taxa de alfabetização (`95,04%` vs `96,76%`) e maior proporção de população negra historicamente exposta a desigualdades urbanas (`91,50%` vs `86,61%`).
 
 ---
 

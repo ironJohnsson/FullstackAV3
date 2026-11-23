@@ -20,7 +20,7 @@ Aplicação web analítica fullstack para investigação multiescalar da vulnera
 | **Renda Mediana do Responsável (`RENDA_MEDIANA_RESP`)** | `Dado observado` | **R$ 1.212,00** | **R$ 1.212,00** | R$ 1.230,00 |
 | **Setores Censitários Baixa Renda (≤ 1,5 SM)** | `Indicador derivado` | **85,92%** (61/71 válidos) | **72,00%** (72/100) | 57,33% |
 | **Taxa de Alfabetização 15+ anos (`TAXA_ALFABETIZACAO`)** | `Indicador derivado` | **95,04%** | **96,76%** | 96,63% |
-| **População Negra (`PROP_NEGROS`)** | `Indicador derivado` | **91,42%** | **86,54%** | 83,03% |
+| **População Negra (`PROP_NEGROS`)** | `Indicador derivado` | **91,50%** | **86,61%** | 83,28% |
 | **Coleta Direta de Lixo Porta a Porta (`LIXO_COLETA_DIRETA`)** | `Indicador derivado` | **29,19%** | **40,83%** | 57,26% |
 | **Iluminação Pública no Entorno (`ENTORNO_ILUMINACAO`)** | `Indicador derivado` | **96,51%** (528 sem) | **98,51%** (320 sem) | 98,22% |
 | **Vias com Calçada (`ENTORNO_CALCADA`)** | `Indicador derivado` | **39,46%** | **38,57%** | 56,87% |
