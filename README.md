@@ -6,6 +6,9 @@
 
 Aplicação web analítica fullstack para investigação multiescalar da vulnerabilidade social, infraestrutura domiciliar/urbana e contexto socioenergético nos bairros **Beiru / Tancredo Neves** (`CD_BAIRRO = 2927408018`) e **Pernambués** (`CD_BAIRRO = 2927408117`), contextualizados em **Salvador/BA** (`CD_MUN = 2927408`) e no **Estado da Bahia** (`CD_UF = 29`).
 
+**Aplicação publicada (Vercel):** https://fullstack-av3-observatorio.vercel.app  
+**Repositório:** https://github.com/ironJohnsson/FullstackAV3
+
 ---
 
 ## Sumário Executivo dos Achados Oficiais
