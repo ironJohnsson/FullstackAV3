@@ -166,11 +166,12 @@ def test_percentuais_e_indices_dentro_da_faixa(observacoes, ind_by_id):
 def test_perfis_tem_valores_consistentes(bundle):
     for codigo, p in bundle["perfis_territoriais"].items():
         assert p["DOM_OCUPADOS"] <= p["DOM_TOTAIS"], codigo
-        # Os agregados por setor do IBGE suprimem células pequenas ("X"); como as faixas
-        # etárias são divididas pela população total (V0001), a soma fica um pouco abaixo
-        # de 100% (Salvador: 99,78%). Tolerância de 0,5 p.p. documenta esse limite.
+        # As proporções usam como denominador a soma das próprias categorias (o IBGE suprime
+        # células pequenas nos agregados por setor); por isso devem fechar em 100%.
         soma_faixas = p["PERC_POP_0_14"] + p["PERC_POP_15_59"] + p["PERC_POP_60_MAIS"]
-        assert 99.5 <= soma_faixas <= 100.01, (codigo, soma_faixas)
+        assert abs(soma_faixas - 100) < 0.05, (codigo, soma_faixas)
+        soma_cor = p["PERC_POP_NEGRA"] + p["PERC_POP_BRANCA"]
+        assert soma_cor <= 100.01, (codigo, soma_cor)
         assert abs(p["PERC_POP_NEGRA"] - (p["PERC_POP_PRETA"] + p["PERC_POP_PARDA"])) < 0.05, codigo
         assert abs(p["DENSIDADE_DEMOGRAFICA"] - p["POP_RESIDENTE"] / p["AREA_KM2"]) < 1, codigo
         assert p["RENDA_MEDIANA_RESP"] <= p["RENDA_MEDIA_RESP"], codigo
