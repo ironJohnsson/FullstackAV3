@@ -50,7 +50,7 @@
     "indicador_id": 6,
     "fonte_id": 1,
     "ano": 2022,
-    "valor": 91.42,
+    "valor": 91.5,
     "escala_registro": "Bairro"
   },
   {
@@ -239,7 +239,7 @@
     "indicador_id": 6,
     "fonte_id": 1,
     "ano": 2022,
-    "valor": 86.54,
+    "valor": 86.61,
     "escala_registro": "Bairro"
   },
   {
@@ -428,7 +428,7 @@
     "indicador_id": 6,
     "fonte_id": 1,
     "ano": 2022,
-    "valor": 83.03,
+    "valor": 83.28,
     "escala_registro": "Município"
   },
   {

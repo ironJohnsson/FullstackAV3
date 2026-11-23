@@ -338,10 +338,10 @@ def build_indicadores():
             "classificacao": "Indicador derivado",
             "escala_geografica": "Bairro / Município",
             "ano_referencia": 2022,
-            "variaveis_origem": "IBGE Censo 2022 Cor ou Raça: V01318 (Preta), V01320 (Parda), V0001 (População)",
-            "formula": "((V01318 + V01320) / V0001) * 100",
-            "metodologia": "Agregação das categorias censitárias Preta e Parda sobre o total populacional do território.",
-            "limitacoes": "Evidencia a dimensão racial da segregação socioespacial em Salvador, mas deve ser cruzada com indicadores de renda e infraestrutura para análise interseccional.",
+            "variaveis_origem": "IBGE Censo 2022 Cor ou Raça: V01317 (Branca), V01318 (Preta), V01319 (Amarela), V01320 (Parda), V01321 (Indígena)",
+            "formula": "((V01318 + V01320) / (V01317 + V01318 + V01319 + V01320 + V01321)) * 100",
+            "metodologia": "Agregação das categorias censitárias Preta e Parda sobre o total de pessoas com cor ou raça informada no agregado. O denominador é a soma das categorias, e não V0001, porque os agregados por setor do IBGE suprimem células pequenas.",
+            "limitacoes": "Evidencia a dimensão racial da segregação socioespacial em Salvador, mas deve ser cruzada com indicadores de renda e infraestrutura para análise interseccional. A supressão de células pelo IBGE afeta o total em até 0,3% da população.",
         },
         # DIMENSÃO 2: ECONÔMICA
         {
@@ -757,7 +757,11 @@ def extract_censo_metrics():
         amarela = fval(cr.get("V01319"))
         parda = fval(cr.get("V01320"))
         indigena = fval(cr.get("V01321"))
-        perc_negra = ((preta + parda) / pop * 100.0) if pop > 0 else 0.0
+        # Denominadores = soma das próprias categorias: os agregados por setor do IBGE suprimem
+        # células pequenas ("X"), então dividir pela população total (V0001) subestima as proporções.
+        total_cor_raca = branca + preta + amarela + parda + indigena
+        total_idade = pop_0_14 + pop_15_59 + pop_60_mais
+        perc_negra = ((preta + parda) / total_cor_raca * 100.0) if total_cor_raca > 0 else 0.0
 
         ent_tot = fval(ent.get("V05000"))
         ent_pav = (fval(ent.get("V05006")) / ent_tot * 100.0) if ent_tot > 0 else 0.0
@@ -817,13 +821,13 @@ def extract_censo_metrics():
             "MEDIA_MORADORES_DOM": round(mor_med, 2),
             "RAZAO_DEPENDENCIA_ETARIA": round(razao_dep, 2),
             "INDICE_ENVELHECIMENTO": round(ind_envelhecimento, 2),
-            "PERC_POP_0_14": round(pop_0_14 / pop * 100.0, 2),
-            "PERC_POP_15_59": round(pop_15_59 / pop * 100.0, 2),
-            "PERC_POP_60_MAIS": round(pop_60_mais / pop * 100.0, 2),
+            "PERC_POP_0_14": round(pop_0_14 / total_idade * 100.0, 2),
+            "PERC_POP_15_59": round(pop_15_59 / total_idade * 100.0, 2),
+            "PERC_POP_60_MAIS": round(pop_60_mais / total_idade * 100.0, 2),
             "PERC_POP_NEGRA": round(perc_negra, 2),
-            "PERC_POP_PRETA": round(preta / pop * 100.0, 2),
-            "PERC_POP_PARDA": round(parda / pop * 100.0, 2),
-            "PERC_POP_BRANCA": round(branca / pop * 100.0, 2),
+            "PERC_POP_PRETA": round(preta / total_cor_raca * 100.0, 2),
+            "PERC_POP_PARDA": round(parda / total_cor_raca * 100.0, 2),
+            "PERC_POP_BRANCA": round(branca / total_cor_raca * 100.0, 2),
             "PERC_DOM_CASA": round(casa / dppo * 100.0, 2),
             "PERC_DOM_CASA_VILA": round(casa_vila / dppo * 100.0, 2),
             "PERC_DOM_APTO": round(apto / dppo * 100.0, 2),
@@ -1210,6 +1214,15 @@ def build_analyses(censo_computed):
         "{IEVS_BEIRU}": fmt_br(censo_computed["2927408018"]["IEVS_EXPLORATORIO"]),
         "{IEVS_PERN}": fmt_br(censo_computed["2927408117"]["IEVS_EXPLORATORIO"]),
     }
+    pct = lambda code, key: fmt_br(censo_computed.get(code, {}).get(key, 0.0)) + "%"
+    placeholders.update({
+        "{BEIRU_0_14}": pct("2927408018", "PERC_POP_0_14"),
+        "{PERN_0_14}": pct("2927408117", "PERC_POP_0_14"),
+        "{BEIRU_NEGRA}": pct("2927408018", "PERC_POP_NEGRA"),
+        "{BEIRU_PRETA}": pct("2927408018", "PERC_POP_PRETA"),
+        "{PERN_NEGRA}": pct("2927408117", "PERC_POP_NEGRA"),
+        "{SSA_NEGRA}": pct("2927408", "PERC_POP_NEGRA"),
+    })
     analyses = _analyses_template(now_str)
     for item in analyses:
         for key, val in placeholders.items():
@@ -1229,8 +1242,8 @@ def _analyses_template(now_str):
                 "(densidade de 16.388,4 hab/km², 4,7x superior à média de Salvador de 3.486,5 hab/km²) e 27.278 domicílios totais (21.561 DPPO, média de 2,40 moradores/domicílio), "
                 "sendo o 3º bairro em volume domiciliar da capital. Já Beiru / Tancredo Neves (código 2927408018) conta com 38.329 habitantes em apenas 1,6362 km², "
                 "alcançando uma densidade demográfica extrema de 23.425,5 hab/km² (6,7x a média municipal e 42,9% mais denso que Pernambués), com 19.870 domicílios totais "
-                "(15.454 DPPO e média de 2,50 moradores/domicílio). Demograficamente, Beiru/Tancredo Neves possui estrutura etária mais jovem (18,00% de 0-14 anos e razão de dependência de 49,24%, "
-                "contra 15,81% e 44,61% em Pernambués) e maior proporção de população negra (91,42% pretos e pardos, sendo 41,62% pretos, face a 86,54% em Pernambués e 83,03% em Salvador). "
+                "(15.454 DPPO e média de 2,50 moradores/domicílio). Demograficamente, Beiru/Tancredo Neves possui estrutura etária mais jovem ({BEIRU_0_14} de 0-14 anos e razão de dependência de 49,24%, "
+                "contra {PERN_0_14} e 44,61% em Pernambués) e maior proporção de população negra ({BEIRU_NEGRA} pretos e pardos, sendo {BEIRU_PRETA} pretos, face a {PERN_NEGRA} em Pernambués e {SSA_NEGRA} em Salvador). "
                 "Nota metodológica fundamental: no recorte específico de 'Favelas e Comunidades Urbanas' (FCU) do Censo 2022, Beiru/Tancredo Neves soma 38.871 moradores (10ª maior favela do Brasil e 1ª da Bahia) "
                 "e Pernambués soma 35.110 moradores (11ª do Brasil e 2ª da Bahia), pois os limites das FCUs seguem a morfologia de ocupação subnormal e não coincidem milimetricamente com a poligonal administrativa da Lei Municipal nº 9.278/2017."
             ),

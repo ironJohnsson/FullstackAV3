@@ -100,7 +100,7 @@ export async function fetchObservatorioData() {
  * Sobrescreve os perfis territoriais com os valores das observações de 2022 persistidas no banco,
  * casando território por `codigo_ibge` e indicador por `codigo` (independe dos ids gerados).
  */
-function mergePerfisWithObservacoes(perfisBase, territories, indicadores, observacoes) {
+export function mergePerfisWithObservacoes(perfisBase, territories, indicadores, observacoes) {
   const perfis = Object.fromEntries(
     Object.entries(perfisBase).map(([code, perfil]) => [code, { ...perfil }])
   );

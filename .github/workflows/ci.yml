@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, 'feature/**']
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  etl-data:
+    name: ETL e integridade dos dados (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: etl/requirements-dev.txt
+
+      - name: Instalar dependências do ETL
+        run: pip install -r etl/requirements-dev.txt
+
+      - name: Testes de integridade e funções do pipeline
+        run: python -m pytest -v
+
+  frontend:
+    name: Frontend (testes + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci --legacy-peer-deps
+
+      - name: Testes (Vitest)
+        run: npm test
+
+      - name: Build de produção (mesmo comando usado pela Vercel)
+        run: npm run build

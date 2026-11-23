@@ -20,7 +20,7 @@ Aplicação web analítica fullstack para investigação multiescalar da vulnera
 | **Renda Mediana do Responsável (`RENDA_MEDIANA_RESP`)** | `Dado observado` | **R$ 1.212,00** | **R$ 1.212,00** | R$ 1.230,00 |
 | **Setores Censitários Baixa Renda (≤ 1,5 SM)** | `Indicador derivado` | **85,92%** (61/71 válidos) | **72,00%** (72/100) | 57,33% |
 | **Taxa de Alfabetização 15+ anos (`TAXA_ALFABETIZACAO`)** | `Indicador derivado` | **95,04%** | **96,76%** | 96,63% |
-| **População Negra (`PROP_NEGROS`)** | `Indicador derivado` | **91,42%** | **86,54%** | 83,03% |
+| **População Negra (`PROP_NEGROS`)** | `Indicador derivado` | **91,50%** | **86,61%** | 83,28% |
 | **Coleta Direta de Lixo Porta a Porta (`LIXO_COLETA_DIRETA`)** | `Indicador derivado` | **29,19%** | **40,83%** | 57,26% |
 | **Iluminação Pública no Entorno (`ENTORNO_ILUMINACAO`)** | `Indicador derivado` | **96,51%** (528 sem) | **98,51%** (320 sem) | 98,22% |
 | **Vias com Calçada (`ENTORNO_CALCADA`)** | `Indicador derivado` | **39,46%** | **38,57%** | 56,87% |
@@ -146,6 +146,27 @@ pip install -r etl/requirements.txt
 npm run etl
 ```
 O comando `npm run etl` executa `etl/run_etl.py`, que processa os arquivos oficiais do IBGE Censo 2022, EPE e IPEA, regenera todos os arquivos em `data/processed/`, atualiza `supabase/seed.sql` e sincroniza `src/data/observatorio_bundle.json`.
+
+---
+
+## Testes e Integração Contínua
+
+```bash
+# Testes do ETL e da integridade dos dados (pytest)
+pip install -r etl/requirements-dev.txt
+python -m pytest
+
+# Testes do frontend (Vitest)
+npm test
+```
+
+| Suíte | O que verifica |
+| :--- | :--- |
+| `etl/tests/test_data_integrity.py` | Chaves e unicidade das 5 tabelas; classificação obrigatória e documentação de cada indicador; dados da EPE somente na escala estadual (nunca em bairros); IVS do IPEA somente nas escalas publicadas; faixas de valores; coerência entre tabelas, bundle do frontend e `seed.sql`; recálculo do IEVS e dos cenários de sensibilidade; 8 questões respondidas; malha de 172 setores. |
+| `etl/tests/test_etl_functions.py` | Funções do pipeline: conversão de valores do IBGE (incluindo células sigilosas `X`), formatação brasileira, escape de SQL, sensibilidade do IEVS e textos analíticos gerados a partir dos valores calculados. |
+| `src/**/*.test.js(x)` | Formatadores (incluindo índice 0–100 vs. 0–1), consulta filtrada por bairro/dimensão/fonte/classificação/ano, prioridade aos dados do Supabase, conteúdo obrigatório das Telas 1, 2, 4 e 5 e ausência de chaves privilegiadas no código do navegador. |
+
+O workflow [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) executa as duas suítes e o build de produção a cada push em `main`, `develop` e `feature/**` e em todo pull request para `main` e `develop`.
 
 ---
 

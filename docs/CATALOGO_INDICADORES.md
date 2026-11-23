@@ -91,10 +91,10 @@
 ### 6. Proporção de População Negra (Preta e Parda) (`PERC_POP_NEGRA`)
 - **Dimensão:** Demográfica | **Classificação:** `Indicador derivado` | **Unidade:** `%`
 - **Escala Geográfica:** Bairro / Município | **Ano de Referência:** 2022
-- **Variáveis de Origem:** `IBGE Censo 2022 Cor ou Raça: V01318 (Preta), V01320 (Parda), V0001 (População)`
-- **Fórmula de Cálculo:** `((V01318 + V01320) / V0001) * 100`
-- **Metodologia:** Agregação das categorias censitárias Preta e Parda sobre o total populacional do território.
-- **Limitações e Cuidados Interpretativos:** Evidencia a dimensão racial da segregação socioespacial em Salvador, mas deve ser cruzada com indicadores de renda e infraestrutura para análise interseccional.
+- **Variáveis de Origem:** `IBGE Censo 2022 Cor ou Raça: V01317 (Branca), V01318 (Preta), V01319 (Amarela), V01320 (Parda), V01321 (Indígena)`
+- **Fórmula de Cálculo:** `((V01318 + V01320) / (V01317 + V01318 + V01319 + V01320 + V01321)) * 100`
+- **Metodologia:** Agregação das categorias censitárias Preta e Parda sobre o total de pessoas com cor ou raça informada no agregado. O denominador é a soma das categorias, e não V0001, porque os agregados por setor do IBGE suprimem células pequenas.
+- **Limitações e Cuidados Interpretativos:** Evidencia a dimensão racial da segregação socioespacial em Salvador, mas deve ser cruzada com indicadores de renda e infraestrutura para análise interseccional. A supressão de células pelo IBGE afeta o total em até 0,3% da população.
 
 ### 7. Rendimento Nominal Médio Mensal do Responsável (`RENDA_MEDIA_RESP`)
 - **Dimensão:** Econômica | **Classificação:** `Dado observado` | **Unidade:** `R$`
